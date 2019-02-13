@@ -58,7 +58,7 @@ class PostViewCell: UITableViewCell
     var views: [UIView] = []
     var data : [UIImage] = []
     
-    func fill(with info: [Media])
+    func fill(with info: [Media], _ isFullVersoin: Bool)
     {
         // important
         contentView.subviews.forEach({ $0.removeFromSuperview() })
@@ -77,10 +77,10 @@ class PostViewCell: UITableViewCell
                 break
             }
         }
-        setUpInStackView()
+        setUpInStackView(isFullVersoin)
     }
     
-    func setUpInStackView(){
+    func setUpInStackView(_ full : Bool){
         let nameStackView = UIStackView(arrangedSubviews: [nameLabel, fullNameLabel])
         nameStackView.axis = .vertical
         contentView.addSubview(nameStackView)
@@ -90,7 +90,9 @@ class PostViewCell: UITableViewCell
         let stackView = UIStackView(arrangedSubviews: views)
         stackView.axis = .vertical
         contentView.addSubview(stackView)
-        stackView.height(300, relation: .equalOrLess, isActive: true)
+        if !full {
+            stackView.height(300, relation: .equalOrLess, isActive: true)
+        }
         stackView.topToBottom(of: nameStackView)
         stackView.edgesToSuperview(excluding: .top, insets: .bottom(8) + .left(16) + .right(16))
     }

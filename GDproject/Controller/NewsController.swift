@@ -69,7 +69,13 @@ class NewsController: UIViewController
 
 // MARK:- tableView delegate
 extension NewsController: UITableViewDelegate{
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        let vc = storyboard!.instantiateViewController(withIdentifier: fullPostControllerId) as! FullPostController
+
+        vc.post = dataSourse[indexPath.row]
+        navigationController!.pushViewController(vc, animated: true)
+    }
 }
 
 // MARK:- tableView dataSourse
@@ -82,7 +88,7 @@ extension NewsController: UITableViewDataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: postCellId, for: indexPath) as! PostViewCell
         
-        cell.fill(with: dataSourse[indexPath.row].dataArray)
+        cell.fill(with: dataSourse[indexPath.row].dataArray, false)
         return cell
     }
     

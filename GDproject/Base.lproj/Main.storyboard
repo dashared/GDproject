@@ -72,6 +72,24 @@
             </objects>
             <point key="canvasLocation" x="1773" y="132"/>
         </scene>
+        <!--Full Post Controller-->
+        <scene sceneID="nNH-1Q-jks">
+            <objects>
+                <tableViewController storyboardIdentifier="FullPostController" id="tcM-Fs-WJr" customClass="FullPostController" customModule="GDproject" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="dmU-W2-lq6">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <connections>
+                            <outlet property="dataSource" destination="tcM-Fs-WJr" id="Xvi-Mj-Id2"/>
+                            <outlet property="delegate" destination="tcM-Fs-WJr" id="190-Q0-2bn"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CP8-RO-wn0" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2506" y="130"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="RSd-UJ-34B">
             <objects>

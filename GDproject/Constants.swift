@@ -10,3 +10,5 @@
 let postCellId = "PostCell"
 // constant for segmented controll in NewsController.swift and ChannelsController.swift
 let headerNewsChannelsVC = "HeaderSegmentedControll"
+// for transitioning to full post view
+let fullPostControllerId = "FullPostController"
