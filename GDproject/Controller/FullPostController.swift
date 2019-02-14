@@ -24,14 +24,26 @@ class FullPostController: UITableViewController {
 
     func setUpNavigationBar(){
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationItem.title = "\(String(describing: post?.fromUser.login))"
+        navigationItem.title = "\(post?.fromUser.login ?? "")"
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(self.options))]
     }
     
     @objc func options(){
-        // copy link
-        // share
-        //
+        // drafts
+        // saved
+        
+        let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let editAction = UIAlertAction(title: "Send via message", style: .default)
+        let shareAction = UIAlertAction(title: "Send via project", style: .default)
+        let settingsAction = UIAlertAction(title: "Copy link", style: .default)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+        optionMenu.addAction(editAction)
+        optionMenu.addAction(shareAction)
+        optionMenu.addAction(settingsAction)
+        optionMenu.addAction(cancelAction)
+        
+        self.present(optionMenu, animated: true, completion: nil)
     }
     // MARK: - Table view data source
 
@@ -40,42 +52,52 @@ class FullPostController: UITableViewController {
         return 2
     }
 
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
-        view.backgroundColor = .white
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
+    {
+        let mainView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        
+        let scrollView = UIScrollView()
+        
+        scrollView.backgroundColor = .white
+        
+        mainView.addSubview(scrollView)
+        scrollView.edgesToSuperview()
+        
+        scrollView.showsHorizontalScrollIndicator = false
+        
+        var buttons: [UIButton] = []
+        for hash in post!.hashtags {
+            let button = UIButton()
+            button.setTitle("#" + hash, for: .normal)
+            button.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+            button.layer.cornerRadius = 10
+            button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+            button.setTitleColor(.black, for: .normal)
+            buttons.append(button)
+        }
+        
+        let stackView = UIStackView(arrangedSubviews: buttons)
+        
+        scrollView.addSubview(stackView)
+        
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.spacing = 20
+        
+        stackView.edgesToSuperview(insets: .left(20) + .top(10) + .right(20))
+        
+        scrollView.contentSize = CGSize(width: 500, height: 50)
+        
         switch section {
         case 0:
-            return view
+            return mainView
         default:
             return nil
         }
     }
     
-    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView?
-    {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
-        
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        label.text = post?.comments.count == 0 ? "Add first relpy" : "\(post?.comments.count ?? 0) replies"
-        label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-        
-        let button = UIButton(type: .detailDisclosure)
-        
-        view.backgroundColor = .white
-        view.addSubview(button)
-        view.addSubview(label)
-        
-        label.edgesToSuperview(excluding: .right, insets: .left(16))
-        button.edgesToSuperview(excluding: .left, insets: .right(16))
-        
-        switch section {
-        case 0:
-            return view
-        default:
-            return nil
-        }
-    }
+   
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         switch section {
         case 0:
@@ -85,14 +107,6 @@ class FullPostController: UITableViewController {
         }
     }
     
-    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        switch section {
-        case 0:
-            return 50
-        default:
-            return 0
-        }
-    }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         switch section {

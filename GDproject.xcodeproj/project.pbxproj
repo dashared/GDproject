@@ -28,6 +28,9 @@
 		12E36DCE22144756006FCDD7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E36DCD22144756006FCDD7 /* Constants.swift */; };
 		12E36DD122148122006FCDD7 /* FullPostController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E36DD022148122006FCDD7 /* FullPostController.swift */; };
 		12E36DD522156559006FCDD7 /* MyStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E36DD422156559006FCDD7 /* MyStackView.swift */; };
+		12E36DD8221594A9006FCDD7 /* TagListView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12E36DD622159493006FCDD7 /* TagListView.framework */; };
+		12E36DD9221594A9006FCDD7 /* TagListView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 12E36DD622159493006FCDD7 /* TagListView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		12E36DDB221594B1006FCDD7 /* MarkdownKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12E36DB022143D47006FCDD7 /* MarkdownKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,6 +42,7 @@
 			files = (
 				12E36DC0221441DB006FCDD7 /* Marklight.framework in Embed Frameworks */,
 				12E36DC4221441EA006FCDD7 /* Cartography.framework in Embed Frameworks */,
+				12E36DD9221594A9006FCDD7 /* TagListView.framework in Embed Frameworks */,
 				12E36DBD221441D5006FCDD7 /* TinyConstraints.framework in Embed Frameworks */,
 				12E36DC2221441E1006FCDD7 /* MarkdownKit.framework in Embed Frameworks */,
 			);
@@ -68,6 +72,7 @@
 		12E36DCD22144756006FCDD7 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		12E36DD022148122006FCDD7 /* FullPostController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullPostController.swift; sourceTree = "<group>"; };
 		12E36DD422156559006FCDD7 /* MyStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStackView.swift; sourceTree = "<group>"; };
+		12E36DD622159493006FCDD7 /* TagListView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TagListView.framework; path = Carthage/Build/iOS/TagListView.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +81,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				12E36DB522143D54006FCDD7 /* TinyConstraints.framework in Frameworks */,
+				12E36DDB221594B1006FCDD7 /* MarkdownKit.framework in Frameworks */,
+				12E36DD8221594A9006FCDD7 /* TagListView.framework in Frameworks */,
 				12E36DAF22143D40006FCDD7 /* Cartography.framework in Frameworks */,
 				12E36DB322143D4E006FCDD7 /* Marklight.framework in Frameworks */,
 			);
@@ -87,12 +94,14 @@
 		12E36D8F221424EA006FCDD7 = {
 			isa = PBXGroup;
 			children = (
+				12E36DD622159493006FCDD7 /* TagListView.framework */,
 				12E36DB422143D54006FCDD7 /* TinyConstraints.framework */,
 				12E36DB222143D4E006FCDD7 /* Marklight.framework */,
 				12E36DB022143D47006FCDD7 /* MarkdownKit.framework */,
 				12E36DAE22143D40006FCDD7 /* Cartography.framework */,
 				12E36D9A221424EA006FCDD7 /* GDproject */,
 				12E36D99221424EA006FCDD7 /* Products */,
+				12E36DDA221594B1006FCDD7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -156,6 +165,13 @@
 				12E36DCB22144725006FCDD7 /* PostViewCell.swift */,
 			);
 			path = News;
+			sourceTree = "<group>";
+		};
+		12E36DDA221594B1006FCDD7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

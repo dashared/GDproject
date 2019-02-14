@@ -29,6 +29,18 @@ class PostViewCell: UITableViewCell
         return label
     }()
     
+    let commentsLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+        return label
+    }()
+    
+    let shareButton: UIButton = {
+        let button = UIButton(type: UIButton.ButtonType.detailDisclosure)
+        return button
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?)
     {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -95,6 +107,15 @@ class PostViewCell: UITableViewCell
             stackView.height(300, relation: .equalOrLess, isActive: true)
         }
         stackView.topToBottom(of: nameStackView, offset: 16, relation: .equal, isActive: true)
-        stackView.edgesToSuperview(excluding: .top, insets: .left(16) + .right(16))
+        stackView.edgesToSuperview(excluding: [.top, .bottom], insets: .left(16) + .right(16))
+        
+        let commentsSharesStackView = UIStackView(arrangedSubviews: [ commentsLabel, shareButton])
+        contentView.addSubview(commentsSharesStackView)
+        
+        commentsLabel.text = "14.02.19 в 23:00"
+        commentsSharesStackView.axis = .horizontal
+        commentsSharesStackView.distribution = .equalSpacing
+        commentsSharesStackView.edgesToSuperview(excluding: .top, insets: .bottom(10) + .left(16) + .right(16))
+        stackView.bottomToTop(of: commentsSharesStackView)
     }
 }
