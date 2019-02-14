@@ -16,7 +16,7 @@ class PostViewCell: UITableViewCell
     let nameLabel: UILabel = {
         let label = UILabel()
         label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        label.text = "vgogomazova"
+        label.text = "vbogomazova"
         label.font = UIFont.boldSystemFont(ofSize: 16)
         return label
     }()
@@ -84,16 +84,17 @@ class PostViewCell: UITableViewCell
         let nameStackView = UIStackView(arrangedSubviews: [nameLabel, fullNameLabel])
         nameStackView.axis = .vertical
         contentView.addSubview(nameStackView)
-        nameStackView.height(46)
-        nameStackView.edgesToSuperview(excluding: .bottom, insets: .left(16) + .right(16))
+        //nameStackView.height(46)
+        nameStackView.edgesToSuperview(excluding: .bottom, insets: .left(20) + .right(20) + .top(8))
         
-        let stackView = UIStackView(arrangedSubviews: views)
+        let stackView = MyStackView(arrangedSubviews: views)
+        stackView.isFull = full
         stackView.axis = .vertical
         contentView.addSubview(stackView)
         if !full {
             stackView.height(300, relation: .equalOrLess, isActive: true)
         }
-        stackView.topToBottom(of: nameStackView)
-        stackView.edgesToSuperview(excluding: .top, insets: .bottom(8) + .left(16) + .right(16))
+        stackView.topToBottom(of: nameStackView, offset: 16, relation: .equal, isActive: true)
+        stackView.edgesToSuperview(excluding: .top, insets: .left(16) + .right(16))
     }
 }

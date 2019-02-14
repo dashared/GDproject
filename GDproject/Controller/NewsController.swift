@@ -15,7 +15,7 @@ class NewsController: UIViewController
 
     @IBOutlet weak var tableView: UITableView!
     
-    var dataSourse: [Post] = []
+    var dataSourse: [Post] = [Post(dataArray: [.text("Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker. \n On sait depuis longtemps que travailler avec du texte lisible et contenant du sens est source de distractions, et empêche de se concentrer sur la mise en page elle-même. L'avantage du Lorem Ipsum sur un texte générique comme 'Du texte. Du texte. Du texte.' est qu'il possède une distribution de lettres plus ou moins normale, et en tout cas comparable avec celle du français standard. De nombreuses suites logicielles de mise en page ou éditeurs de sites Web ont fait du Lorem Ipsum leur faux texte par défaut, et une recherche pour 'Lorem Ipsum' vous conduira vers de nombreux sites qui n'en sont encore qu'à leur phase de construction. Plusieurs versions sont apparues avec le temps, parfois par accident, souvent intentionnellement (histoire d'y rajouter de petits clins d'oeil, voire des phrases embarassantes).")], from: User(name: "vbogomazova1", id: 2, fullName: "Богомазова Вероника Львовна"), date: "14.02.19 в 12:05")]
     
     override func viewDidLoad()
     {
@@ -34,6 +34,7 @@ class NewsController: UIViewController
         super.viewWillAppear(animated)
         navigationController?.navigationBar.prefersLargeTitles = true
     }
+    
     func setUpNavigationItemsforPosts(){
         navigationItem.title = "Posts"
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(self.writePost(_:)))]
@@ -71,6 +72,8 @@ class NewsController: UIViewController
 extension NewsController: UITableViewDelegate{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
         let vc = storyboard!.instantiateViewController(withIdentifier: fullPostControllerId) as! FullPostController
 
         vc.post = dataSourse[indexPath.row]
@@ -85,10 +88,12 @@ extension NewsController: UITableViewDataSource
         return dataSourse.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
         let cell = tableView.dequeueReusableCell(withIdentifier: postCellId, for: indexPath) as! PostViewCell
         
         cell.fill(with: dataSourse[indexPath.row].dataArray, false)
+        cell.selectionStyle = .none
         return cell
     }
     
