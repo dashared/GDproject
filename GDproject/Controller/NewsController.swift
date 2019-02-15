@@ -89,7 +89,7 @@ class NewsController: UIViewController
     
     let statusLabel: UILabel = {
         let label = UILabel()
-        label.text = "N"
+        label.text = "-"
         label.textColor = .white
         label.textAlignment = .center
         return label
