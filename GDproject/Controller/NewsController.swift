@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import TinyConstraints
 
 // MARK:- Controller with posts and channels availiable.
 // Search is availiable within every table (posts and channels). Has button-functionality for boths post and chnnels
@@ -34,6 +35,8 @@ class NewsController: UIViewController
         
         navigationItem.searchController = searchController
         definesPresentationContext = true
+        
+        setUpBanner()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -71,6 +74,76 @@ class NewsController: UIViewController
     
     @objc func addChannel(){
         print("Add channel")
+    }
+    
+    // for animating the banner
+    var topConstraint: NSLayoutConstraint?
+    
+    let bannerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .blue
+        view.layer.cornerRadius = 25.0
+        view.clipsToBounds = true
+        return view
+    }()
+    
+    let statusLabel: UILabel = {
+        let label = UILabel()
+        label.text = "N"
+        label.textColor = .white
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private func setUpBanner()
+    {
+        view.addSubview(bannerView)
+        bannerView.addSubview(statusLabel)
+        statusLabel.edgesToSuperview()
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:)))
+        
+        bannerView.addGestureRecognizer(tap)
+        topConstraint = NSLayoutConstraint(item: bannerView, attribute: .top, relatedBy: .equal, toItem: view.safeAreaLayoutGuide, attribute: .top, multiplier: 1, constant: -300)
+        view.addConstraint(topConstraint!)
+        
+        bannerView.edgesToSuperview(excluding: [.bottom, .top, .left], insets: .right(20), usingSafeArea: true)
+        bannerView.height(50)
+        bannerView.width(50)
+    }
+    
+    // when table is scrolling no deletion is availiable
+    @objc func handleTap(sender: UITapGestureRecognizer? = nil) {
+        let indexPath = IndexPath(row: 0, section: 0)
+        self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+//        isBannerVisible = false
+//        changeConstraint(isVisible: false)
+    }
+    
+    // animation for banner
+    func changeConstraint(isVisible: Bool){
+        topConstraint?.constant =  isVisible ? 50 : -300
+        
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
+            self.view.layoutIfNeeded()
+        }) { (completed) in
+            
+        }
+    }
+    
+    var isBannerVisible: Bool = false
+    
+     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        print(scrollView.contentOffset.y)
+        if scrollView.contentOffset.y >= 50 && !isBannerVisible{
+            isBannerVisible = true
+            changeConstraint(isVisible: true)
+        }
+        
+        if isBannerVisible && scrollView.contentOffset.y == 0{
+            isBannerVisible = false
+            changeConstraint(isVisible: false)
+        }
     }
 }
 
@@ -121,4 +194,6 @@ extension NewsController: UITableViewDataSource
         view.vc = self
         return view
     }
+    
+    
 }
