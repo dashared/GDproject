@@ -117,8 +117,13 @@ extension NewsController: UITableViewDataSource
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
     {
-        let view = tableView.dequeueReusableCell(withIdentifier: headerNewsChannelsVC) as! HeaderNewsChannels
-        view.vc = self
+        let cell = tableView.dequeueReusableCell(withIdentifier: headerNewsChannelsVC) as! HeaderNewsChannels
+        cell.vc = self
+        
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 46.0))
+        view.addSubview(cell)
+        cell.edgesToSuperview()
+        
         return view
     }
 }
