@@ -11,10 +11,7 @@ import TinyConstraints
 
 class HeaderNewsChannels: UITableViewCell {
     
-    weak var tableView: UITableView?
     weak var vc: NewsController?
-    
-    let basicInfo = ChannelsController()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -45,9 +42,6 @@ class HeaderNewsChannels: UITableViewCell {
         case 1:
             print("channels")
             vc?.setUpNavigationItemsForChannels()
-//            self.tableView?.delegate = basicInfo
-//            self.tableView?.dataSource = basicInfo
-//            tableView?.reloadData()
         default:
             break
         }

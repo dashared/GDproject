@@ -13,11 +13,11 @@ struct User {
     //var photo: UIImage? = #imageLiteral(resourceName: "image")
     var login: String
     var id: Int
-    var surname: String?
     var fullName: String
-    var initials: (surname: String, name: String, optional: String?)?
+    var initials: (surname: String, name: String, optional: String?) = ("Богомазова","Вероника","Львовна")
     var placeOfWork: String?
     var faculty: String?
+    let posts: [Post] =  []
     
     init(name: String, id: Int, fullName: String) {
         self.login = name
