@@ -62,6 +62,8 @@ class ProfileViewController: UIViewController
         
         tableView.register(BasicInfoCell.self, forCellReuseIdentifier: basicInfoCellId)
         
+        tableView.register(InfoCell.self, forCellReuseIdentifier: infoCellId)
+        
         posts.viewController = self
         
         fill(with: user)
@@ -95,7 +97,13 @@ class ProfileViewController: UIViewController
         
         let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let editAction = UIAlertAction(title: "Edit profile", style: .default)
-        let settingsAction = UIAlertAction(title: "Settings", style: .default)
+        let settingsAction = UIAlertAction(title: "Setting", style: .default)
+        { [weak self] (_) in
+            
+           let vc = self?.storyboard?.instantiateViewController(withIdentifier: "SettingsViewController") as! SettingsViewController
+            self?.navigationController?.pushViewController(vc, animated: true)
+        }
+        
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         let shareAction = UIAlertAction(title: "Share", style: .default)
         

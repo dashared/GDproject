@@ -9,11 +9,15 @@
 import UIKit
 import TinyConstraints
 
-class BasicInfoCell: UITableViewCell{
+class InfoCell: UITableViewCell{
     
-    var titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 16)
+    var textView: UITextView = {
+        let label = UITextView()
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.sizeToFit()
+        label.isScrollEnabled = false
+        label.isUserInteractionEnabled = false
+        label.isEditable = false
         label.textColor =  .black
         return label
     }()
@@ -22,10 +26,11 @@ class BasicInfoCell: UITableViewCell{
         super.init(style: style, reuseIdentifier: reuseIdentifier)
     }
     
-    func setUpView(){
-        addSubview(titleLabel)
-        titleLabel.horizontalToSuperview(insets: .left(16) + .right(16))
-        titleLabel.verticalToSuperview(insets: .top(8) + .bottom(8))
+    func setUpView()
+    {
+        addSubview(textView)
+        textView.horizontalToSuperview(insets: .left(32) + .right(16))
+        textView.verticalToSuperview(insets: .top(8) + .bottom(8))
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -34,6 +39,6 @@ class BasicInfoCell: UITableViewCell{
     
     func fill(title: String){
         setUpView()
-        titleLabel.text = title
+        textView.text = title
     }
 }

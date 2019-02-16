@@ -14,3 +14,7 @@ let headerNewsChannelsVC = "HeaderSegmentedControll"
 let fullPostControllerId = "FullPostController"
 
 let basicInfoCellId = "BasicInfoCell"
+
+let infoCellId = "InfoCell"
+
+let inviteVC = "InviteViewController"

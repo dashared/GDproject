@@ -20,7 +20,7 @@ class BasicInfoController: UIViewController, UITableViewDelegate, UITableViewDat
         CellData(opened: false, title: "Phone", sectionData: ["+7 901 733 01 79"]),
         CellData(opened: false, title: "Mail", sectionData: ["vbogomazova@edu.hse.ru"]),
         CellData(opened: false, title: "Research ID", sectionData: ["4567834336789456737"]),
-        CellData(opened: false, title: "Published", sectionData: ["Книга 1", "Книга 2", "Книга 3"]),
+        CellData(opened: false, title: "Published", sectionData: ["Это будет очень длинное название книги 1, чтобы сделать проверку", "Книга 2", "Книга 3"]),
         CellData(opened: false, title: "Courses", sectionData: ["Курс 1", "Курс 2"]),
         CellData(opened: false, title: "Link", sectionData: ["https://wwww.hse.ru"])
     ]
@@ -41,10 +41,11 @@ class BasicInfoController: UIViewController, UITableViewDelegate, UITableViewDat
         if indexPath.row == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: basicInfoCellId, for: indexPath) as! BasicInfoCell
             cell.fill(title: dataSourse[indexPath.section].title)
+            cell.accessoryType = .disclosureIndicator
             cell.selectionStyle = .none
             return cell
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: basicInfoCellId, for: indexPath) as! BasicInfoCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: infoCellId, for: indexPath) as!  InfoCell
             cell.fill(title: dataSourse[indexPath.section].sectionData[indexPath.row - 1])
             cell.selectionStyle = .none
             return cell

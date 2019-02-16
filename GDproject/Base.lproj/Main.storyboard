@@ -164,6 +164,87 @@
             </objects>
             <point key="canvasLocation" x="2013.5999999999999" y="957.57121439280365"/>
         </scene>
+        <!--Settings View Controller-->
+        <scene sceneID="WVn-Qy-9tO">
+            <objects>
+                <tableViewController storyboardIdentifier="SettingsViewController" id="zy1-9Z-5P6" customClass="SettingsViewController" customModule="GDproject" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="VhJ-pr-aLb">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SettingsCell" textLabel="QDL-KY-T1r" style="IBUITableViewCellStyleDefault" id="IGo-n9-HiV">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="IGo-n9-HiV" id="gMT-ei-M43">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QDL-KY-T1r">
+                                            <rect key="frame" x="16" y="0.0" width="343" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="zy1-9Z-5P6" id="7hY-TM-IK0"/>
+                            <outlet property="delegate" destination="zy1-9Z-5P6" id="J9r-Hh-aVU"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xdg-ZK-4Jv" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1986" y="1756"/>
+        </scene>
+        <!--Invite View Controller-->
+        <scene sceneID="DcO-6Y-Iko">
+            <objects>
+                <viewController storyboardIdentifier="InviteViewController" id="UFZ-Q3-pIW" customClass="InviteViewController" customModule="GDproject" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Tex-e4-Huf">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="Oc6-Ho-qfI">
+                                <rect key="frame" x="16" y="100" width="343" height="83"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Invite:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D2l-JD-WXP">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="41"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="34"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Bk1-tC-5g3">
+                                        <rect key="frame" x="0.0" y="53" width="343" height="30"/>
+                                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Oc6-Ho-qfI" firstAttribute="top" secondItem="WUm-xh-PeM" secondAttribute="top" constant="80" id="2uM-Ya-0qT"/>
+                            <constraint firstItem="WUm-xh-PeM" firstAttribute="trailing" secondItem="Oc6-Ho-qfI" secondAttribute="trailing" constant="16" id="DAS-R5-CYz"/>
+                            <constraint firstItem="Oc6-Ho-qfI" firstAttribute="leading" secondItem="WUm-xh-PeM" secondAttribute="leading" constant="16" id="vTc-Zq-XMS"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="WUm-xh-PeM"/>
+                    </view>
+                    <connections>
+                        <outlet property="inviteLabel" destination="D2l-JD-WXP" id="g0g-Oo-uzs"/>
+                        <outlet property="mailTextField" destination="Bk1-tC-5g3" id="JQ3-v9-MK6"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="t8a-Sv-mbh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2803" y="1756"/>
+        </scene>
         <!--New Post View Controller-->
         <scene sceneID="TVK-xu-UdJ">
             <objects>
