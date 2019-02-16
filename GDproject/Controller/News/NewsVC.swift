@@ -12,6 +12,8 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     var dataSourse: [Post] = []
     
+    var type: HeaderType = .NONE
+    
     var viewController: UIViewController?
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
@@ -46,19 +48,41 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 46.0
+        switch type {
+        case .NONE:
+            return 0
+        default:
+            return 46
+        }
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: headerNewsChannelsVC) as! HeaderNewsChannels
-        //cell.vc = viewController as? NewsController
+        
+        cell.vc = viewController as? NewsController
+        cell.vcProfile = viewController as? ProfileViewController
+        
+        cell.type = type
         
         let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 46.0))
         view.addSubview(cell)
         cell.edgesToSuperview()
         
-        return view
+        switch type {
+        case .NONE:
+            return nil
+        default:
+            return view
+        }
     }
     
+}
+
+
+enum HeaderType {
+    case NONE
+    case NEWS(String, String)
+    case PROFILE(String, String)
+    case BASIC_INFO(String, String)
 }

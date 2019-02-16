@@ -32,6 +32,8 @@ class NewsController: UIViewController
         news.dataSourse = dataSourse
         news.viewController = self
         
+        news.type = .NEWS("Posts", "Channels")
+        
         tableView.delegate = news
         tableView.dataSource = news
         tableView.reloadData()
