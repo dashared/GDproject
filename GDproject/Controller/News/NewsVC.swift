@@ -34,7 +34,7 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: postCellId, for: indexPath) as! PostViewCell
         
-        cell.fill(with: dataSourse[indexPath.row].dataArray, false)
+        cell.fill(with: dataSourse[indexPath.row].dataArray, false, post: dataSourse[indexPath.row])
         cell.selectionStyle = .none
         return cell
     }

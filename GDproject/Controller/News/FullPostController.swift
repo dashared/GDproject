@@ -53,49 +53,10 @@ class FullPostController: UITableViewController {
     }
 
     
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
-    {
-        let mainView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
-        
-        let scrollView = UIScrollView()
-        
-        scrollView.backgroundColor = .white
-        
-        mainView.addSubview(scrollView)
-        scrollView.edgesToSuperview()
-        
-        scrollView.showsHorizontalScrollIndicator = false
-        
-        var buttons: [UIButton] = []
-        for hash in post!.hashtags {
-            let button = UIButton()
-            button.setTitle("#" + hash, for: .normal)
-            button.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-            button.layer.cornerRadius = 10
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-            button.setTitleColor(.black, for: .normal)
-            buttons.append(button)
-        }
-        
-        let stackView = UIStackView(arrangedSubviews: buttons)
-        
-        scrollView.addSubview(stackView)
-        
-        stackView.axis = .horizontal
-        stackView.alignment = .center
-        stackView.spacing = 20
-        
-        stackView.edgesToSuperview(insets: .left(20) + .top(10) + .right(20))
-        
-        scrollView.contentSize = CGSize(width: 500, height: 50)
-        
-        switch section {
-        case 0:
-            return mainView
-        default:
-            return nil
-        }
-    }
+//    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
+//    {
+//
+//    }
     
    
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -125,7 +86,7 @@ class FullPostController: UITableViewController {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: postCellId) as! PostViewCell
         
-        cell.fill(with: post!.dataArray, true)
+        cell.fill(with: post!.dataArray, true, post: post!)
         cell.selectionStyle = .none
         return cell
     }
