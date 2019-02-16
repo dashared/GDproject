@@ -63,8 +63,6 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
         cell.vc = viewController as? NewsController
         cell.vcProfile = viewController as? ProfileViewController
         
-        cell.type = type
-        
         let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 46.0))
         view.addSubview(cell)
         cell.edgesToSuperview()

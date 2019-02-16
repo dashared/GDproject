@@ -25,10 +25,6 @@ class BasicInfoController: UIViewController, UITableViewDelegate, UITableViewDat
         CellData(opened: false, title: "Link", sectionData: ["https://wwww.hse.ru"])
     ]
     
-    var type: HeaderType = .BASIC_INFO("Profile", "Basic info")
-
-    var viewController: ProfileViewController?
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (dataSourse[section].opened){
             return dataSourse[section].sectionData.count + 1
@@ -74,30 +70,5 @@ class BasicInfoController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100.0
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 {
-            return 46
-        }
-        return 0
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
-    {
-        if section == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: headerNewsChannelsVC) as! HeaderNewsChannels
-
-            cell.vcProfile = viewController
-
-            cell.type = type
-
-            let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 46.0))
-            view.addSubview(cell)
-            cell.edgesToSuperview()
-
-            return view
-        }
-        return nil
     }
 }
