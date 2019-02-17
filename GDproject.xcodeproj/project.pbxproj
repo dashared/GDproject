@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		125BD57D22171D2A008A3575 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD57C22171D2A008A3575 /* ProfileViewController.swift */; };
+		125BD57F22171D73008A3575 /* Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD57E22171D73008A3575 /* Extentions.swift */; };
+		125BD5812217314A008A3575 /* NewsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD5802217314A008A3575 /* NewsVC.swift */; };
+		12DB7FD722181CD20096878E /* BasicInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DB7FD622181CD20096878E /* BasicInfoController.swift */; };
+		12DB7FD922181E660096878E /* BasicInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DB7FD822181E660096878E /* BasicInfoCell.swift */; };
+		12DB7FDB2218590C0096878E /* InfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DB7FDA2218590C0096878E /* InfoCell.swift */; };
+		12DB7FDD221872F80096878E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DB7FDC221872F80096878E /* SettingsViewController.swift */; };
+		12DB7FDF221877160096878E /* InviteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DB7FDE221877160096878E /* InviteViewController.swift */; };
 		12E36D9C221424EA006FCDD7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E36D9B221424EA006FCDD7 /* AppDelegate.swift */; };
 		12E36D9E221424EA006FCDD7 /* NewsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E36D9D221424EA006FCDD7 /* NewsController.swift */; };
 		12E36DA1221424EA006FCDD7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12E36D9F221424EA006FCDD7 /* Main.storyboard */; };
@@ -52,6 +60,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		125BD57C22171D2A008A3575 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		125BD57E22171D73008A3575 /* Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extentions.swift; sourceTree = "<group>"; };
+		125BD5802217314A008A3575 /* NewsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsVC.swift; sourceTree = "<group>"; };
+		12DB7FD622181CD20096878E /* BasicInfoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoController.swift; sourceTree = "<group>"; };
+		12DB7FD822181E660096878E /* BasicInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoCell.swift; sourceTree = "<group>"; };
+		12DB7FDA2218590C0096878E /* InfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoCell.swift; sourceTree = "<group>"; };
+		12DB7FDC221872F80096878E /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		12DB7FDE221877160096878E /* InviteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteViewController.swift; sourceTree = "<group>"; };
 		12E36D98221424EA006FCDD7 /* GDproject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GDproject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		12E36D9B221424EA006FCDD7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		12E36D9D221424EA006FCDD7 /* NewsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsController.swift; sourceTree = "<group>"; };
@@ -118,6 +134,8 @@
 			children = (
 				12E36DCF22145923006FCDD7 /* Controller */,
 				12E36DCD22144756006FCDD7 /* Constants.swift */,
+				125BD57E22171D73008A3575 /* Extentions.swift */,
+				12E36DD422156559006FCDD7 /* MyStackView.swift */,
 				12E36DBB2214402B006FCDD7 /* Supporting files */,
 				12E36DBA2214401B006FCDD7 /* Simple model */,
 				12E36D9F221424EA006FCDD7 /* Main.storyboard */,
@@ -148,13 +166,13 @@
 		12E36DCF22145923006FCDD7 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				12E36DD422156559006FCDD7 /* MyStackView.swift */,
-				12E36DD022148122006FCDD7 /* FullPostController.swift */,
-				12E36DC522144266006FCDD7 /* HeaderNewsChannels.swift */,
-				12E36DC722144374006FCDD7 /* ChannelsController.swift */,
-				12E36D9D221424EA006FCDD7 /* NewsController.swift */,
+				125BD57C22171D2A008A3575 /* ProfileViewController.swift */,
+				12DB7FDE221877160096878E /* InviteViewController.swift */,
+				12DB7FDC221872F80096878E /* SettingsViewController.swift */,
+				12DB7FD622181CD20096878E /* BasicInfoController.swift */,
+				12DB7FDA2218590C0096878E /* InfoCell.swift */,
+				12DB7FD822181E660096878E /* BasicInfoCell.swift */,
 				12E36DD322156519006FCDD7 /* News */,
-				12E36DC922144635006FCDD7 /* NewPostViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -162,6 +180,12 @@
 		12E36DD322156519006FCDD7 /* News */ = {
 			isa = PBXGroup;
 			children = (
+				12E36DC922144635006FCDD7 /* NewPostViewController.swift */,
+				12E36DD022148122006FCDD7 /* FullPostController.swift */,
+				12E36DC522144266006FCDD7 /* HeaderNewsChannels.swift */,
+				12E36DC722144374006FCDD7 /* ChannelsController.swift */,
+				12E36D9D221424EA006FCDD7 /* NewsController.swift */,
+				125BD5802217314A008A3575 /* NewsVC.swift */,
 				12E36DCB22144725006FCDD7 /* PostViewCell.swift */,
 			);
 			path = News;
@@ -249,14 +273,23 @@
 				12E36DD522156559006FCDD7 /* MyStackView.swift in Sources */,
 				12E36DC822144374006FCDD7 /* ChannelsController.swift in Sources */,
 				12E36DB922144016006FCDD7 /* User.swift in Sources */,
+				125BD5812217314A008A3575 /* NewsVC.swift in Sources */,
 				12E36DB72214400A006FCDD7 /* Post.swift in Sources */,
+				12DB7FDF221877160096878E /* InviteViewController.swift in Sources */,
 				12E36DCA22144635006FCDD7 /* NewPostViewController.swift in Sources */,
 				12E36D9E221424EA006FCDD7 /* NewsController.swift in Sources */,
 				12E36DC622144266006FCDD7 /* HeaderNewsChannels.swift in Sources */,
 				12E36DCC22144725006FCDD7 /* PostViewCell.swift in Sources */,
+				125BD57F22171D73008A3575 /* Extentions.swift in Sources */,
 				12E36DD122148122006FCDD7 /* FullPostController.swift in Sources */,
+				125BD57D22171D2A008A3575 /* ProfileViewController.swift in Sources */,
+				12DB7FDB2218590C0096878E /* InfoCell.swift in Sources */,
+				12DB7FD922181E660096878E /* BasicInfoCell.swift in Sources */,
 				12E36D9C221424EA006FCDD7 /* AppDelegate.swift in Sources */,
+				12DB7FD722181CD20096878E /* BasicInfoController.swift in Sources */,
 				12E36DCE22144756006FCDD7 /* Constants.swift in Sources */,
+				12DB7FDD221872F80096878E /* SettingsViewController.swift in Sources */,
+
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,3 +12,10 @@ let postCellId = "PostCell"
 let headerNewsChannelsVC = "HeaderSegmentedControll"
 // for transitioning to full post view
 let fullPostControllerId = "FullPostController"
+
+let basicInfoCellId = "BasicInfoCell"
+
+let infoCellId = "InfoCell"
+
+let inviteVC = "InviteViewController"
+
