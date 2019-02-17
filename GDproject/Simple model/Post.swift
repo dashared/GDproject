@@ -14,6 +14,7 @@ struct Post {
     var fromUser: User
     var atDate: String
     var comments: [Comment] = []
+
     var hashtags: [String] = ["ФКН", "Подбельский", "НИУВШЭ", "Шершаков", "ПАД", "Интересное","Мемы","Забавное","Учеба","Наука"]
     
     init(dataArray: [Media], from: User, date: String, comments: [Comment] = [])
@@ -29,6 +30,7 @@ struct Post {
         fromUser = User(name: "vbogomazova", id: 2, fullName: "Богомазова Вероника Львовна")
         atDate = "23.03.19 в 23:33"
     }
+
 }
 
 

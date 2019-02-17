@@ -18,3 +18,4 @@ let basicInfoCellId = "BasicInfoCell"
 let infoCellId = "InfoCell"
 
 let inviteVC = "InviteViewController"
+

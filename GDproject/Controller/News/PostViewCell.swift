@@ -152,7 +152,9 @@ class PostViewCell: UITableViewCell
         if !full {
             stackView.height(300, relation: .equalOrLess, isActive: true)
         }
+
         stackView.topToBottom(of: mainView, offset: 0, relation: .equal, isActive: true)
+
         stackView.edgesToSuperview(excluding: [.top, .bottom], insets: .left(16) + .right(16))
         
         let commentsSharesStackView = UIStackView(arrangedSubviews: [ commentsLabel, shareButton])

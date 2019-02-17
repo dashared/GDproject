@@ -18,6 +18,7 @@ struct User {
     var placeOfWork: String?
     var faculty: String?
     let posts: [Post] =  []
+
     
     init(name: String, id: Int, fullName: String) {
         self.login = name

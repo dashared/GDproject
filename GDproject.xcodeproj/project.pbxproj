@@ -289,6 +289,7 @@
 				12DB7FD722181CD20096878E /* BasicInfoController.swift in Sources */,
 				12E36DCE22144756006FCDD7 /* Constants.swift in Sources */,
 				12DB7FDD221872F80096878E /* SettingsViewController.swift in Sources */,
+
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
