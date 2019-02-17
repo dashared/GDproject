@@ -20,6 +20,8 @@ class FullPostController: UITableViewController {
         
         setUpNavigationBar()
         tableView.separatorStyle = .none
+        
+        
     }
 
     func setUpNavigationBar(){
@@ -53,16 +55,23 @@ class FullPostController: UITableViewController {
     }
 
     
-//    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
-//    {
-//
-//    }
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
+    {
+        switch section {
+        case 0:
+            let v = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 1))
+            v.backgroundColor = .white
+            return v
+        default:
+            return nil
+        }
+    }
     
    
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         switch section {
         case 0:
-            return 50
+            return 1
         default:
             return 0
         }

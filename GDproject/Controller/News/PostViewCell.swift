@@ -101,7 +101,7 @@ class PostViewCell: UITableViewCell
         //nameStackView.height(46)
         nameStackView.edgesToSuperview(excluding: .bottom, insets: .left(20) + .right(20) + .top(8))
         
-        let mainView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        let mainView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 30))
         
         let scrollView = UIScrollView()
         
@@ -116,10 +116,10 @@ class PostViewCell: UITableViewCell
         for hash in post!.hashtags {
             let button = UIButton()
             button.setTitle("#" + hash, for: .normal)
-            button.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-            button.layer.cornerRadius = 10
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-            button.setTitleColor(.black, for: .normal)
+            //button.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+            //button.layer.cornerRadius = 10
+            button.titleLabel?.font = UIFont.monospacedDigitSystemFont(ofSize: 15, weight: .semibold)
+            button.setTitleColor(#colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1), for: .normal)
             buttons.append(button)
         }
         
@@ -128,18 +128,22 @@ class PostViewCell: UITableViewCell
         scrollView.addSubview(stackViewHashTags)
         
         stackViewHashTags.axis = .horizontal
+        stackViewHashTags.spacing = 17
+        
+        // edgesToSuperview(insets: .left(20) + .top(10) + .right(20))
+        stackViewHashTags.horizontalToSuperview(insets: .left(20) + .right(20))
+        stackViewHashTags.verticalToSuperview()
+        
+        stackViewHashTags.distribution = .fillProportionally
         stackViewHashTags.alignment = .center
-        stackViewHashTags.spacing = 20
-        
-        stackViewHashTags.edgesToSuperview(insets: .left(20) + .top(10) + .right(20))
-        
-        scrollView.contentSize = CGSize(width: 500, height: 50)
+    
+        scrollView.contentSize = CGSize(width: 500, height: 30)
         
         
         contentView.addSubview(mainView)
         mainView.edgesToSuperview(excluding: [.top, .bottom])
-        mainView.topToBottom(of: nameStackView)
-        mainView.height(50)
+        mainView.topToBottom(of: nameStackView, offset: 5)
+        mainView.height(30)
         
         let stackView = MyStackView(arrangedSubviews: views)
         stackView.isFull = full
@@ -148,7 +152,7 @@ class PostViewCell: UITableViewCell
         if !full {
             stackView.height(300, relation: .equalOrLess, isActive: true)
         }
-        stackView.topToBottom(of: mainView, offset: 16, relation: .equal, isActive: true)
+        stackView.topToBottom(of: mainView, offset: 0, relation: .equal, isActive: true)
         stackView.edgesToSuperview(excluding: [.top, .bottom], insets: .left(16) + .right(16))
         
         let commentsSharesStackView = UIStackView(arrangedSubviews: [ commentsLabel, shareButton])
