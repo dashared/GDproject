@@ -29,8 +29,6 @@
 		12E36DC0221441DB006FCDD7 /* Marklight.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 12E36DB222143D4E006FCDD7 /* Marklight.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		12E36DC2221441E1006FCDD7 /* MarkdownKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 12E36DB022143D47006FCDD7 /* MarkdownKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		12E36DC4221441EA006FCDD7 /* Cartography.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 12E36DAE22143D40006FCDD7 /* Cartography.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		12E36DC622144266006FCDD7 /* HeaderNewsChannels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E36DC522144266006FCDD7 /* HeaderNewsChannels.swift */; };
-		12E36DC822144374006FCDD7 /* ChannelsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E36DC722144374006FCDD7 /* ChannelsController.swift */; };
 		12E36DCA22144635006FCDD7 /* NewPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E36DC922144635006FCDD7 /* NewPostViewController.swift */; };
 		12E36DCC22144725006FCDD7 /* PostViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E36DCB22144725006FCDD7 /* PostViewCell.swift */; };
 		12E36DCE22144756006FCDD7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E36DCD22144756006FCDD7 /* Constants.swift */; };
@@ -81,8 +79,6 @@
 		12E36DB422143D54006FCDD7 /* TinyConstraints.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TinyConstraints.framework; path = Carthage/Build/iOS/TinyConstraints.framework; sourceTree = "<group>"; };
 		12E36DB62214400A006FCDD7 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		12E36DB822144016006FCDD7 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		12E36DC522144266006FCDD7 /* HeaderNewsChannels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderNewsChannels.swift; sourceTree = "<group>"; };
-		12E36DC722144374006FCDD7 /* ChannelsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsController.swift; sourceTree = "<group>"; };
 		12E36DC922144635006FCDD7 /* NewPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostViewController.swift; sourceTree = "<group>"; };
 		12E36DCB22144725006FCDD7 /* PostViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewCell.swift; sourceTree = "<group>"; };
 		12E36DCD22144756006FCDD7 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -182,8 +178,6 @@
 			children = (
 				12E36DC922144635006FCDD7 /* NewPostViewController.swift */,
 				12E36DD022148122006FCDD7 /* FullPostController.swift */,
-				12E36DC522144266006FCDD7 /* HeaderNewsChannels.swift */,
-				12E36DC722144374006FCDD7 /* ChannelsController.swift */,
 				12E36D9D221424EA006FCDD7 /* NewsController.swift */,
 				125BD5802217314A008A3575 /* NewsVC.swift */,
 				12E36DCB22144725006FCDD7 /* PostViewCell.swift */,
@@ -271,14 +265,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				12E36DD522156559006FCDD7 /* MyStackView.swift in Sources */,
-				12E36DC822144374006FCDD7 /* ChannelsController.swift in Sources */,
 				12E36DB922144016006FCDD7 /* User.swift in Sources */,
 				125BD5812217314A008A3575 /* NewsVC.swift in Sources */,
 				12E36DB72214400A006FCDD7 /* Post.swift in Sources */,
 				12DB7FDF221877160096878E /* InviteViewController.swift in Sources */,
 				12E36DCA22144635006FCDD7 /* NewPostViewController.swift in Sources */,
 				12E36D9E221424EA006FCDD7 /* NewsController.swift in Sources */,
-				12E36DC622144266006FCDD7 /* HeaderNewsChannels.swift in Sources */,
 				12E36DCC22144725006FCDD7 /* PostViewCell.swift in Sources */,
 				125BD57F22171D73008A3575 /* Extentions.swift in Sources */,
 				12E36DD122148122006FCDD7 /* FullPostController.swift in Sources */,
@@ -289,7 +281,6 @@
 				12DB7FD722181CD20096878E /* BasicInfoController.swift in Sources */,
 				12E36DCE22144756006FCDD7 /* Constants.swift in Sources */,
 				12DB7FDD221872F80096878E /* SettingsViewController.swift in Sources */,
-
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
