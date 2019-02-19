@@ -10,6 +10,8 @@
 		125BD57D22171D2A008A3575 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD57C22171D2A008A3575 /* ProfileViewController.swift */; };
 		125BD57F22171D73008A3575 /* Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD57E22171D73008A3575 /* Extentions.swift */; };
 		125BD5812217314A008A3575 /* NewsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD5802217314A008A3575 /* NewsVC.swift */; };
+		12D7D133221C321600B35452 /* ChannelListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D7D132221C321600B35452 /* ChannelListController.swift */; };
+		12D7D135221C42B700B35452 /* ChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D7D134221C42B700B35452 /* ChannelController.swift */; };
 		12DB7FD722181CD20096878E /* BasicInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DB7FD622181CD20096878E /* BasicInfoController.swift */; };
 		12DB7FD922181E660096878E /* BasicInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DB7FD822181E660096878E /* BasicInfoCell.swift */; };
 		12DB7FDB2218590C0096878E /* InfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DB7FDA2218590C0096878E /* InfoCell.swift */; };
@@ -61,6 +63,8 @@
 		125BD57C22171D2A008A3575 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		125BD57E22171D73008A3575 /* Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extentions.swift; sourceTree = "<group>"; };
 		125BD5802217314A008A3575 /* NewsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsVC.swift; sourceTree = "<group>"; };
+		12D7D132221C321600B35452 /* ChannelListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelListController.swift; sourceTree = "<group>"; };
+		12D7D134221C42B700B35452 /* ChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelController.swift; sourceTree = "<group>"; };
 		12DB7FD622181CD20096878E /* BasicInfoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoController.swift; sourceTree = "<group>"; };
 		12DB7FD822181E660096878E /* BasicInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoCell.swift; sourceTree = "<group>"; };
 		12DB7FDA2218590C0096878E /* InfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoCell.swift; sourceTree = "<group>"; };
@@ -162,6 +166,8 @@
 		12E36DCF22145923006FCDD7 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				12D7D134221C42B700B35452 /* ChannelController.swift */,
+				12D7D132221C321600B35452 /* ChannelListController.swift */,
 				125BD57C22171D2A008A3575 /* ProfileViewController.swift */,
 				12DB7FDE221877160096878E /* InviteViewController.swift */,
 				12DB7FDC221872F80096878E /* SettingsViewController.swift */,
@@ -273,10 +279,12 @@
 				12E36D9E221424EA006FCDD7 /* NewsController.swift in Sources */,
 				12E36DCC22144725006FCDD7 /* PostViewCell.swift in Sources */,
 				125BD57F22171D73008A3575 /* Extentions.swift in Sources */,
+				12D7D133221C321600B35452 /* ChannelListController.swift in Sources */,
 				12E36DD122148122006FCDD7 /* FullPostController.swift in Sources */,
 				125BD57D22171D2A008A3575 /* ProfileViewController.swift in Sources */,
 				12DB7FDB2218590C0096878E /* InfoCell.swift in Sources */,
 				12DB7FD922181E660096878E /* BasicInfoCell.swift in Sources */,
+				12D7D135221C42B700B35452 /* ChannelController.swift in Sources */,
 				12E36D9C221424EA006FCDD7 /* AppDelegate.swift in Sources */,
 				12DB7FD722181CD20096878E /* BasicInfoController.swift in Sources */,
 				12E36DCE22144756006FCDD7 /* Constants.swift in Sources */,

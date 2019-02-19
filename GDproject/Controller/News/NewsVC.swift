@@ -35,6 +35,11 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
             vc.post = dataSourse[indexPath.row]
             viewController!.navigationController!.pushViewController(vc, animated: true)
         }
+        else if indexPath.section == 0 && type == .NEWS{
+            let vc = viewController!.storyboard!.instantiateViewController(withIdentifier: channelListControllerId) as! ChannelListController
+            
+            viewController!.navigationController!.pushViewController(vc, animated: true)
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

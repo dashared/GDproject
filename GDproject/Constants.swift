@@ -19,3 +19,10 @@ let infoCellId = "InfoCell"
 
 let inviteVC = "InviteViewController"
 
+let channelCellId = "ChannelCell"
+
+let channelListControllerId = "ChannelListController"
+
+let itemCellId = "ItemCell"
+
+let channelControllerId = "ChannelController"

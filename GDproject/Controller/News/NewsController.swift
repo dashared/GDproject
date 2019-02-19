@@ -56,7 +56,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, UITableViewD
         tableView.register(PostViewCell.self, forCellReuseIdentifier: postCellId)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
-        //searchController.delegate = self
+        searchController.delegate = self
         searchController.obscuresBackgroundDuringPresentation = false
         
         news.dataSourse = dataSourse
@@ -138,7 +138,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, UITableViewD
         tableView.reloadData()
     }
     
-    //navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addChannel))]
+    
     
     @objc func writePost(_ barItem: UIBarButtonItem)
     {
@@ -158,9 +158,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, UITableViewD
         navigationController?.pushViewController(vc, animated: false)
     }
     
-    @objc func addChannel(){
-        print("Add channel")
-    }
+    
     
     // for animating the banner
     var topConstraint: NSLayoutConstraint?
