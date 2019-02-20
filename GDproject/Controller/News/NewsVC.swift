@@ -37,7 +37,7 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
         }
         else if indexPath.section == 0 && type == .NEWS{
             let vc = viewController!.storyboard!.instantiateViewController(withIdentifier: channelListControllerId) as! ChannelListController
-            
+            vc.myProtocol = viewController as? NewsController
             viewController!.navigationController!.pushViewController(vc, animated: true)
         }
     }

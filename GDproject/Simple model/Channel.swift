@@ -15,10 +15,14 @@ class Channel {
     var hashtags: [String] = []
     var people: [String] = []
     
-    init(title: String, subtitle: String, hashtags: [String], people: [String]) {
+    var posts: [Post] = []
+    
+    init(title: String, subtitle: String, hashtags: [String], people: [String], posts: [Post])
+    {
         self.title = title
         self.subtitle = subtitle
         self.people = people
         self.hashtags = hashtags
+        self.posts = posts
     }
 }

@@ -68,8 +68,10 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
                     switch searchBar.selectedScopeButtonIndex{
                     case 0:
                         channel?.people.append(dataSource[indexPath.row])
+                        print("people = \(channel!.people)")
                     case 1:
                         channel?.hashtags.append(dataSource[indexPath.row])
+                        print("hashtags = \(channel!.hashtags)")
                     default:
                         break
                     }
@@ -85,7 +87,7 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
                         })
                     // TODO: dataPass
                     case 1:
-                        channel?.hashtags = channel!.people.filter({ (s) -> Bool in
+                        channel?.hashtags = channel!.hashtags.filter({ (s) -> Bool in
                             !fullTags[indexPath.row].contains(s)
                         })
                     // TODO: dataPass

@@ -18,6 +18,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
     let textStorage = MarklightTextStorage()
     
     weak var parentVC: NewsController?
+    var myProtocol: NewPostDelegate?
     
     static var draft: String = ""
     var textView: UITextView!
@@ -110,13 +111,13 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotifications), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         // Partial fixes to a long standing bug, to keep the caret inside the `UITextView` always visible
-        NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: textView, queue: OperationQueue.main) { (notification) -> Void in
-            if self.textView.textStorage.string.hasSuffix("\n") {
+        NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: textView, queue: OperationQueue.main) { [weak self] (notification) -> Void in
+            if self!.textView.textStorage.string.hasSuffix("\n") {
                 CATransaction.setCompletionBlock({ () -> Void in
-                    self.scrollToCaret(self.textView, animated: false)
+                    self!.scrollToCaret(self!.textView, animated: false)
                 })
             } else {
-                self.scrollToCaret(self.textView, animated: false)
+                self!.scrollToCaret(self!.textView, animated: false)
             }
         }
         
@@ -125,8 +126,11 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
     @objc func handleKeyboardNotifications(notification: NSNotification){
         if let userInfo = notification.userInfo{
             // UIKeyboardFrameEndUserInfoKey
+            
             let keyBoardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-            bottomTextViewConstraint?.constant = notification.name == UIResponder.keyboardWillShowNotification ? keyBoardFrame.height : 0
+            
+            bottomTextViewConstraint?.constant = notification.name == UIResponder.keyboardWillShowNotification ? keyBoardFrame.height - tabBarController!.tabBar.frame.height : 0
+            
             print(bottomTextViewConstraint!.constant)
             
             UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
@@ -188,12 +192,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         
         
         // adding row to uiTableView after adding new post
-        guard let vc = parentVC else {return}
-        vc.tableView.beginUpdates()
-        let indexPath1: IndexPath = IndexPath(row: 0, section: 0)
-        vc.dataSourse.insert(p, at: 0)
-        vc.tableView.insertRows(at: [indexPath1], with: .fade)
-        vc.tableView.endUpdates()
+        myProtocol?.addPost(post: p)
         moveBackToParentVC()
         // somewhere here i will be sending server notifications about new post arrival
     }
@@ -203,17 +202,18 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         
         let saveAction = UIAlertAction(title: "Save draft", style: .default)
         {
+            [weak self]
             _ in
-            NewPostViewController.draft = self.textView.text
-            self.moveBackToParentVC()
+            NewPostViewController.draft = self?.textView.text ?? ""
+            self?.moveBackToParentVC()
         }
         
         let deleteAction = UIAlertAction(title: "Delete draft", style: .destructive)
         {
-            (_)
+            [weak self] (_)
             in
             NewPostViewController.draft = ""
-            self.moveBackToParentVC()
+            self?.moveBackToParentVC()
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
@@ -240,8 +240,6 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         navigationController?.popViewController(animated: false)
         textView!.resignFirstResponder()
     }
-    
-    
     
     
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {

@@ -16,6 +16,28 @@ struct ChannelData{
 // TODO: make search controller availiable
 class ChannelListController: UITableViewController, DataDelegate {
     
+    // MARK:- filter search controller
+    
+    var filteredDataSource = [Channel]()
+    var myProtocol: DataDelegate?
+    
+    var isFiltering: Bool {
+        return searchController.isActive && !searchBarIsEmpty()
+    }
+    
+    func searchBarIsEmpty() -> Bool {
+        return searchController.searchBar.text?.isEmpty ?? true
+    }
+    
+    func filterContentForSearchText(_ searchText: String, scope: String = "All")
+    {
+        filteredDataSource = ChannelListController.dataSource.filter({(keys : Channel) -> Bool in
+            return keys.title.lowercased().contains(searchText.lowercased())
+        })
+        
+        tableView.reloadData()
+    }
+    
     func passData(for row: Int, channel: Channel) {
         ChannelListController.dataSource[row].hashtags = channel.hashtags
         ChannelListController.dataSource[row].people = channel.people
@@ -29,8 +51,8 @@ class ChannelListController: UITableViewController, DataDelegate {
         super.viewDidLoad()
         setUpNavigationBar()
         navigationItem.title = "Channels"
-        
-        searchController.searchBar.placeholder  = "Search anything"
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder  = "Search channel"
         navigationItem.searchController = searchController
     }
     
@@ -48,7 +70,7 @@ class ChannelListController: UITableViewController, DataDelegate {
     {
         // insertion
         tableView.beginUpdates()
-        ChannelListController.dataSource.insert(Channel(title: "Untitled", subtitle: "No", hashtags: [], people: []), at: 0)
+        ChannelListController.dataSource.insert(Channel(title: "Untitled", subtitle: "No", hashtags: [], people: [], posts: []), at: 0)
         tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .none)
         tableView.endUpdates()
         
@@ -61,21 +83,36 @@ class ChannelListController: UITableViewController, DataDelegate {
     }
     
     static var dataSource : [Channel] = [
-        Channel(title: "Title", subtitle: "subtitle", hashtags: ["# sad", "# happy"], people: ["Seva", "Andrey"]),
-        Channel(title: "Title2", subtitle: "subtitle2", hashtags: ["# studyhard", "# university"], people: ["Pasha", "Olya", "Andrey", "Ilya"]),
-        Channel(title: "Title3", subtitle: "subtitle3", hashtags: ["# lol", "# meme", "# hehe"], people: ["Superman"])
+        Channel(title: "Title", subtitle: "subtitle", hashtags: ["# sad", "# happy"], people: ["Seva", "Andrey"], posts: [Post(dataArray: [.text("Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard.")], from: User(name: "vbogomazova", id: 2, fullName: "Богомазова Вероника Львовна"), date: "14.02.19 в 12:05")]),
+        Channel(title: "Title2", subtitle: "subtitle2", hashtags: ["# studyhard", "# university"], people: ["Pasha", "Olya", "Andrey", "Ilya"], posts:
+            [
+            Post(dataArray: [.text("L'avantage du Lorem Ipsum sur un texte générique comme 'Du texte. Du texte. Du texte.' est qu'il possède une distribution de lettres plus ou moins normale.")], from: User(name: "vbogomazova", id: 2, fullName: "Богомазова Вероника Львовна"), date: "14.02.19 в 12:05"),
+            Post(dataArray: [.text("par accident, souvent intentionnellement (histoire d'y rajouter de petits clins d'oeil, voire des phrases embarassantes).")], from: User(name: "vbogomazova", id: 2, fullName: "Богомазова Вероника Львовна"), date: "14.02.19 в 12:05")
+            ]),
+        Channel(title: "Title3", subtitle: "subtitle3", hashtags: ["# lol", "# meme", "# hehe"], people: ["Superman"], posts: [Post(dataArray: [.text("Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié.")], from: User(name: "vbogomazova", id: 2, fullName: "Богомазова Вероника Львовна"), date: "14.02.19 в 12:05")])
     ]
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return ChannelListController.dataSource.count
+        if isFiltering {
+            return filteredDataSource.count
+        } else {
+            return ChannelListController.dataSource.count
+        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCell(withIdentifier: channelCellId, for: indexPath)
-        cell.textLabel?.text = ChannelListController.dataSource[indexPath.row].title
-        cell.detailTextLabel?.text = ChannelListController.dataSource[indexPath.row].subtitle
         
+        let cell = tableView.dequeueReusableCell(withIdentifier: channelCellId, for: indexPath)
+        
+        
+        if isFiltering{
+            cell.textLabel?.text = filteredDataSource[indexPath.row].title
+            cell.detailTextLabel?.text = filteredDataSource[indexPath.row].subtitle
+        } else {
+            cell.textLabel?.text = ChannelListController.dataSource[indexPath.row].title
+            cell.detailTextLabel?.text = ChannelListController.dataSource[indexPath.row].subtitle
+        }
         
         return cell
     }
@@ -108,5 +145,23 @@ class ChannelListController: UITableViewController, DataDelegate {
         
         
         return [editButton, deleteButton]
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        if isFiltering {
+            navigationController?.popViewController(animated: true)
+            myProtocol?.passData(for: 0, channel: filteredDataSource[indexPath.row])
+        } else {
+            navigationController?.popViewController(animated: true)
+            myProtocol?.passData(for: 0, channel: ChannelListController.dataSource[indexPath.row])
+        }
+    }
+}
+
+
+extension ChannelListController : UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        filterContentForSearchText(searchController.searchBar.text!)
     }
 }

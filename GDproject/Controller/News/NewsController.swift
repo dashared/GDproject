@@ -10,11 +10,24 @@ import UIKit
 import TinyConstraints
 import Cartography
 
+
+protocol NewPostDelegate {
+    func addPost(post: Post)
+}
+
 // MARK:- Controller with posts and channels availiable.
 // Search is availiable within every table (posts and channels). Has button-functionality for boths post and chnnels
-class NewsController: UIViewController, UISearchControllerDelegate, UITableViewDelegate, UITableViewDataSource
+class NewsController: UIViewController, UISearchControllerDelegate, UITableViewDelegate, UITableViewDataSource, DataDelegate, NewPostDelegate
 {
     
+    func passData(for row: Int, channel: Channel) {
+        news.dataSourse = channel.posts
+        navigationItem.title = channel.title
+    }
+    
+    func addPost(post: Post) {
+        news.dataSourse.insert(post, at: 0)
+    }
     
     var array = ["Faculty 1", "Faculty 2","Faculty 3","Faculty 4","Faculty 5","Faculty 6","Faculty 7","Faculty 8","Faculty 9","Faculty 10","Faculty 11","Faculty 12","Faculty 13","Faculty 14","Faculty 15","Faculty 16","Faculty 17","Faculty 18"]
 
@@ -128,6 +141,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, UITableViewD
         super.viewWillAppear(animated)
         print("hello")
         navigationController?.navigationBar.prefersLargeTitles = true
+        tableView.reloadData()
     }
     
     func setUpNavigationItemsforPosts(){
@@ -147,7 +161,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, UITableViewD
         vc.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Post", style: .plain, target: vc, action: #selector(vc.newPost))
         vc.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: vc, action: #selector(vc.closeView))
         
-        vc.parentVC = self
+        vc.myProtocol = self
         
         let transition = CATransition()
         transition.duration = 0.5

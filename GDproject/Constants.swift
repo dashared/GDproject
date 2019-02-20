@@ -26,3 +26,5 @@ let channelListControllerId = "ChannelListController"
 let itemCellId = "ItemCell"
 
 let channelControllerId = "ChannelController"
+
+let newsController = "NewsController"
