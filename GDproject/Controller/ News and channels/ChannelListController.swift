@@ -21,6 +21,8 @@ class ChannelListController: UITableViewController, DataDelegate {
     var filteredDataSource = [Channel]()
     var myProtocol: DataDelegate?
     
+    var generalChannel: Channel = Channel(title: "General", subtitle: "All posts", hashtags: ["All"], people: ["All"], posts: [])
+    
     var isFiltering: Bool {
         return searchController.isActive && !searchBarIsEmpty()
     }

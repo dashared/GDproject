@@ -392,6 +392,49 @@
             </objects>
             <point key="canvasLocation" x="3444" y="129.98500749625188"/>
         </scene>
+        <!--Log In View Controller-->
+        <scene sceneID="Pkd-pB-bQs">
+            <objects>
+                <viewController storyboardIdentifier="LogInController" id="ZCz-70-hDh" customClass="LogInViewController" customModule="GDproject" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="1q2-4g-KZs">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="UwC-m5-jA5">
+                                <rect key="frame" x="16" y="100" width="343" height="83"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Log In" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="efn-ze-jca">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="41"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="34"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Mail" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="mFP-WG-jY5">
+                                        <rect key="frame" x="0.0" y="53" width="343" height="30"/>
+                                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="UwC-m5-jA5" firstAttribute="leading" secondItem="LOR-Yw-0FU" secondAttribute="leading" constant="16" id="M6z-nU-H40"/>
+                            <constraint firstItem="LOR-Yw-0FU" firstAttribute="trailing" secondItem="UwC-m5-jA5" secondAttribute="trailing" constant="16" id="jST-rr-MMX"/>
+                            <constraint firstItem="UwC-m5-jA5" firstAttribute="top" secondItem="LOR-Yw-0FU" secondAttribute="top" constant="80" id="rvy-Ii-bwS"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="LOR-Yw-0FU"/>
+                    </view>
+                    <connections>
+                        <outlet property="mailTextField" destination="mFP-WG-jY5" id="7SN-qe-DDm"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6e8-oo-bbc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-466" y="-821"/>
+        </scene>
         <!--Posts-->
         <scene sceneID="RSd-UJ-34B">
             <objects>
@@ -433,7 +476,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="HCR-WO-p7g">
             <objects>
-                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="IeP-4W-8LT" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBar" automaticallyAdjustsScrollViewInsets="NO" id="IeP-4W-8LT" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="3pl-mU-U30">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>

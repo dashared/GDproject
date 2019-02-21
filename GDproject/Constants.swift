@@ -6,25 +6,38 @@
 //  Copyright © 2019 drHSE. All rights reserved.
 //
 
-//constant for cell in posts NewsController.swift
+/// constant for cell in posts NewsController.swift
 let postCellId = "PostCell"
-// constant for segmented controll in NewsController.swift and ChannelsController.swift
+
+///  constant for segmented controll in NewsController.swift and ChannelsController.swift
 let headerNewsChannelsVC = "HeaderSegmentedControll"
-// for transitioning to full post view
+
+///  for transitioning to full post view
 let fullPostControllerId = "FullPostController"
 
+/// constant for dequing basic cell
 let basicInfoCellId = "BasicInfoCell"
 
+/// constant for dequing info cell
 let infoCellId = "InfoCell"
 
+/// constant for switching to view controller for invitations
 let inviteVC = "InviteViewController"
 
+/// constant for dequing basic cell
 let channelCellId = "ChannelCell"
 
+/// constant for switching to channel list view controller for choosing channel
 let channelListControllerId = "ChannelListController"
 
+/// constant for dequing channel item cell
 let itemCellId = "ItemCell"
 
+/// constant for switching to view controller to add or edit one channel
 let channelControllerId = "ChannelController"
 
+/// constant for switching to news controller
 let newsController = "NewsController"
+
+/// constant for switching to view controller for log in app
+let logInController = "LogInController"
