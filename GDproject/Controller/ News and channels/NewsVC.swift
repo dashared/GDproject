@@ -17,12 +17,7 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     var viewController: UIViewController?
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        switch type {
-        case .NONE:
-            return 1
-        default:
-            return 2
-        }
+        return 2
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)

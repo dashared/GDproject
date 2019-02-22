@@ -19,9 +19,8 @@ class ChannelListController: UITableViewController, DataDelegate {
     // MARK:- filter search controller
     
     var filteredDataSource = [Channel]()
-    var myProtocol: DataDelegate?
     
-    var generalChannel: Channel = Channel(title: "General", subtitle: "All posts", hashtags: ["All"], people: ["All"], posts: [])
+    var myProtocol: DataDelegate?
     
     var isFiltering: Bool {
         return searchController.isActive && !searchBarIsEmpty()
@@ -85,6 +84,7 @@ class ChannelListController: UITableViewController, DataDelegate {
     }
     
     static var dataSource : [Channel] = [
+        Channel(title: "General", subtitle: "All posts", hashtags: ["All"], people: ["All"], posts: []),
         Channel(title: "Title", subtitle: "subtitle", hashtags: ["# sad", "# happy"], people: ["Seva", "Andrey"], posts: [Post(dataArray: [.text("Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard.")], from: User(name: "vbogomazova", id: 2, fullName: "Богомазова Вероника Львовна"), date: "14.02.19 в 12:05")]),
         Channel(title: "Title2", subtitle: "subtitle2", hashtags: ["# studyhard", "# university"], people: ["Pasha", "Olya", "Andrey", "Ilya"], posts:
             [
@@ -121,7 +121,12 @@ class ChannelListController: UITableViewController, DataDelegate {
 
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
+        switch indexPath.row {
+        case 0:
+            return false
+        default:
+            return true
+        }
     }
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]?

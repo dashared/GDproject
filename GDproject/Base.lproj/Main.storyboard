@@ -11,37 +11,6 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--News Controller-->
-        <scene sceneID="tne-QT-ifu">
-            <objects>
-                <viewController storyboardIdentifier="NewsController" id="BYZ-38-t0r" customClass="NewsController" customModule="GDproject" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="bdn-EE-6KU">
-                                <rect key="frame" x="0.0" y="116" width="375" height="502"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </tableView>
-                        </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="bdn-EE-6KU" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Mwc-qc-ZfA"/>
-                            <constraint firstItem="bdn-EE-6KU" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="dww-F7-g9y"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="bdn-EE-6KU" secondAttribute="trailing" id="wlT-ZO-QGd"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="bdn-EE-6KU" secondAttribute="bottom" id="yXX-zW-vb8"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                    </view>
-                    <navigationItem key="navigationItem" largeTitleDisplayMode="always" id="caN-kg-RZ4"/>
-                    <connections>
-                        <outlet property="tableView" destination="bdn-EE-6KU" id="O4Z-at-Hzw"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2015.2" y="132.68365817091455"/>
-        </scene>
         <!--Profile View Controller-->
         <scene sceneID="rQ6-TM-V7T">
             <objects>
@@ -447,12 +416,32 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="ehh-1b-ZGK"/>
+                        <segue destination="Nqc-TI-ueQ" kind="relationship" relationship="rootViewController" id="2BZ-i4-uIE"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="POV-5T-jeQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1088.8" y="132.68365817091455"/>
+        </scene>
+        <!--News Controller-->
+        <scene sceneID="eR7-97-LRL">
+            <objects>
+                <tableViewController storyboardIdentifier="NewsController" id="Nqc-TI-ueQ" customClass="NewsController" customModule="GDproject" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="hwA-SE-xpS">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="sectionIndexBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <connections>
+                            <outlet property="dataSource" destination="Nqc-TI-ueQ" id="bu5-tQ-7lb"/>
+                            <outlet property="delegate" destination="Nqc-TI-ueQ" id="kTM-Be-8qb"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="b8E-6f-hLM"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="c9d-Kh-itI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1880" y="136"/>
         </scene>
         <!--Profile-->
         <scene sceneID="dJj-Hp-Wa9">
