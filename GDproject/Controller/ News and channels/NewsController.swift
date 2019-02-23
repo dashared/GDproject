@@ -8,66 +8,97 @@
 
 import UIKit
 import TinyConstraints
+import Cartography
+
+protocol UpdateableWithChannel: class {
+    var channel: Channel? { get set }
+}
+protocol NewPostDelegate {
+    func addPost(post: Post)
+}
 
 // MARK:- Controller with posts and channels availiable.
 // Search is availiable within every table (posts and channels). Has button-functionality for boths post and chnnels
-class NewsController: UIViewController
+class NewsController: UITableViewController, UISearchControllerDelegate, NewPostDelegate, UpdateableWithChannel, DataDelegate
 {
+    func passData(for row: Int, channel: Channel) {
+        self.channel = channel
+    }
+    
+    var channel: Channel?{
+        didSet{
+            news.dataSourse = channel?.posts ?? []
+            navigationItem.title = channel?.title ?? ""
+        }
+    }
+    
+    // MARK: - Output -
+    var onSelectChannel: (() -> Void)?
 
-    @IBOutlet weak var tableView: UITableView!
+    func addPost(post: Post) {
+        news.dataSourse.insert(post, at: 0)
+    }
     
     var searchController = UISearchController(searchResultsController: nil)
-    
-    var dataSourse: [Post] = [Post(dataArray: [.text("Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker. \n On sait depuis longtemps que travailler avec du texte lisible et contenant du sens est source de distractions, et empêche de se concentrer sur la mise en page elle-même. L'avantage du Lorem Ipsum sur un texte générique comme 'Du texte. Du texte. Du texte.' est qu'il possède une distribution de lettres plus ou moins normale, et en tout cas comparable avec celle du français standard. De nombreuses suites logicielles de mise en page ou éditeurs de sites Web ont fait du Lorem Ipsum leur faux texte par défaut, et une recherche pour 'Lorem Ipsum' vous conduira vers de nombreux sites qui n'en sont encore qu'à leur phase de construction. Plusieurs versions sont apparues avec le temps, parfois par accident, souvent intentionnellement (histoire d'y rajouter de petits clins d'oeil, voire des phrases embarassantes).")], from: User(name: "vbogomazova", id: 2, fullName: "Богомазова Вероника Львовна"), date: "14.02.19 в 12:05")]
-    
+
     var news = NewsVC()
-    var channels = ChannelsController()
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        tableView.register(HeaderNewsChannels.self, forCellReuseIdentifier: headerNewsChannelsVC)
+        channel = ChannelListController.dataSource[0]
+        
         tableView.register(PostViewCell.self, forCellReuseIdentifier: postCellId)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
-        news.dataSourse = dataSourse
-        news.viewController = self
-        
-        news.type = .NEWS("Posts", "Channels")
-        
-        tableView.delegate = news
-        tableView.dataSource = news
-        tableView.reloadData()
-        
-        
-        
-        setUpNavigationItemsforPosts()
-        searchController.searchBar.placeholder  = "Search anything"
-        
+        searchController.delegate = self
+        searchController.obscuresBackgroundDuringPresentation = false
         navigationItem.searchController = searchController
         definesPresentationContext = true
+        searchController.searchBar.placeholder  = "Search anything"
         
-        setUpBanner()
+        news.dataSourse = channel!.posts
+        news.viewController = self
+        
+        news.type = .NONE
+        
+        setUpNavigationItemsforPosts()
+
+        //setUpBanner()
     }
+    
+    
+    let label : UILabel = {
+        let label = UILabel()
+        label.text = "No posts to display yet!"
+        label.font = UIFont.systemFont(ofSize: 18)
+        label.textColor = .black
+        label.isHidden = true
+        label.numberOfLines = 0
+        return label
+    }()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.navigationBar.prefersLargeTitles = true
+        searchController.isActive = false
+        // TODO:- display something if no posts are availiable
+        tableView.reloadData()
     }
     
     func setUpNavigationItemsforPosts(){
-        navigationItem.title = "Posts"
-        navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(self.writePost(_:)))]
+        navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(self.writePost(_:))),UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(self.showChannels(_:)))
+        ]
         tableView.delegate = news
         tableView.dataSource = news
         tableView.reloadData()
     }
     
-    func setUpNavigationItemsForChannels(){
-        navigationItem.title = "Channels"
-        navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addChannel))]
-        tableView.delegate = channels
-        tableView.dataSource = channels
-        tableView.reloadData()
+    // MARK:- attempt with coordinator
+    @objc func showChannels(_ barItem: UIBarButtonItem){
+        let vc = UIStoryboard.makeChannelsListController()
+        vc.myProtocol = self
+        vc.displayingChannel = channel
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc func writePost(_ barItem: UIBarButtonItem)
@@ -77,7 +108,7 @@ class NewsController: UIViewController
         vc.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Post", style: .plain, target: vc, action: #selector(vc.newPost))
         vc.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: vc, action: #selector(vc.closeView))
         
-        vc.parentVC = self
+        vc.myProtocol = self
         
         let transition = CATransition()
         transition.duration = 0.5
@@ -86,10 +117,6 @@ class NewsController: UIViewController
         transition.subtype = CATransitionSubtype.fromTop
         navigationController?.view.layer.add(transition, forKey: nil)
         navigationController?.pushViewController(vc, animated: false)
-    }
-    
-    @objc func addChannel(){
-        print("Add channel")
     }
     
     // for animating the banner
@@ -111,6 +138,7 @@ class NewsController: UIViewController
         return label
     }()
     
+    // MARK:- banner
     private func setUpBanner()
     {
         view.addSubview(bannerView)
@@ -149,7 +177,7 @@ class NewsController: UIViewController
     
     var isBannerVisible: Bool = false
     
-     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         print(scrollView.contentOffset.y)
         if scrollView.contentOffset.y >= 50 && !isBannerVisible{
             isBannerVisible = true

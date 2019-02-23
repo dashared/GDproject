@@ -16,10 +16,13 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     var viewController: UIViewController?
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         tableView.deselectRow(at: indexPath, animated: true)
-        
         let vc = viewController!.storyboard!.instantiateViewController(withIdentifier: fullPostControllerId) as! FullPostController
         
         vc.post = dataSourse[indexPath.row]
@@ -46,41 +49,10 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100.0
     }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        switch type {
-        case .NONE:
-            return 0
-        default:
-            return 46
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
-    {
-        let cell = tableView.dequeueReusableCell(withIdentifier: headerNewsChannelsVC) as! HeaderNewsChannels
-        
-        cell.vc = viewController as? NewsController
-        cell.vcProfile = viewController as? ProfileViewController
-        
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 46.0))
-        view.addSubview(cell)
-        cell.edgesToSuperview()
-        
-        switch type {
-        case .NONE:
-            return nil
-        default:
-            return view
-        }
-    }
-    
 }
 
 
 enum HeaderType {
     case NONE
-    case NEWS(String, String)
-    case PROFILE(String, String)
-    case BASIC_INFO(String, String)
+    case NEWS
 }
