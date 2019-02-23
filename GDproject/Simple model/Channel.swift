@@ -8,7 +8,14 @@
 
 import Foundation
 
-class Channel {
+class Channel: Equatable {
+    static func == (lhs: Channel, rhs: Channel) -> Bool {
+        return (lhs.title == rhs.title &&
+                lhs.subtitle == rhs.subtitle &&
+                lhs.people == rhs.people &&
+                lhs.hashtags == rhs.hashtags)
+    }
+    
     var title = String()
     var subtitle = String()
     

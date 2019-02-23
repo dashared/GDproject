@@ -23,6 +23,7 @@ class ChannelListController: UITableViewController, DataDelegate {
     var filteredDataSource = [Channel]()
     
     var myProtocol: DataDelegate?
+    var displayingChannel: Channel?
     
     var isFiltering: Bool {
         return searchController.isActive && !searchBarIsEmpty()
@@ -51,18 +52,22 @@ class ChannelListController: UITableViewController, DataDelegate {
         super.viewDidLoad()
         setUpNavigationBar()
         navigationItem.title = "Channels"
+        searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder  = "Search channel"
         navigationItem.searchController = searchController
+        definesPresentationContext = true
     }
     
     func setUpNavigationBar(){
+        navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addChannel))]
     }
     
     override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
+        searchController.isActive = false
         tableView.reloadData()
     }
     
@@ -70,15 +75,15 @@ class ChannelListController: UITableViewController, DataDelegate {
     {
         // insertion
         tableView.beginUpdates()
-        ChannelListController.dataSource.insert(Channel(title: "Untitled", subtitle: "No", hashtags: [], people: [], posts: []), at: 0)
-        tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+        ChannelListController.dataSource.insert(Channel(title: "Untitled", subtitle: "No", hashtags: [], people: [], posts: []), at: 1)
+        tableView.insertRows(at: [IndexPath(row: 1, section: 0)], with: .none)
         tableView.endUpdates()
         
-        // editing mode is one automatically
+        // editing mode is on automatically
         let vc = storyboard?.instantiateViewController(withIdentifier: channelControllerId) as! ChannelController
-        vc.index = 0
+        vc.index = 1
         vc.myProtocol = self
-        vc.channel = ChannelListController.dataSource[0]
+        vc.channel = ChannelListController.dataSource[1]
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -142,6 +147,10 @@ class ChannelListController: UITableViewController, DataDelegate {
         
         
         let deleteButton = UITableViewRowAction(style: .normal, title: "Delete") { [weak self] (action, indexPath) in
+            if (ChannelListController.dataSource[indexPath.row] == self!.displayingChannel!)
+            {
+                self?.myProtocol?.passData(for: 0, channel: ChannelListController.dataSource[0])
+            }
             self?.tableView.beginUpdates()
             ChannelListController.dataSource.remove(at: indexPath.row)
             self?.tableView.deleteRows(at: [indexPath], with: .none)
@@ -157,9 +166,13 @@ class ChannelListController: UITableViewController, DataDelegate {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         if isFiltering {
-            onChannelSelected?(filteredDataSource[indexPath.row])
+            //onChannelSelected?(filteredDataSource[indexPath.row])
+            myProtocol?.passData(for: 0, channel: filteredDataSource[indexPath.row])
+            navigationController?.popViewController(animated: true)
         } else {
-            onChannelSelected?(ChannelListController.dataSource[indexPath.row])
+            myProtocol?.passData(for: 0, channel: ChannelListController.dataSource[indexPath.row])
+            navigationController?.popViewController(animated: true)
+            //onChannelSelected?(ChannelListController.dataSource[indexPath.row])
         }
     }
 }

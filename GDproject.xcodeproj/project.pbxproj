@@ -14,8 +14,7 @@
 		125BD5812217314A008A3575 /* NewsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD5802217314A008A3575 /* NewsVC.swift */; };
 		1288B5CE221F1158002BE6B1 /* DataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1288B5CD221F1158002BE6B1 /* DataStorage.swift */; };
 		1291BE2D2221312D009D3F23 /* ChannelsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE2C2221312C009D3F23 /* ChannelsCoordinator.swift */; };
-		1291BE2F222152E1009D3F23 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE2E222152E1009D3F23 /* TabBarController.swift */; };
-		1291BE312221530D009D3F23 /* TabbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE302221530D009D3F23 /* TabbarView.swift */; };
+		1291BE342221569B009D3F23 /* TabbarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE332221569B009D3F23 /* TabbarCoordinator.swift */; };
 		12D7D133221C321600B35452 /* ChannelListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D7D132221C321600B35452 /* ChannelListController.swift */; };
 		12D7D135221C42B700B35452 /* ChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D7D134221C42B700B35452 /* ChannelController.swift */; };
 		12D7D137221D78E800B35452 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D7D136221D78E800B35452 /* Channel.swift */; };
@@ -74,8 +73,7 @@
 		125BD5802217314A008A3575 /* NewsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsVC.swift; sourceTree = "<group>"; };
 		1288B5CD221F1158002BE6B1 /* DataStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStorage.swift; sourceTree = "<group>"; };
 		1291BE2C2221312C009D3F23 /* ChannelsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsCoordinator.swift; sourceTree = "<group>"; };
-		1291BE2E222152E1009D3F23 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
-		1291BE302221530D009D3F23 /* TabbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbarView.swift; sourceTree = "<group>"; };
+		1291BE332221569B009D3F23 /* TabbarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbarCoordinator.swift; sourceTree = "<group>"; };
 		12D7D132221C321600B35452 /* ChannelListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelListController.swift; sourceTree = "<group>"; };
 		12D7D134221C42B700B35452 /* ChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelController.swift; sourceTree = "<group>"; };
 		12D7D136221D78E800B35452 /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
@@ -137,8 +135,7 @@
 		1291BE32222154C3009D3F23 /* Coordinator tab bar? */ = {
 			isa = PBXGroup;
 			children = (
-				1291BE2E222152E1009D3F23 /* TabBarController.swift */,
-				1291BE302221530D009D3F23 /* TabbarView.swift */,
+				1291BE332221569B009D3F23 /* TabbarCoordinator.swift */,
 			);
 			path = "Coordinator tab bar?";
 			sourceTree = "<group>";
@@ -319,14 +316,13 @@
 				123E37A5221F1B3200F6E42A /* LogInViewController.swift in Sources */,
 				125BD57F22171D73008A3575 /* Extentions.swift in Sources */,
 				12D7D133221C321600B35452 /* ChannelListController.swift in Sources */,
-				1291BE312221530D009D3F23 /* TabbarView.swift in Sources */,
+				1291BE342221569B009D3F23 /* TabbarCoordinator.swift in Sources */,
 				1291BE2D2221312D009D3F23 /* ChannelsCoordinator.swift in Sources */,
 				12E36DD122148122006FCDD7 /* FullPostController.swift in Sources */,
 				1288B5CE221F1158002BE6B1 /* DataStorage.swift in Sources */,
 				125BD57D22171D2A008A3575 /* ProfileViewController.swift in Sources */,
 				12DB7FDB2218590C0096878E /* InfoCell.swift in Sources */,
 				12DB7FD922181E660096878E /* BasicInfoCell.swift in Sources */,
-				1291BE2F222152E1009D3F23 /* TabBarController.swift in Sources */,
 				12D7D135221C42B700B35452 /* ChannelController.swift in Sources */,
 				12E36D9C221424EA006FCDD7 /* AppDelegate.swift in Sources */,
 				12DB7FD722181CD20096878E /* BasicInfoController.swift in Sources */,

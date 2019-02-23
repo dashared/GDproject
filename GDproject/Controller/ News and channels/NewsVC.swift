@@ -17,63 +17,29 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     var viewController: UIViewController?
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 1
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         tableView.deselectRow(at: indexPath, animated: true)
+        let vc = viewController!.storyboard!.instantiateViewController(withIdentifier: fullPostControllerId) as! FullPostController
         
-        if indexPath.section == 1 && type == .NEWS || type == .NONE {
-            let vc = viewController!.storyboard!.instantiateViewController(withIdentifier: fullPostControllerId) as! FullPostController
-            
-            vc.post = dataSourse[indexPath.row]
-            viewController!.navigationController!.pushViewController(vc, animated: true)
-        }
-        else if indexPath.section == 0 && type == .NEWS{
-            let vc = viewController!.storyboard!.instantiateViewController(withIdentifier: channelListControllerId) as! ChannelListController
-            //vc.myProtocol = viewController as? NewsController
-            viewController!.navigationController!.pushViewController(vc, animated: true)
-        }
+        vc.post = dataSourse[indexPath.row]
+        viewController!.navigationController!.pushViewController(vc, animated: true)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch type {
-        case .NONE:
-            return dataSourse.count
-        default:
-            switch section {
-            case 0:
-                return 1
-            default:
-                return dataSourse.count
-            }
-        }
+        return dataSourse.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        switch type {
-        case .NONE:
-            let cell = tableView.dequeueReusableCell(withIdentifier: postCellId, for: indexPath) as! PostViewCell
-            
-            cell.fill(with: dataSourse[indexPath.row].dataArray, false, post: dataSourse[indexPath.row])
-            cell.selectionStyle = .none
-            return cell
-        default:
-            switch indexPath.section {
-            case 0:
-                let cell = tableView.dequeueReusableCell(withIdentifier: "cell")!
-                cell.textLabel?.text = "List of channels"
-                return cell
-            default:
-                let cell = tableView.dequeueReusableCell(withIdentifier: postCellId, for: indexPath) as! PostViewCell
-                
-                cell.fill(with: dataSourse[indexPath.row].dataArray, false, post: dataSourse[indexPath.row])
-                cell.selectionStyle = .none
-                return cell
-            }
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: postCellId, for: indexPath) as! PostViewCell
+        
+        cell.fill(with: dataSourse[indexPath.row].dataArray, false, post: dataSourse[indexPath.row])
+        cell.selectionStyle = .none
+        return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

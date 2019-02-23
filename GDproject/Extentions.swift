@@ -47,4 +47,12 @@ extension UIStoryboard {
     class func makeNewsController() -> NewsController {
         return UIStoryboard.userEdit.instantiateViewController(withIdentifier: newsController) as! NewsController
     }
+    
+    class func tabBarController() -> UITabBarController{
+        return UIStoryboard.userEdit.instantiateViewController(withIdentifier: "TabBar") as! UITabBarController
+    }
+    
+    class func navChannels() ->UINavigationController{
+        return UIStoryboard.userEdit.instantiateViewController(withIdentifier: "navChannels") as! UINavigationController
+    }
 }

@@ -407,7 +407,7 @@
         <!--Posts-->
         <scene sceneID="RSd-UJ-34B">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="NuV-ZG-ld2" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="navChannels" automaticallyAdjustsScrollViewInsets="NO" id="NuV-ZG-ld2" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Posts" id="dH2-sL-YsR"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="6qB-3A-tuL">
@@ -446,7 +446,7 @@
         <!--Profile-->
         <scene sceneID="dJj-Hp-Wa9">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="tae-5q-wvT" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="navPosts" automaticallyAdjustsScrollViewInsets="NO" id="tae-5q-wvT" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Profile" id="lYy-LQ-AcR"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="q3a-ph-c8V">

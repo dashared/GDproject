@@ -42,8 +42,10 @@ final class ChannelsCoordinator{
         controller.onSelectChannel = { [weak self] in
             self?.showListOfChannels()
         }
-        navigationController?.pushViewController(controller, animated: false)
+        navigationController?.setViewControllers([controller], animated: false)
+        //navigationController?.pushViewController(controller, animated: false)
     }
+    
     // MARK:- update only viewControllers which are depandable on chosen channel
     private func updateInterfaces() {
         navigationController?.viewControllers.forEach {

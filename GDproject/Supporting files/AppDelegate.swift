@@ -12,19 +12,24 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var coordinator: ChannelsCoordinator!
+    var tabCoordinator: TabbarCoordinator!
+    
     var window: UIWindow?
-    var rootController: UINavigationController {
-        return self.window!.rootViewController as! UINavigationController
+    var rootController: UINavigationController? {
+        return self.window!.rootViewController as? UINavigationController
     }
 
     private func makeCoordinator(with: UINavigationController) -> ChannelsCoordinator {
-        return ChannelsCoordinator(currentChannel: Channel(title: "example", subtitle: "ex", hashtags: ["none"], people: ["none"], posts: []), navigationController: rootController)
+        return ChannelsCoordinator(currentChannel: Channel(title: "example", subtitle: "ex", hashtags: ["none"], people: ["none"], posts: []), navigationController: with)
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
-        coordinator = makeCoordinator(with: rootController)
-        coordinator.start()
+        
+        // TODO:- determine what to do here: log in or tabbar
+        tabCoordinator = TabbarCoordinator(window: window!)
+        tabCoordinator.start()
+        
         return true
     }
 
