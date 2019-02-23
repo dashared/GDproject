@@ -106,12 +106,9 @@ class ProfileViewController: UIViewController
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         let logoutAction = UIAlertAction(title: "Log out", style: .destructive)
         {
-            [weak self] (_) in
+            (_) in
 
-            let root = UIStoryboard.navRoot()
-            UIApplication.shared.keyWindow?.rootViewController = root
-            let coordinator = LogInCoordinator(navigationController: root, window: UIApplication.shared.keyWindow!)
-            coordinator.start()
+            AppDelegate.logInAgain()
         }
         
         optionMenu.addAction(editAction)
