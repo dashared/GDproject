@@ -10,26 +10,27 @@ import UIKit
 import TinyConstraints
 import Cartography
 
-
+protocol UpdateableWithChannel: class {
+    var channel: Channel? { get set }
+}
 protocol NewPostDelegate {
     func addPost(post: Post)
 }
 
 // MARK:- Controller with posts and channels availiable.
 // Search is availiable within every table (posts and channels). Has button-functionality for boths post and chnnels
-class NewsController: UITableViewController, UISearchControllerDelegate,  DataDelegate, NewPostDelegate
+class NewsController: UITableViewController, UISearchControllerDelegate, NewPostDelegate, UpdateableWithChannel
 {
-    var currentChannel: Channel?{
+    var channel: Channel?{
         didSet{
-            news.dataSourse = currentChannel?.posts ?? []
-            navigationItem.title = currentChannel?.title ?? ""
+            news.dataSourse = channel?.posts ?? []
+            navigationItem.title = channel?.title ?? ""
         }
     }
     
-    func passData(for row: Int, channel: Channel) {
-        currentChannel = channel
-    }
-    
+    // MARK: - Output -
+    var onSelectChannel: (() -> Void)?
+
     func addPost(post: Post) {
         news.dataSourse.insert(post, at: 0)
     }
@@ -72,7 +73,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate,  DataDe
         super.viewDidLoad()
         
         //view.backgroundColor = .white
-        currentChannel = ChannelListController.dataSource[0]
+        channel = ChannelListController.dataSource[0]
         
         view.addSubview(label)
         //label.horizontalToSuperview(insets: .left(30) + .right(30))
@@ -84,7 +85,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate,  DataDe
         searchController.delegate = self
         searchController.obscuresBackgroundDuringPresentation = false
         
-        news.dataSourse = currentChannel!.posts
+        news.dataSourse = channel!.posts
         news.viewController = self
         
         
@@ -163,7 +164,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate,  DataDe
         super.viewWillAppear(animated)
         print("hello")
         navigationController?.navigationBar.prefersLargeTitles = true
-        if currentChannel!.posts.isEmpty {
+        if channel!.posts.isEmpty {
             //tableView.isHidden = true
             label.isHidden = false
         } else {
@@ -182,10 +183,9 @@ class NewsController: UITableViewController, UISearchControllerDelegate,  DataDe
         tableView.reloadData()
     }
     
+    // MARK:- attempt with coordinator
     @objc func showChannels(_ barItem: UIBarButtonItem){
-        let vc = storyboard!.instantiateViewController(withIdentifier: channelListControllerId) as! ChannelListController
-        vc.myProtocol = self
-        self.navigationController!.pushViewController(vc, animated: true)
+        onSelectChannel?()
     }
     
     @objc func writePost(_ barItem: UIBarButtonItem)

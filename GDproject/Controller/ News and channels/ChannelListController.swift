@@ -16,8 +16,10 @@ struct ChannelData{
 // TODO: make search controller availiable
 class ChannelListController: UITableViewController, DataDelegate {
     
-    // MARK:- filter search controller
+    // MARK: - Output -
+    var onChannelSelected: ((Channel) -> Void)?
     
+    // MARK:- filter search controller
     var filteredDataSource = [Channel]()
     
     var myProtocol: DataDelegate?
@@ -40,10 +42,7 @@ class ChannelListController: UITableViewController, DataDelegate {
     }
     
     func passData(for row: Int, channel: Channel) {
-        ChannelListController.dataSource[row].hashtags = channel.hashtags
-        ChannelListController.dataSource[row].people = channel.people
-        ChannelListController.dataSource[row].title = channel.title
-        ChannelListController.dataSource[row].subtitle = channel.subtitle
+        ChannelListController.dataSource[row] = channel
     }
     
     var searchController = UISearchController(searchResultsController: nil)
@@ -154,14 +153,13 @@ class ChannelListController: UITableViewController, DataDelegate {
         return [editButton, deleteButton]
     }
     
+    // TODO: remove popping
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         if isFiltering {
-            navigationController?.popViewController(animated: true)
-            myProtocol?.passData(for: 0, channel: filteredDataSource[indexPath.row])
+            onChannelSelected?(filteredDataSource[indexPath.row])
         } else {
-            navigationController?.popViewController(animated: true)
-            myProtocol?.passData(for: 0, channel: ChannelListController.dataSource[indexPath.row])
+            onChannelSelected?(ChannelListController.dataSource[indexPath.row])
         }
     }
 }

@@ -34,3 +34,17 @@ extension UIView
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: format, options: NSLayoutConstraint.FormatOptions(), metrics: nil, views: viewsDictionary))
     }
 }
+
+
+extension UIStoryboard {
+    
+    private static let userEdit = UIStoryboard(name: "Main", bundle: nil)
+    
+    class func makeChannelsListController() -> ChannelListController {
+        return UIStoryboard.userEdit.instantiateViewController(withIdentifier: channelListControllerId) as! ChannelListController
+    }
+    
+    class func makeNewsController() -> NewsController {
+        return UIStoryboard.userEdit.instantiateViewController(withIdentifier: newsController) as! NewsController
+    }
+}
