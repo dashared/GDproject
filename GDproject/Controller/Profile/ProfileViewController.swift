@@ -104,12 +104,20 @@ class ProfileViewController: UIViewController
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        let shareAction = UIAlertAction(title: "Share", style: .default)
+        let logoutAction = UIAlertAction(title: "Log out", style: .destructive)
+        {
+            [weak self] (_) in
+
+            let root = UIStoryboard.navRoot()
+            UIApplication.shared.keyWindow?.rootViewController = root
+            let coordinator = LogInCoordinator(navigationController: root, window: UIApplication.shared.keyWindow!)
+            coordinator.start()
+        }
         
         optionMenu.addAction(editAction)
         optionMenu.addAction(settingsAction)
         optionMenu.addAction(copyLink)
-        optionMenu.addAction(shareAction)
+        optionMenu.addAction(logoutAction)
         optionMenu.addAction(cancelAction)
         
         self.present(optionMenu, animated: true, completion: nil)

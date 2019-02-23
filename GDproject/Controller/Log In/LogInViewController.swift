@@ -12,6 +12,8 @@ class LogInViewController: UIViewController {
     
     @IBOutlet weak var mailTextField: UITextField!
     
+    var onLogIn: (()->())?
+    
     static let titleColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 0.5)
     
     var bottomConstraint: NSLayoutConstraint?
@@ -62,11 +64,7 @@ class LogInViewController: UIViewController {
     @objc func activateLogInProcess(){
         if logInButton.isEnabled {
             // MARK:- when log in is succeeded do I need to go there?
-            let vc = storyboard!.instantiateViewController(withIdentifier: newsController) as! NewsController
-            present(vc, animated: true) {
-                print("logged in")
-            }
-            DataStorage.standard.setIsLoggedIn(value: true)
+            onLogIn?()
             view.endEditing(true)
         }
     }

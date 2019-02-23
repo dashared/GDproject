@@ -11,7 +11,7 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    var coordinator: ChannelsCoordinator!
+    var coordinator: LogInCoordinator!
     var tabCoordinator: TabbarCoordinator!
     
     var window: UIWindow?
@@ -27,8 +27,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     {
         
         // TODO:- determine what to do here: log in or tabbar
-        tabCoordinator = TabbarCoordinator(window: window!)
-        tabCoordinator.start()
+        if DataStorage.standard.isLoggedIn() {
+            tabCoordinator = TabbarCoordinator(window: window!)
+            tabCoordinator.start()
+        } else {
+            coordinator = LogInCoordinator(navigationController: rootController!, window: window!)
+            coordinator.start()
+        }
         
         return true
     }

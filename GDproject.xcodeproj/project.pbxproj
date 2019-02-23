@@ -15,6 +15,7 @@
 		1288B5CE221F1158002BE6B1 /* DataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1288B5CD221F1158002BE6B1 /* DataStorage.swift */; };
 		1291BE2D2221312D009D3F23 /* ChannelsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE2C2221312C009D3F23 /* ChannelsCoordinator.swift */; };
 		1291BE342221569B009D3F23 /* TabbarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE332221569B009D3F23 /* TabbarCoordinator.swift */; };
+		1291BE3622218DBF009D3F23 /* LogInCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE3522218DBF009D3F23 /* LogInCoordinator.swift */; };
 		12D7D133221C321600B35452 /* ChannelListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D7D132221C321600B35452 /* ChannelListController.swift */; };
 		12D7D135221C42B700B35452 /* ChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D7D134221C42B700B35452 /* ChannelController.swift */; };
 		12D7D137221D78E800B35452 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D7D136221D78E800B35452 /* Channel.swift */; };
@@ -74,6 +75,7 @@
 		1288B5CD221F1158002BE6B1 /* DataStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStorage.swift; sourceTree = "<group>"; };
 		1291BE2C2221312C009D3F23 /* ChannelsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsCoordinator.swift; sourceTree = "<group>"; };
 		1291BE332221569B009D3F23 /* TabbarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbarCoordinator.swift; sourceTree = "<group>"; };
+		1291BE3522218DBF009D3F23 /* LogInCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInCoordinator.swift; sourceTree = "<group>"; };
 		12D7D132221C321600B35452 /* ChannelListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelListController.swift; sourceTree = "<group>"; };
 		12D7D134221C42B700B35452 /* ChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelController.swift; sourceTree = "<group>"; };
 		12D7D136221D78E800B35452 /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
@@ -140,6 +142,15 @@
 			path = "Coordinator tab bar?";
 			sourceTree = "<group>";
 		};
+		1291BE3722218DC4009D3F23 /* Log In */ = {
+			isa = PBXGroup;
+			children = (
+				123E37A4221F1B3200F6E42A /* LogInViewController.swift */,
+				1291BE3522218DBF009D3F23 /* LogInCoordinator.swift */,
+			);
+			path = "Log In";
+			sourceTree = "<group>";
+		};
 		12E36D8F221424EA006FCDD7 = {
 			isa = PBXGroup;
 			children = (
@@ -203,7 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				1291BE32222154C3009D3F23 /* Coordinator tab bar? */,
-				123E37A4221F1B3200F6E42A /* LogInViewController.swift */,
+				1291BE3722218DC4009D3F23 /* Log In */,
 				1288B5CC221F0EFE002BE6B1 /* Profile */,
 				12E36DD322156519006FCDD7 /*  News and channels */,
 			);
@@ -306,6 +317,7 @@
 			files = (
 				12E36DD522156559006FCDD7 /* MyStackView.swift in Sources */,
 				12D7D137221D78E800B35452 /* Channel.swift in Sources */,
+				1291BE3622218DBF009D3F23 /* LogInCoordinator.swift in Sources */,
 				12E36DB922144016006FCDD7 /* User.swift in Sources */,
 				125BD5812217314A008A3575 /* NewsVC.swift in Sources */,
 				12E36DB72214400A006FCDD7 /* Post.swift in Sources */,
