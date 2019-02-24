@@ -10,7 +10,7 @@ import UIKit
 
 class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
-    var dataSourse: [Post] = []
+    var dataSourse: [Model.Posts] = []
     
     var type: HeaderType = .NONE
     
@@ -37,7 +37,7 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: postCellId, for: indexPath) as! PostViewCell
         
-        cell.fill(with: dataSourse[indexPath.row].dataArray, false, post: dataSourse[indexPath.row])
+        cell.fill(with: dataSourse[indexPath.row].body, false, post: dataSourse[indexPath.row])
         cell.selectionStyle = .none
         return cell
     }

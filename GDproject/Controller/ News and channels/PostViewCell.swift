@@ -69,9 +69,9 @@ class PostViewCell: UITableViewCell
     
     var views: [UIView] = []
     var data : [UIImage] = []
-    var post: Post?
+    var post: Model.Posts?
     
-    func fill(with info: [Media], _ isFullVersoin: Bool, post: Post)
+    func fill(with info: [Model.Attachments], _ isFullVersoin: Bool, post: Model.Posts)
     {
         self.post = post
         // important
@@ -79,21 +79,13 @@ class PostViewCell: UITableViewCell
         
         data = []
         views = []
-        for item in info.enumerated()
+        for attachment in info
         {
-            switch item.element
-            {
-            case .text(let text):
-                views.append(createTextView(with: text))
-            case .image(let images):
-                self.data = images
-            default:
-                break
-            }
+            views.append(createTextView(with: attachment.markdown))
         }
         setUpInStackView(isFullVersoin)
     }
-    
+    let hashtags = ["Kek", "Lol"]
     func setUpInStackView(_ full : Bool){
         let nameStackView = UIStackView(arrangedSubviews: [nameLabel, fullNameLabel])
         nameStackView.axis = .vertical
@@ -113,7 +105,7 @@ class PostViewCell: UITableViewCell
         scrollView.showsHorizontalScrollIndicator = false
         
         var buttons: [UIButton] = []
-        for hash in post!.hashtags {
+        for hash in hashtags {
             let button = UIButton()
             button.setTitle("#" + hash, for: .normal)
             //button.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)

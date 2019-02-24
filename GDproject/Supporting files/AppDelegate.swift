@@ -31,13 +31,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
-        
+        coordinator = LogInCoordinator(navigationController: rootController!, window: window!)
+        tabCoordinator = TabbarCoordinator(window: window!)
         // TODO:- determine what to do here: log in or tabbar
         if DataStorage.standard.isLoggedIn() {
-            tabCoordinator = TabbarCoordinator(window: window!)
             tabCoordinator.start()
         } else {
-            coordinator = LogInCoordinator(navigationController: rootController!, window: window!)
             coordinator.start()
         }
         

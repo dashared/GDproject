@@ -29,6 +29,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
         didSet{
             news.dataSourse = channel?.posts ?? []
             navigationItem.title = channel?.title ?? ""
+            tableView.reloadData()
         }
     }
     
@@ -36,7 +37,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
     var onSelectChannel: (() -> Void)?
 
     func addPost(post: Post) {
-        news.dataSourse.insert(post, at: 0)
+        //news.dataSourse.insert(post, at: 0)
     }
     
     var searchController = UISearchController(searchResultsController: nil)
@@ -46,7 +47,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        channel = ChannelListController.dataSource[0]
+        
         
         tableView.register(PostViewCell.self, forCellReuseIdentifier: postCellId)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -57,7 +58,6 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
         definesPresentationContext = true
         searchController.searchBar.placeholder  = "Search anything"
         
-        news.dataSourse = channel!.posts
         news.viewController = self
         
         news.type = .NONE
@@ -67,6 +67,9 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
         //setUpBanner()
     }
     
+    deinit {
+        print("news clear")
+    }
     
     let label : UILabel = {
         let label = UILabel()
@@ -82,6 +85,11 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
         super.viewWillAppear(animated)
         searchController.isActive = false
         // TODO:- display something if no posts are availiable
+        
+        Model.getLast { (channel) in
+            self.channel = channel
+        }
+        
         tableView.reloadData()
     }
     

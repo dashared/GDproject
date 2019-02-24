@@ -11,7 +11,7 @@ import TinyConstraints
 
 class FullPostController: UITableViewController {
 
-    var post: Post?
+    var post: Model.Posts?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +26,7 @@ class FullPostController: UITableViewController {
 
     func setUpNavigationBar(){
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationItem.title = "\(post?.fromUser.login ?? "")"
+        navigationItem.title = "\(post?.authorId ?? 0)"
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(self.options))]
     }
     
@@ -83,7 +83,7 @@ class FullPostController: UITableViewController {
         case 0:
             return 1
         case 1:
-            return post?.comments.count ?? 0
+            return 0
         default:
             return 0
         }
@@ -95,7 +95,7 @@ class FullPostController: UITableViewController {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: postCellId) as! PostViewCell
         
-        cell.fill(with: post!.dataArray, true, post: post!)
+        cell.fill(with: post!.body, true, post: post!)
         cell.selectionStyle = .none
         return cell
     }

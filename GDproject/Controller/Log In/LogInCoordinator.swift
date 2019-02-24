@@ -11,7 +11,7 @@ import UIKit
 class LogInCoordinator{
     
     private weak var navigationController: UINavigationController?
-    private  var window: UIWindow!
+    private var window: UIWindow!
     // MARK:- Init
     init(navigationController: UINavigationController, window: UIWindow) {
         self.navigationController = navigationController
@@ -30,9 +30,7 @@ class LogInCoordinator{
     
     private func showLogInPage(){
         let controller = UIStoryboard.makeLogIn()
-        //controller.channel = channel
         controller.onLogIn = { [weak self] in
-            self?.showStatusPage()
             DataStorage.standard.setIsLoggedIn(value: true)
             Model.authenticate()
         }

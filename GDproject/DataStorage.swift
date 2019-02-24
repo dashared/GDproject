@@ -17,9 +17,14 @@ class DataStorage{
     
     private init(){}
     
-    var coordinator: LogInCoordinator?
+    //weak var coordinator: LogInCoordinator?
     static let standard = DataStorage()
     
+    var cookie: HTTPCookie? = nil {
+        didSet {
+            (UIApplication.shared.delegate as? AppDelegate)?.tabCoordinator.start()
+        }
+    }
     // add channel
     
     // delete channel
@@ -38,7 +43,7 @@ class DataStorage{
      Function to determine is user logged in already or not
     */
     func isLoggedIn() -> Bool {
-        return UserDefaults.standard.bool(forKey: UserDefaultsKeys.loggedIn.rawValue)
+        return UserDefaults.standard.bool(forKey: UserDefaultsKeys.loggedIn.rawValue) && cookie != nil
     }
 }
 
@@ -47,4 +52,5 @@ class DataStorage{
  */
 enum UserDefaultsKeys: String{
     case loggedIn
+    case cookie
 }

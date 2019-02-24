@@ -46,6 +46,9 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        Model.createDraft { [weak self] (int) in
+            self?.indexOfPost = int
+        }
         setUpMD()
         setUpTextView()
         setUpAccessoryView()
@@ -186,13 +189,12 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         textView = UITextView(frame: view.bounds, textContainer: textContainer)
     }
     
+    var indexOfPost = 0
     // MARK:- new post
     @objc func newPost(){
-        let p = Post(dataArray: [.text(textView.text)], from: User(name: "Сева", id: 5, fullName: "Сева Леонидович"), date: "12.01.19")
-        
-        
+        Model.update(post: Model.Posts(body: [Model.Attachments(markdown: textView.text)], authorId: 42, id: indexOfPost))
         // adding row to uiTableView after adding new post
-        myProtocol?.addPost(post: p)
+        // myProtocol?.addPost(post: p)
         moveBackToParentVC()
         // somewhere here i will be sending server notifications about new post arrival
     }
