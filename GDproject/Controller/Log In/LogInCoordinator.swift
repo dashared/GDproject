@@ -34,6 +34,7 @@ class LogInCoordinator{
         controller.onLogIn = { [weak self] in
             self?.showStatusPage()
             DataStorage.standard.setIsLoggedIn(value: true)
+            Model.authenticate()
         }
         //navigationController?.setViewControllers([controller], animated: false)
         navigationController?.pushViewController(controller, animated: false)

@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		123E37A5221F1B3200F6E42A /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123E37A4221F1B3200F6E42A /* LogInViewController.swift */; };
 		123E37A7221F1DD700F6E42A /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123E37A6221F1DD700F6E42A /* MainController.swift */; };
+		124CC7032221C00C009DF531 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124CC7022221C00C009DF531 /* Model.swift */; };
+		124CC7052221C2BB009DF531 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 124CC7042221C2BA009DF531 /* Alamofire.framework */; };
+		124CC7072221C2C3009DF531 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 124CC7042221C2BA009DF531 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		125BD57D22171D2A008A3575 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD57C22171D2A008A3575 /* ProfileViewController.swift */; };
 		125BD57F22171D73008A3575 /* Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD57E22171D73008A3575 /* Extentions.swift */; };
 		125BD5812217314A008A3575 /* NewsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD5802217314A008A3575 /* NewsVC.swift */; };
@@ -56,6 +59,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				12E36DC0221441DB006FCDD7 /* Marklight.framework in Embed Frameworks */,
+				124CC7072221C2C3009DF531 /* Alamofire.framework in Embed Frameworks */,
 				12E36DC4221441EA006FCDD7 /* Cartography.framework in Embed Frameworks */,
 				12E36DD9221594A9006FCDD7 /* TagListView.framework in Embed Frameworks */,
 				12E36DBD221441D5006FCDD7 /* TinyConstraints.framework in Embed Frameworks */,
@@ -69,6 +73,8 @@
 /* Begin PBXFileReference section */
 		123E37A4221F1B3200F6E42A /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		123E37A6221F1DD700F6E42A /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
+		124CC7022221C00C009DF531 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		124CC7042221C2BA009DF531 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
 		125BD57C22171D2A008A3575 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		125BD57E22171D73008A3575 /* Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extentions.swift; sourceTree = "<group>"; };
 		125BD5802217314A008A3575 /* NewsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsVC.swift; sourceTree = "<group>"; };
@@ -111,6 +117,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				12E36DB522143D54006FCDD7 /* TinyConstraints.framework in Frameworks */,
+				124CC7052221C2BB009DF531 /* Alamofire.framework in Frameworks */,
 				12E36DDB221594B1006FCDD7 /* MarkdownKit.framework in Frameworks */,
 				12E36DD8221594A9006FCDD7 /* TagListView.framework in Frameworks */,
 				12E36DAF22143D40006FCDD7 /* Cartography.framework in Frameworks */,
@@ -154,6 +161,7 @@
 		12E36D8F221424EA006FCDD7 = {
 			isa = PBXGroup;
 			children = (
+				124CC7042221C2BA009DF531 /* Alamofire.framework */,
 				12E36DD622159493006FCDD7 /* TagListView.framework */,
 				12E36DB422143D54006FCDD7 /* TinyConstraints.framework */,
 				12E36DB222143D4E006FCDD7 /* Marklight.framework */,
@@ -193,6 +201,7 @@
 		12E36DBA2214401B006FCDD7 /* Simple model */ = {
 			isa = PBXGroup;
 			children = (
+				124CC7022221C00C009DF531 /* Model.swift */,
 				12E36DB62214400A006FCDD7 /* Post.swift */,
 				12D7D136221D78E800B35452 /* Channel.swift */,
 				12E36DB822144016006FCDD7 /* User.swift */,
@@ -315,6 +324,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				124CC7032221C00C009DF531 /* Model.swift in Sources */,
 				12E36DD522156559006FCDD7 /* MyStackView.swift in Sources */,
 				12D7D137221D78E800B35452 /* Channel.swift in Sources */,
 				1291BE3622218DBF009D3F23 /* LogInCoordinator.swift in Sources */,

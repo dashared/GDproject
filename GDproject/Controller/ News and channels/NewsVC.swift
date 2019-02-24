@@ -14,7 +14,7 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     var type: HeaderType = .NONE
     
-    var viewController: UIViewController?
+    weak var viewController: UIViewController?
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1

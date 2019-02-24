@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 /**
  _DataStorage_ class is aimed to store user private settings
@@ -16,6 +17,7 @@ class DataStorage{
     
     private init(){}
     
+    var coordinator: LogInCoordinator?
     static let standard = DataStorage()
     
     // add channel
@@ -27,6 +29,9 @@ class DataStorage{
      */
     func setIsLoggedIn(value: Bool){
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.loggedIn.rawValue)
+        if !value {
+            (UIApplication.shared.delegate as? AppDelegate)?.logInAgain()
+        }
     }
     
     /**

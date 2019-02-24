@@ -41,8 +41,8 @@ class ProfileViewController: UIViewController
     
     var user: User = User(surname: "Богомазова", name: "Вероника", optional: "Львовна", emailName: "vbogomazova", id: 2, place: "📍Москва, Кочновский пр. 3", faculty: "Методист: Факультет Компьютерных наук")
     
-    let basicInfo = BasicInfoController()
-    let posts = NewsVC()
+    var basicInfo = BasicInfoController()
+    var posts = NewsVC()
     
     override func viewDidLoad()
     {
@@ -107,8 +107,7 @@ class ProfileViewController: UIViewController
         let logoutAction = UIAlertAction(title: "Log out", style: .destructive)
         {
             (_) in
-
-            AppDelegate.logInAgain()
+            DataStorage.standard.setIsLoggedIn(value: false)
         }
         
         optionMenu.addAction(editAction)
@@ -120,6 +119,9 @@ class ProfileViewController: UIViewController
         self.present(optionMenu, animated: true, completion: nil)
     }
     
+    deinit {
+        print("profile clear")
+    }
     
     @IBAction func valueChanged(_ sender: UISegmentedControl) {
         let index = sender.selectedSegmentIndex
