@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         coordinator = LogInCoordinator(navigationController: rootController!, window: window!)
         tabCoordinator = TabbarCoordinator(window: window!)
         // TODO:- determine what to do here: log in or tabbar
-        if DataStorage.standard.isLoggedIn() {
+        if DataStorage.standard.isLoggedIn {
             tabCoordinator.start()
         } else {
             coordinator.start()

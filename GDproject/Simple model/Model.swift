@@ -15,17 +15,37 @@ class Model{
     static var urlForDrafts = URL(string:"https://valera-denis.herokuapp.com/drafts/create")!
     static var urlForPublish = URL(string:"https://valera-denis.herokuapp.com/drafts/publish")!
     static var urlForUpdate = URL(string:"https://valera-denis.herokuapp.com/drafts/update")!
+    static var urlForPostsForUser = URL(string:"https://valera-denis.herokuapp.com/posts/forUser")!
+    static var urlForUsers = URL(string:"https://valera-denis.herokuapp.com/users")!
     
     struct Posts: Codable {
         var body: [Attachments]
         var authorId: Int
         var id: Int
+        var user: Model.Users?
         
         init(body: [Attachments], authorId: Int, id: Int) {
             self.body = body
             self.authorId = authorId
             self.id = id
         }
+        
+        init(body: [Attachments], authorId: Int, id: Int, user: Model.Users) {
+            self.body = body
+            self.authorId = authorId
+            self.id = id
+            self.user = user
+        }
+        
+        mutating func setUser(with: Users){
+            self.user = with
+        }
+    }
+    
+    struct Users: Codable{
+        var secondName: String
+        var firstName: String
+        var id: Int
     }
     
     struct Attachments: Codable {
@@ -36,9 +56,9 @@ class Model{
         }
     }
     
-    static func authenticate(){
+    static func authenticate(with id: Int, completion: @escaping ((Bool)->())) {
         
-        let json: [String:Any] = ["authenticationId" : 9]
+        let json: [String:Any] = ["authenticationId" : id]
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         
         var request = URLRequest(url: url)
@@ -52,6 +72,7 @@ class Model{
             
             guard let realResponse = responce.response, realResponse.statusCode == 204 else {
                 print("Not a 204 response")
+                completion(false)
                 return
             }
             
@@ -59,11 +80,10 @@ class Model{
             
             let cookies = HTTPCookie.cookies(withResponseHeaderFields: fields!, for: realResponse.url!)
             
+            HTTPCookieStorage.shared.setCookie(cookies[0])
             
-            for cookie in cookies {
-                HTTPCookieStorage.shared.setCookie(cookie)
-                DataStorage.standard.cookie = cookie
-            }
+            DataStorage.standard.setIsLoggedIn(value: true)
+            completion(true)
         }
     }
     
@@ -83,6 +103,8 @@ class Model{
             
             if response.response?.statusCode == 200 {
                 print("success")
+            } else {
+                print(response.response?.statusCode)
             }
             
             let decoder = JSONDecoder()
@@ -162,7 +184,6 @@ class Model{
             "id": \(post.id)
             }
         """
-        print(jsonUpd)
         var request = URLRequest(url: urlForUpdate)
         
         request.httpMethod = "POST"
@@ -179,6 +200,70 @@ class Model{
             } else {
                 print(response.response?.statusCode)
             }
+        }
+    }
+    
+    
+    static func getPostsForUser(with id: Int, completion: @escaping (([Posts])->())){
+        let json = [
+            "userId" : id,
+            "limit": 10
+        ]
+        
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        
+        var request = URLRequest(url: urlForPostsForUser)
+        request.httpMethod = "POST"
+        
+        // insert json data to the request
+        request.httpBody = jsonData
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).responseJSON {
+            (response) in
+            
+            if response.response?.statusCode == 200 {
+                print("success")
+            }
+            
+            let decoder = JSONDecoder()
+            guard let json = response.data else { return }
+            
+            guard let newPost = try? decoder.decode([Posts].self, from: json) else {  return }
+            
+            completion(newPost)
+        }
+    }
+    
+    static func getUsers(for ids: [Int], completion: @escaping (([Int:Users])->())){
+        let json = "\(Set(ids))"
+        print(json)
+        var request = URLRequest(url: urlForUsers)
+        
+        request.httpMethod = "POST"
+        
+        // insert json data to the request
+        request.httpBody = json.data(using: .utf8)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).responseJSON {
+            (response) in
+            
+            if response.response?.statusCode == 200 {
+                print("successddd")
+            }
+            
+            let decoder = JSONDecoder()
+            guard let json = response.data else { return }
+            
+            guard let users = try? decoder.decode([Users].self, from: json) else {  return }
+            
+            var dict: [Int:Users] = [:]
+            users.forEach({ (user) in
+                dict[user.id] = user
+            })
+            
+            completion(dict)
         }
     }
 }

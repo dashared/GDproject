@@ -12,8 +12,18 @@ class LogInViewController: UIViewController {
     
     @IBOutlet weak var mailTextField: UITextField!
     
-    var onLogIn: (()->())?
+    @IBOutlet weak var indicatorView: UIActivityIndicatorView!
     
+    var onLogIn: ((Int)->())?
+    
+    var authenticateSucceeded: Bool? {
+        didSet {
+            if !authenticateSucceeded! {
+                indicatorView.stopAnimating()
+                indicatorView.isHidden = true
+            }
+        }
+    }
     static let titleColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 0.5)
     
     var bottomConstraint: NSLayoutConstraint?
@@ -64,12 +74,20 @@ class LogInViewController: UIViewController {
     @objc func activateLogInProcess(){
         if logInButton.isEnabled {
             // MARK:- when log in is succeeded do I need to go there?
-            onLogIn?()
-            view.endEditing(true)
+            if let id = Int(mailTextField.text!){
+                indicatorView.isHidden = false
+                indicatorView.startAnimating()
+                onLogIn?(id)
+                view.endEditing(true)
+            } else {
+                logInButton.isEnabled = false
+                logInButton.setTitleColor(LogInViewController.titleColor.withAlphaComponent(0.5), for: .normal)
+            }
         }
     }
     
     func setUpView(){
+        indicatorView.isHidden = true
         mailTextField.delegate = self
         view.addSubview(keyboardBar)
         

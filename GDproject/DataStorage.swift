@@ -20,30 +20,25 @@ class DataStorage{
     //weak var coordinator: LogInCoordinator?
     static let standard = DataStorage()
     
-    var cookie: HTTPCookie? = nil {
-        didSet {
-            (UIApplication.shared.delegate as? AppDelegate)?.tabCoordinator.start()
-        }
-    }
-    // add channel
-    
-    // delete channel
-    
     /**
       Function for setting log in status of user
      */
     func setIsLoggedIn(value: Bool){
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.loggedIn.rawValue)
-        if !value {
-            (UIApplication.shared.delegate as? AppDelegate)?.logInAgain()
-        }
+        isLoggedIn = UserDefaults.standard.bool(forKey: UserDefaultsKeys.loggedIn.rawValue)
     }
     
     /**
      Function to determine is user logged in already or not
     */
-    func isLoggedIn() -> Bool {
-        return UserDefaults.standard.bool(forKey: UserDefaultsKeys.loggedIn.rawValue) && cookie != nil
+    var isLoggedIn: Bool = UserDefaults.standard.bool(forKey: UserDefaultsKeys.loggedIn.rawValue) {
+        didSet{
+            if isLoggedIn {
+                (UIApplication.shared.delegate as? AppDelegate)?.tabCoordinator.start()
+            } else {
+                (UIApplication.shared.delegate as? AppDelegate)?.logInAgain()
+            }
+        }
     }
 }
 

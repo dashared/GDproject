@@ -387,16 +387,22 @@
                                     </textField>
                                 </subviews>
                             </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="K3b-gv-JPp">
+                                <rect key="frame" x="177.5" y="333.5" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="UwC-m5-jA5" firstAttribute="leading" secondItem="LOR-Yw-0FU" secondAttribute="leading" constant="16" id="M6z-nU-H40"/>
+                            <constraint firstItem="K3b-gv-JPp" firstAttribute="centerY" secondItem="LOR-Yw-0FU" secondAttribute="centerY" id="eOp-yQ-n28"/>
+                            <constraint firstItem="K3b-gv-JPp" firstAttribute="centerX" secondItem="LOR-Yw-0FU" secondAttribute="centerX" id="gdW-VU-pE8"/>
                             <constraint firstItem="LOR-Yw-0FU" firstAttribute="trailing" secondItem="UwC-m5-jA5" secondAttribute="trailing" constant="16" id="jST-rr-MMX"/>
                             <constraint firstItem="UwC-m5-jA5" firstAttribute="top" secondItem="LOR-Yw-0FU" secondAttribute="top" constant="80" id="rvy-Ii-bwS"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="LOR-Yw-0FU"/>
                     </view>
                     <connections>
+                        <outlet property="indicatorView" destination="K3b-gv-JPp" id="mSR-QU-VZQ"/>
                         <outlet property="mailTextField" destination="mFP-WG-jY5" id="7SN-qe-DDm"/>
                     </connections>
                 </viewController>
@@ -437,7 +443,7 @@
                             <outlet property="delegate" destination="Nqc-TI-ueQ" id="kTM-Be-8qb"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="b8E-6f-hLM"/>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="always" id="b8E-6f-hLM"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="c9d-Kh-itI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

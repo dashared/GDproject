@@ -25,11 +25,32 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
         self.channel = channel
     }
     
+    var dictionary: [Int: Model.Users]?  {
+        didSet{
+
+            var newPosts: [Model.Posts] = []
+            
+            channel?.posts.forEach({ (post) in
+                newPosts.append(Model.Posts(body: post.body, authorId: post.authorId, id: post.id, user: dictionary![post.authorId]!))
+            })
+            
+            
+            news.dataSourse = newPosts
+            tableView.reloadData()
+        }
+    }
+    
     var channel: Channel?{
         didSet{
-            news.dataSourse = channel?.posts ?? []
+            let hh = channel?.posts.map({ (post) -> Int in
+                post.authorId
+            })
+            
             navigationItem.title = channel?.title ?? ""
-            tableView.reloadData()
+            Model.getUsers(for: hh ?? []) { [weak self] (dict) in
+                self?.dictionary = dict
+                self?.refreshContr?.endRefreshing()
+            }
         }
     }
     
@@ -44,27 +65,51 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
 
     var news = NewsVC()
     
+    var refreshContr: UIRefreshControl? = {
+        let rc = UIRefreshControl()
+        rc.addTarget(self, action: #selector(refreshPostsData(_:)), for: .valueChanged)
+        return rc
+    }()
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        navigationItem.title = "Loading ..."
+        tableView.refreshControl = refreshContr
+        // Configure Refresh Control
         
+        Model.getLast { [weak self] (channel) in
+            self?.channel = channel
+        }
         
         tableView.register(PostViewCell.self, forCellReuseIdentifier: postCellId)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
-        searchController.delegate = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        navigationItem.searchController = searchController
-        definesPresentationContext = true
-        searchController.searchBar.placeholder  = "Search anything"
+        setUpSearchContr()
         
         news.viewController = self
-        
         news.type = .NONE
         
         setUpNavigationItemsforPosts()
 
         //setUpBanner()
+    }
+    
+    func setUpSearchContr(){
+        searchController.delegate = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+        searchController.searchBar.placeholder  = "Search anything"
+    }
+    
+    @objc func refreshPostsData( _ ff: UIRefreshControl){
+        if ff.isRefreshing {
+            Model.getLast { [weak self] (channel) in
+                self?.channel = channel
+                self?.refreshContr?.endRefreshing()
+            }
+        }
     }
     
     deinit {
@@ -86,11 +131,9 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
         searchController.isActive = false
         // TODO:- display something if no posts are availiable
         
-        Model.getLast { (channel) in
-            self.channel = channel
-        }
+        refreshContr?.beginRefreshing()
         
-        tableView.reloadData()
+        // tableView.reloadData()
     }
     
     func setUpNavigationItemsforPosts(){

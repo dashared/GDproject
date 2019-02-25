@@ -83,8 +83,12 @@ class PostViewCell: UITableViewCell
         {
             views.append(createTextView(with: attachment.markdown))
         }
+        
+        nameLabel.text = "\(post.user?.firstName ?? "") \(post.user?.secondName ?? "")"
+        fullNameLabel.text = "\(post.authorId)"
         setUpInStackView(isFullVersoin)
     }
+    
     let hashtags = ["Kek", "Lol"]
     func setUpInStackView(_ full : Bool){
         let nameStackView = UIStackView(arrangedSubviews: [nameLabel, fullNameLabel])

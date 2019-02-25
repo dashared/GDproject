@@ -12,6 +12,7 @@
 		124CC7032221C00C009DF531 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124CC7022221C00C009DF531 /* Model.swift */; };
 		124CC7052221C2BB009DF531 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 124CC7042221C2BA009DF531 /* Alamofire.framework */; };
 		124CC7072221C2C3009DF531 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 124CC7042221C2BA009DF531 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1253867D2223DC9F00CC5EA7 /* RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1253867C2223DC9F00CC5EA7 /* RepeatingTimer.swift */; };
 		125BD57D22171D2A008A3575 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD57C22171D2A008A3575 /* ProfileViewController.swift */; };
 		125BD57F22171D73008A3575 /* Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD57E22171D73008A3575 /* Extentions.swift */; };
 		125BD5812217314A008A3575 /* NewsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD5802217314A008A3575 /* NewsVC.swift */; };
@@ -75,6 +76,7 @@
 		123E37A6221F1DD700F6E42A /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		124CC7022221C00C009DF531 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		124CC7042221C2BA009DF531 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
+		1253867C2223DC9F00CC5EA7 /* RepeatingTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatingTimer.swift; sourceTree = "<group>"; };
 		125BD57C22171D2A008A3575 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		125BD57E22171D73008A3575 /* Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extentions.swift; sourceTree = "<group>"; };
 		125BD5802217314A008A3575 /* NewsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsVC.swift; sourceTree = "<group>"; };
@@ -222,6 +224,7 @@
 		12E36DCF22145923006FCDD7 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				1253867C2223DC9F00CC5EA7 /* RepeatingTimer.swift */,
 				1291BE32222154C3009D3F23 /* Coordinator tab bar? */,
 				1291BE3722218DC4009D3F23 /* Log In */,
 				1288B5CC221F0EFE002BE6B1 /* Profile */,
@@ -343,6 +346,7 @@
 				12E36DD122148122006FCDD7 /* FullPostController.swift in Sources */,
 				1288B5CE221F1158002BE6B1 /* DataStorage.swift in Sources */,
 				125BD57D22171D2A008A3575 /* ProfileViewController.swift in Sources */,
+				1253867D2223DC9F00CC5EA7 /* RepeatingTimer.swift in Sources */,
 				12DB7FDB2218590C0096878E /* InfoCell.swift in Sources */,
 				12DB7FD922181E660096878E /* BasicInfoCell.swift in Sources */,
 				12D7D135221C42B700B35452 /* ChannelController.swift in Sources */,

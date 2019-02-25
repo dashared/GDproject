@@ -30,11 +30,13 @@ class LogInCoordinator{
     
     private func showLogInPage(){
         let controller = UIStoryboard.makeLogIn()
-        controller.onLogIn = { [weak self] in
-            DataStorage.standard.setIsLoggedIn(value: true)
-            Model.authenticate()
+        controller.onLogIn = {
+            (id) in
+            Model.authenticate(with: id) {
+                (res) in controller.authenticateSucceeded = res
+            }
         }
-        //navigationController?.setViewControllers([controller], animated: false)
+        
         navigationController?.pushViewController(controller, animated: false)
     }
     

@@ -49,9 +49,20 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         Model.createDraft { [weak self] (int) in
             self?.indexOfPost = int
         }
+        //createTimerForUpdates()
+        
         setUpMD()
         setUpTextView()
         setUpAccessoryView()
+    }
+    
+    func createTimerForUpdates(){
+        // timer for update
+        let t = RepeatingTimer(timeInterval: 15)
+        t.eventHandler = { [unowned self] in
+            Model.update(post: Model.Posts(body: [Model.Attachments(markdown: self.textView.text)], authorId: 42, id: self.indexOfPost))
+        }
+        t.resume()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -181,6 +192,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         let layoutManager = NSLayoutManager()
         
         // Assign the `UITextView`'s `NSLayoutManager` to the `NSTextStorage` subclass
+        //textStorage.addLayoutManager(textView.layoutManager)
         textStorage.addLayoutManager(layoutManager)
         
         let textContainer = NSTextContainer()
