@@ -235,6 +235,8 @@ class Model{
         }
     }
     
+    static var idUser: [Int:Users] = [:]
+    
     static func getUsers(for ids: [Int], completion: @escaping (([Int:Users])->())){
         let json = "\(Set(ids))"
         print(json)
@@ -258,12 +260,11 @@ class Model{
             
             guard let users = try? decoder.decode([Users].self, from: json) else {  return }
             
-            var dict: [Int:Users] = [:]
             users.forEach({ (user) in
-                dict[user.id] = user
+                Model.idUser[user.id] = user
             })
             
-            completion(dict)
+            completion(Model.idUser)
         }
     }
 }

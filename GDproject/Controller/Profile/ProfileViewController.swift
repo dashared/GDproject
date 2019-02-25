@@ -31,15 +31,19 @@ class ProfileViewController: UIViewController
     @IBOutlet weak var newMessageButton: UIButton!
     
     
-    func fill(with user: User){
-        self.facultyLabel.text = user.faculty ?? ""
-        self.nameLabel.text = "\(user.initials.name) \(user.initials.optional ?? "")"
-        self.surnameLabel.text = user.initials.surname
+    func fill(with user: Model.Users){
+        self.facultyLabel.text = "Студент: Факультет Компьютерных Наук"
+        self.nameLabel.text = "\(user.firstName)"
+        self.surnameLabel.text = "\(user.secondName)"
         self.profileImageView.image = #imageLiteral(resourceName: "kitten").roundedImage
-        self.placeLabel.text = user.placeOfWork
+        self.placeLabel.text = "Москва"
     }
     
-    var user: User = User(surname: "Богомазова", name: "Вероника", optional: "Львовна", emailName: "vbogomazova", id: 2, place: "📍Москва, Кочновский пр. 3", faculty: "Методист: Факультет Компьютерных наук")
+    var user: Model.Users? {
+        didSet {
+            self.fill(with: user!)
+        }
+    }
     
     var basicInfo = BasicInfoController()
     var posts = NewsVC()
@@ -55,9 +59,7 @@ class ProfileViewController: UIViewController
     {
         super.viewDidLoad()
         
-        Model.getPostsForUser(with: 42) { [weak self] (posts) in
-            self?.dataSourse = posts
-        }
+        
         
         posts.viewController = self
         posts.type = .NONE
@@ -72,19 +74,32 @@ class ProfileViewController: UIViewController
         
         posts.viewController = self
         
-        fill(with: user)
         tableView.delegate = posts
         tableView.dataSource = posts
         tableView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        if let id = DataStorage.standard.getUserId() {
+            if let user = Model.idUser[id] {
+                self.user = user
+            } else {
+                Model.getUsers(for: [id]) { [weak self] (dic) in
+                    self?.user = dic[id]
+                }
+            }
+            
+            Model.getPostsForUser(with: id) { [weak self] (posts) in
+                self?.dataSourse = posts
+            }
+        }
+        
         setUpNavigarionBar()
     }
     
     func setUpNavigarionBar(){
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = user.login
+        navigationItem.title = "\(DataStorage.standard.getUserId() ?? 0)"
         let uibarbutton = UIBarButtonItem(title: "More", style: .plain, target: self, action: #selector(showInformation))
         navigationItem.rightBarButtonItems = [uibarbutton]
         navigationItem.largeTitleDisplayMode = .always

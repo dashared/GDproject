@@ -16,7 +16,9 @@ protocol UpdateableWithChannel: class {
 protocol NewPostDelegate {
     func addPost(post: Post)
 }
-
+protocol UpdateableWithUser: class {
+    var user: Model.Users? { get set }
+}
 // MARK:- Controller with posts and channels availiable.
 // Search is availiable within every table (posts and channels). Has button-functionality for boths post and chnnels
 class NewsController: UITableViewController, UISearchControllerDelegate, NewPostDelegate, UpdateableWithChannel, DataDelegate
@@ -49,7 +51,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
             navigationItem.title = channel?.title ?? ""
             Model.getUsers(for: hh ?? []) { [weak self] (dict) in
                 self?.dictionary = dict
-                self?.refreshContr?.endRefreshing()
+                self?.refreshContr.endRefreshing()
             }
         }
     }
@@ -65,11 +67,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
 
     var news = NewsVC()
     
-    var refreshContr: UIRefreshControl? = {
-        let rc = UIRefreshControl()
-        rc.addTarget(self, action: #selector(refreshPostsData(_:)), for: .valueChanged)
-        return rc
-    }()
+    var refreshContr =  UIRefreshControl()
     
     override func viewDidLoad()
     {
@@ -77,11 +75,8 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
         navigationItem.title = "Loading ..."
         tableView.refreshControl = refreshContr
         // Configure Refresh Control
-        
-        Model.getLast { [weak self] (channel) in
-            self?.channel = channel
-        }
-        
+        refreshContr.addTarget(self, action: #selector(refreshPostsData(_:)), for: .valueChanged)
+    
         tableView.register(PostViewCell.self, forCellReuseIdentifier: postCellId)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
@@ -104,11 +99,9 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
     }
     
     @objc func refreshPostsData( _ ff: UIRefreshControl){
-        if ff.isRefreshing {
-            Model.getLast { [weak self] (channel) in
-                self?.channel = channel
-                self?.refreshContr?.endRefreshing()
-            }
+        Model.getLast { [weak self] (channel) in
+            self?.channel = channel
+            self?.refreshContr.endRefreshing()
         }
     }
     
@@ -131,7 +124,9 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
         searchController.isActive = false
         // TODO:- display something if no posts are availiable
         
-        refreshContr?.beginRefreshing()
+        Model.getLast { [weak self] (channel) in
+            self?.channel = channel
+        }
         
         // tableView.reloadData()
     }

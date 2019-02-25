@@ -33,7 +33,9 @@ class LogInCoordinator{
         controller.onLogIn = {
             (id) in
             Model.authenticate(with: id) {
-                (res) in controller.authenticateSucceeded = res
+                (res) in
+                if (res) { DataStorage.standard.setUserKey(with: id) }
+                controller.authenticateSucceeded = res
             }
         }
         

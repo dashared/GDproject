@@ -20,8 +20,6 @@ class FullPostController: UITableViewController {
         
         setUpNavigationBar()
         tableView.separatorStyle = .none
-        
-        
     }
 
     func setUpNavigationBar(){

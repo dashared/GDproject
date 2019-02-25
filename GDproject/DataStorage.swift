@@ -28,6 +28,13 @@ class DataStorage{
         isLoggedIn = UserDefaults.standard.bool(forKey: UserDefaultsKeys.loggedIn.rawValue)
     }
     
+    func setUserKey(with id: Int){
+        UserDefaults.standard.set(id, forKey: UserDefaultsKeys.id.rawValue)
+    }
+    
+    func getUserId() -> Int?{
+        return UserDefaults.standard.integer(forKey: UserDefaultsKeys.id.rawValue)
+    }
     /**
      Function to determine is user logged in already or not
     */
@@ -47,5 +54,5 @@ class DataStorage{
  */
 enum UserDefaultsKeys: String{
     case loggedIn
-    case cookie
+    case id
 }

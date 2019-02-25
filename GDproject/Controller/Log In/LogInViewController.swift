@@ -21,9 +21,10 @@ class LogInViewController: UIViewController {
             if !authenticateSucceeded! {
                 indicatorView.stopAnimating()
                 indicatorView.isHidden = true
-            }
+            } 
         }
     }
+    
     static let titleColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 0.5)
     
     var bottomConstraint: NSLayoutConstraint?
