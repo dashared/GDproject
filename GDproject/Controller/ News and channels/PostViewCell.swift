@@ -13,12 +13,14 @@ import TinyConstraints
 
 class PostViewCell: UITableViewCell
 {
-    let nameLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        label.text = "vbogomazova"
-        label.font = UIFont.boldSystemFont(ofSize: 16)
-        return label
+    var onUserDisplay: ((Int)->())?
+    
+    let nameLabel: UIButton = {
+        let button = UIButton()
+        button.setTitleColor(.black, for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.contentHorizontalAlignment = UIControl.ContentHorizontalAlignment.left
+        return button
     }()
     
     let fullNameLabel: UILabel = {
@@ -56,19 +58,19 @@ class PostViewCell: UITableViewCell
         let markdownParser = MarkdownParser(font: UIFont.systemFont(ofSize: 16))
         let markdown = text
         markdownParser.enabledElements = .disabledAutomaticLink
-        markdownParser.header.fontIncrease = 6
+        markdownParser.header.fontIncrease = 16
         markdownParser.code.textBackgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         
         let textView = UITextView()
         textView.isScrollEnabled = false
         textView.isEditable = false
-        textView.isUserInteractionEnabled = false
+        //textView.isUserInteractionEnabled = false
+        textView.isSelectable = true
         textView.attributedText = markdownParser.parse(markdown)
         return textView
     }
     
     var views: [UIView] = []
-    var data : [UIImage] = []
     var post: Model.Posts?
     
     func fill(with info: [Model.Attachments], _ isFullVersoin: Bool, post: Model.Posts)
@@ -77,14 +79,14 @@ class PostViewCell: UITableViewCell
         // important
         contentView.subviews.forEach({ $0.removeFromSuperview() })
         
-        data = []
         views = []
         for attachment in info
         {
             views.append(createTextView(with: attachment.markdown))
         }
         
-        nameLabel.text = "\(post.user?.firstName ?? "") \(post.user?.secondName ?? "")"
+        nameLabel.setTitle("\(post.user?.firstName ?? "") \(post.user?.secondName ?? "")", for: .normal)
+        nameLabel.addTarget(self, action: #selector(displayProfile), for: .touchUpInside)
         fullNameLabel.text = "\(post.authorId)"
         setUpInStackView(isFullVersoin)
     }
@@ -161,5 +163,10 @@ class PostViewCell: UITableViewCell
         commentsSharesStackView.distribution = .equalSpacing
         commentsSharesStackView.edgesToSuperview(excluding: .top, insets: .bottom(10) + .left(16) + .right(16))
         stackView.bottomToTop(of: commentsSharesStackView)
+    }
+    
+    @objc func displayProfile(){
+        print("buttonTapped")
+        onUserDisplay?(post!.authorId)
     }
 }

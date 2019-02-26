@@ -42,6 +42,7 @@ class ProfileViewController: UIViewController
     var user: Model.Users? {
         didSet {
             self.fill(with: user!)
+            navigationItem.title = "\(user?.id ?? 0)"
         }
     }
     
@@ -79,8 +80,14 @@ class ProfileViewController: UIViewController
         tableView.reloadData()
     }
     
+    var idProfile: Int?
+    
     override func viewWillAppear(_ animated: Bool) {
-        if let id = DataStorage.standard.getUserId() {
+        if idProfile == nil {
+            idProfile = DataStorage.standard.getUserId()
+        }
+        
+        if let id = idProfile {
             if let user = Model.idUser[id] {
                 self.user = user
             } else {
@@ -99,7 +106,7 @@ class ProfileViewController: UIViewController
     
     func setUpNavigarionBar(){
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = "\(DataStorage.standard.getUserId() ?? 0)"
+        //navigationItem.title = "\(user?.id ?? 0)"
         let uibarbutton = UIBarButtonItem(title: "More", style: .plain, target: self, action: #selector(showInformation))
         navigationItem.rightBarButtonItems = [uibarbutton]
         navigationItem.largeTitleDisplayMode = .always

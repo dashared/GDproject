@@ -41,3 +41,6 @@ let newsController = "NewsController"
 
 /// constant for switching to view controller for log in app
 let logInController = "LogInController"
+
+
+let profileViewController = "ProfileViewController"

@@ -38,6 +38,13 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
         let cell = tableView.dequeueReusableCell(withIdentifier: postCellId, for: indexPath) as! PostViewCell
         
         cell.fill(with: dataSourse[indexPath.row].body, false, post: dataSourse[indexPath.row])
+        
+        cell.onUserDisplay = { [weak self] (id) in
+            let vc = self?.viewController!.storyboard!.instantiateViewController(withIdentifier: profileViewController) as! ProfileViewController
+            vc.idProfile = id
+            self?.viewController!.navigationController!.pushViewController(vc, animated: true)
+        }
+        
         cell.selectionStyle = .none
         return cell
     }
