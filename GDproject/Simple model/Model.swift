@@ -10,13 +10,16 @@ import Foundation
 import Alamofire
 
 class Model{
-    static var url = URL(string:"https://valera-denis.herokuapp.com/authenticate")!
-    static var url1 = URL(string:"https://valera-denis.herokuapp.com/posts/last")!
-    static var urlForDrafts = URL(string:"https://valera-denis.herokuapp.com/drafts/create")!
-    static var urlForPublish = URL(string:"https://valera-denis.herokuapp.com/drafts/publish")!
-    static var urlForUpdate = URL(string:"https://valera-denis.herokuapp.com/drafts/update")!
-    static var urlForPostsForUser = URL(string:"https://valera-denis.herokuapp.com/posts/forUser")!
-    static var urlForUsers = URL(string:"https://valera-denis.herokuapp.com/users")!
+    
+    private static let baseUrl = "https://valera-denis.herokuapp.com"
+    
+    static let url = URL(string:"\(baseUrl)/authenticate")!
+    static let url1 = URL(string:"\(baseUrl)/posts/last")!
+    static let urlForDrafts = URL(string:"\(baseUrl)/drafts/create")!
+    static let urlForPublish = URL(string:"\(baseUrl)/drafts/publish")!
+    static let urlForUpdate = URL(string:"\(baseUrl)/drafts/update")!
+    static let urlForPostsForUser = URL(string:"\(baseUrl)/posts/forUser")!
+    static let urlForUsers = URL(string:"\(baseUrl)/users")!
     
     struct Posts: Codable {
         var body: [Attachments]
