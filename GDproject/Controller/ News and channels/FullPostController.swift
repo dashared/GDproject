@@ -23,7 +23,7 @@ class FullPostController: UITableViewController {
     }
 
     func setUpNavigationBar(){
-        navigationController?.navigationBar.prefersLargeTitles = false
+        navigationItem.largeTitleDisplayMode = .never
         navigationItem.title = "\(post?.authorId ?? 0)"
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(self.options))]
     }
@@ -92,6 +92,7 @@ class FullPostController: UITableViewController {
         // TODO: make different cells for sections with switch
         
         let cell = tableView.dequeueReusableCell(withIdentifier: postCellId) as! PostViewCell
+        
         
         cell.fill(with: post!.body, true, post: post!)
         cell.selectionStyle = .none

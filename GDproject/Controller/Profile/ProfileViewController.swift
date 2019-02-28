@@ -51,7 +51,14 @@ class ProfileViewController: UIViewController
     
     var dataSourse: [Model.Posts]?{
         didSet{
-            self.posts.dataSourse = dataSourse!
+            
+            var newPosts: [Model.Posts] = []
+            
+            dataSourse?.forEach({ (post) in
+                newPosts.append(Model.Posts(body: post.body, authorId: post.authorId, id: post.id, user: user!))
+            })
+            
+            self.posts.dataSourse = newPosts
             tableView.reloadData()
         }
     }
@@ -136,7 +143,7 @@ class ProfileViewController: UIViewController
         let logoutAction = UIAlertAction(title: "Log out", style: .destructive)
         {
             (_) in
-            DataStorage.standard.setIsLoggedIn(value: false)
+            DataStorage.standard.setIsLoggedIn(value: false, with: 0)
         }
         
         optionMenu.addAction(editAction)

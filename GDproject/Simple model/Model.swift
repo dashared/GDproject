@@ -85,14 +85,14 @@ class Model{
             
             HTTPCookieStorage.shared.setCookie(cookies[0])
             
-            DataStorage.standard.setIsLoggedIn(value: true)
+            DataStorage.standard.setIsLoggedIn(value: true, with: id)
             completion(true)
         }
     }
     
     
     static func getLast(completion: @escaping ((Channel)->())){
-        let jsonString = "100"
+        let jsonString = "30"
         var request = URLRequest(url: url1)
         
         request.httpMethod = "POST"

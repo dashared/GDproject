@@ -83,7 +83,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
         setUpSearchContr()
         
         news.viewController = self
-        news.type = .NONE
+        news.type = .NEWS
         
         setUpNavigationItemsforPosts()
 

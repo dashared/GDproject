@@ -23,8 +23,9 @@ class DataStorage{
     /**
       Function for setting log in status of user
      */
-    func setIsLoggedIn(value: Bool){
+    func setIsLoggedIn(value: Bool, with id: Int){
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.loggedIn.rawValue)
+        setUserKey(with: id)
         isLoggedIn = UserDefaults.standard.bool(forKey: UserDefaultsKeys.loggedIn.rawValue)
     }
     
@@ -32,15 +33,16 @@ class DataStorage{
         UserDefaults.standard.set(id, forKey: UserDefaultsKeys.id.rawValue)
     }
     
-    func getUserId() -> Int?{
+    func getUserId() -> Int {
         return UserDefaults.standard.integer(forKey: UserDefaultsKeys.id.rawValue)
     }
+    
     /**
      Function to determine is user logged in already or not
     */
     var isLoggedIn: Bool = UserDefaults.standard.bool(forKey: UserDefaultsKeys.loggedIn.rawValue) {
         didSet{
-            if isLoggedIn {
+            if isLoggedIn  && getUserId() != 0 {
                 (UIApplication.shared.delegate as? AppDelegate)?.tabCoordinator.start()
             } else {
                 (UIApplication.shared.delegate as? AppDelegate)?.logInAgain()

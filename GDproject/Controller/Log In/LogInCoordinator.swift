@@ -23,18 +23,21 @@ class LogInCoordinator{
     }
     
     // MARK: - Private implementation
-    private func showStatusPage(){
-        let controller = TabbarCoordinator(window: window)
-        controller.start()
-    }
+//    private func showStatusPage(){
+//        let controller = TabbarCoordinator(window: window)
+//        controller.start()
+//    }
     
     private func showLogInPage(){
         let controller = UIStoryboard.makeLogIn()
+        
         controller.onLogIn = {
-            (id) in
-            Model.authenticate(with: id) {
+            (id) in Model.authenticate(with: id) {
                 (res) in
+                
                 if (res) { DataStorage.standard.setUserKey(with: id) }
+                else { DataStorage.standard.setUserKey(with: 0) }
+                
                 controller.authenticateSucceeded = res
             }
         }

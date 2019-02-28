@@ -39,10 +39,17 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
         
         cell.fill(with: dataSourse[indexPath.row].body, false, post: dataSourse[indexPath.row])
         
-        cell.onUserDisplay = { [weak self] (id) in
-            let vc = self?.viewController!.storyboard!.instantiateViewController(withIdentifier: profileViewController) as! ProfileViewController
-            vc.idProfile = id
-            self?.viewController!.navigationController!.pushViewController(vc, animated: true)
+        switch type {
+        case .NEWS:
+            cell.onUserDisplay = { [weak self] (id) in
+                let vc = self?.viewController!.storyboard!.instantiateViewController(withIdentifier: profileViewController) as! ProfileViewController
+                vc.idProfile = id
+                self?.viewController!.navigationController!.pushViewController(vc, animated: true)
+            }
+        case .NONE:
+            cell.onUserDisplay = { (id) in
+                print("tapped when profile is open already \(id)")
+            }
         }
         
         cell.selectionStyle = .none

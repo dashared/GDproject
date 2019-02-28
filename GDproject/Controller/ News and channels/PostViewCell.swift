@@ -53,19 +53,22 @@ class PostViewCell: UITableViewCell
         fatalError("init(coder:) has not been implemented")
     }
     
-    func createTextView(with text: String) -> UITextView
+    func createTextView(with text: String, _ isSelectable: Bool) -> UITextView
     {
         let markdownParser = MarkdownParser(font: UIFont.systemFont(ofSize: 16))
         let markdown = text
         markdownParser.enabledElements = .disabledAutomaticLink
-        markdownParser.header.fontIncrease = 16
         markdownParser.code.textBackgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         
         let textView = UITextView()
         textView.isScrollEnabled = false
         textView.isEditable = false
-        //textView.isUserInteractionEnabled = false
-        textView.isSelectable = true
+        if isSelectable {
+            //textView.isUserInteractionEnabled = false
+            textView.isSelectable = true
+        } else {
+            textView.isUserInteractionEnabled = false
+        }
         textView.attributedText = markdownParser.parse(markdown)
         return textView
     }
@@ -82,7 +85,7 @@ class PostViewCell: UITableViewCell
         views = []
         for attachment in info
         {
-            views.append(createTextView(with: attachment.markdown))
+            views.append(createTextView(with: attachment.markdown, isFullVersoin))
         }
         
         nameLabel.setTitle("\(post.user?.firstName ?? "") \(post.user?.secondName ?? "")", for: .normal)
@@ -91,7 +94,7 @@ class PostViewCell: UITableViewCell
         setUpInStackView(isFullVersoin)
     }
     
-    let hashtags = ["Kek", "Lol"]
+    let hashtags = ["Программная инженерия", "ПИ", "НИУ ВШЭ", "Наука"]
     func setUpInStackView(_ full : Bool){
         let nameStackView = UIStackView(arrangedSubviews: [nameLabel, fullNameLabel])
         nameStackView.axis = .vertical

@@ -53,14 +53,10 @@ class LogInViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // MARK:- uncomment when mail registration will be availiable
-        //self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        // MARK:- uncomment when mail registration will be availiable
-        //self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     private func configureTapgesture(){
@@ -97,6 +93,10 @@ class LogInViewController: UIViewController {
         
         setUpBarComponents()
         
+        configureKeyboardBehavior()
+    }
+    
+    func configureKeyboardBehavior(){
         bottomConstraint = NSLayoutConstraint(item: keyboardBar, attribute: .bottom, relatedBy: .equal, toItem: view.safeAreaLayoutGuide, attribute: .bottom, multiplier: 1, constant: 0)
         view.addConstraint(bottomConstraint!)
         

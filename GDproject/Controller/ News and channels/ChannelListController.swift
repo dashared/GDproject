@@ -60,7 +60,7 @@ class ChannelListController: UITableViewController, DataDelegate {
     }
     
     func setUpNavigationBar(){
-        navigationController?.navigationItem.largeTitleDisplayMode = .always
+        navigationItem.largeTitleDisplayMode = .always
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addChannel))]
     }
     
