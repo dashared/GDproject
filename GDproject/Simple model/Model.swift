@@ -20,6 +20,7 @@ class Model{
     static let urlForUpdate = URL(string:"\(baseUrl)/drafts/update")!
     static let urlForPostsForUser = URL(string:"\(baseUrl)/posts/forUser")!
     static let urlForUsers = URL(string:"\(baseUrl)/users")!
+    static let createAndPublishURL = URL(string:"\(baseUrl)/drafts/createAndPublish")!
     
     struct Posts: Codable {
         var body: [Attachments]
@@ -148,46 +149,16 @@ class Model{
         }
     }
     
-    static var seeMe: Int = 0 {
-        didSet{
-            publish()
-        }
-    }
     
-    static func publish(){
-        let jsonUpd = "\(seeMe)"
-        var request = URLRequest(url: urlForPublish)
-        
-        request.httpMethod = "POST"
-        
-        // insert json data to the request
-        request.httpBody = jsonUpd.data(using: .utf8)
-        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        AF.request(request).response {
-            (response) in
-            
-            if response.response?.statusCode == 204 {
-                print("successfuly published \(jsonUpd)")
-            }
-        }
-    }
-    
-    static func update(post: Posts){
-        let transformed = post.body.reduce("") { (res, att) -> String in
-            res  + att.markdown
-        }
-        
+    static func createAndPublish(string: String){
         let jsonUpd = """
-            {
-            "body": [
-                        {
-                            "markdown": "\(transformed)"
-                        }
-                    ],
-            "id": \(post.id)
-            }
+            [
+                {
+                    "markdown": "\(string)"
+                }
+            ]
         """
-        var request = URLRequest(url: urlForUpdate)
+        var request = URLRequest(url: createAndPublishURL)
         
         request.httpMethod = "POST"
         
@@ -198,10 +169,9 @@ class Model{
             (response) in
             
             if response.response?.statusCode == 204 {
-                print("successfuly updated \(post.id) with \(jsonUpd)")
-                seeMe = post.id
+                print("post created")
             } else {
-                print(response.response?.statusCode)
+                print("failure in creating and publishing post")
             }
         }
     }

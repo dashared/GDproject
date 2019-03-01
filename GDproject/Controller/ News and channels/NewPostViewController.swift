@@ -46,24 +46,13 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        Model.createDraft { [weak self] (int) in
-            self?.indexOfPost = int
-        }
         //createTimerForUpdates()
         
         setUpMD()
         setUpTextView()
         setUpAccessoryView()
     }
-    
-    func createTimerForUpdates(){
-        // timer for update
-        let t = RepeatingTimer(timeInterval: 15)
-        t.eventHandler = { [unowned self] in
-            Model.update(post: Model.Posts(body: [Model.Attachments(markdown: self.textView.text)], authorId: 42, id: self.indexOfPost))
-        }
-        t.resume()
-    }
+
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -204,7 +193,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
     var indexOfPost = 0
     // MARK:- new post
     @objc func newPost(){
-        Model.update(post: Model.Posts(body: [Model.Attachments(markdown: textView.text)], authorId: 42, id: indexOfPost))
+        Model.createAndPublish(string: textView.text!)
         // adding row to uiTableView after adding new post
         // myProtocol?.addPost(post: p)
         moveBackToParentVC()

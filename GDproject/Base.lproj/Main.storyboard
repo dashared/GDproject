@@ -414,7 +414,7 @@
         <scene sceneID="RSd-UJ-34B">
             <objects>
                 <navigationController storyboardIdentifier="navChannels" automaticallyAdjustsScrollViewInsets="NO" id="NuV-ZG-ld2" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Posts" id="dH2-sL-YsR"/>
+                    <tabBarItem key="tabBarItem" title="Posts" image="5" selectedImage="5" id="dH2-sL-YsR"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="6qB-3A-tuL">
                         <rect key="frame" x="0.0" y="20" width="375" height="96"/>
@@ -453,7 +453,7 @@
         <scene sceneID="dJj-Hp-Wa9">
             <objects>
                 <navigationController storyboardIdentifier="navPosts" automaticallyAdjustsScrollViewInsets="NO" id="tae-5q-wvT" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Profile" id="lYy-LQ-AcR"/>
+                    <tabBarItem key="tabBarItem" title="Profile" image="1" selectedImage="1" id="lYy-LQ-AcR"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="q3a-ph-c8V">
                         <rect key="frame" x="0.0" y="20" width="375" height="96"/>
@@ -501,4 +501,8 @@
             <point key="canvasLocation" x="-466" y="641"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="1" width="30" height="30"/>
+        <image name="5" width="30" height="30"/>
+    </resources>
 </document>
