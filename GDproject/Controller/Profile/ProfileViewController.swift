@@ -33,10 +33,15 @@ class ProfileViewController: UIViewController
     
     func fill(with user: Model.Users){
         self.facultyLabel.text = "Студент: Факультет Компьютерных Наук"
-        self.nameLabel.text = "\(user.firstName)"
-        self.surnameLabel.text = "\(user.secondName)"
+        self.nameLabel.text = "\(user.firstName) \(user.middleName)"
+        self.surnameLabel.text = "\(user.lastName)"
         self.profileImageView.image = #imageLiteral(resourceName: "kitten").roundedImage
-        self.placeLabel.text = "Москва"
+        self.placeLabel.text = "📍Москва, Кочновский пр.3"
+        if user.id == DataStorage.standard.getUserId(){
+            newMessageButton.isHidden  = true
+        } else {
+            newMessageButton.isHidden  = false
+        }
     }
     
     var user: Model.Users? {
@@ -55,7 +60,7 @@ class ProfileViewController: UIViewController
             var newPosts: [Model.Posts] = []
             
             dataSourse?.forEach({ (post) in
-                newPosts.append(Model.Posts(body: post.body, authorId: post.authorId, id: post.id, user: user!))
+                newPosts.append(Model.Posts(body: post.body, authorId: post.authorId, id: post.id, user: user!, date: post.updated))
             })
             
             self.posts.dataSourse = newPosts

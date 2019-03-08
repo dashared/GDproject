@@ -132,9 +132,7 @@ class LogInViewController: UIViewController {
             
             UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
                 self.view.layoutIfNeeded()
-            }) { (completed) in
-                
-            }
+            })
         }
     }
     

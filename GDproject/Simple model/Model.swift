@@ -10,46 +10,61 @@ import Foundation
 import Alamofire
 
 class Model{
+    static let invalidTocken = 498
+    private static var isValidTocken: ((Int)->())? = {
+        responce in
+        if responce == invalidTocken {
+            DataStorage.standard.setIsLoggedIn(value: false, with: 0)
+        }
+    }
     
     private static let baseUrl = "https://valera-denis.herokuapp.com"
     
-    static let url = URL(string:"\(baseUrl)/authenticate")!
+    static let url = URL(string:"\(baseUrl)/authentication/login")!
     static let url1 = URL(string:"\(baseUrl)/posts/last")!
     static let urlForDrafts = URL(string:"\(baseUrl)/drafts/create")!
     static let urlForPublish = URL(string:"\(baseUrl)/drafts/publish")!
     static let urlForUpdate = URL(string:"\(baseUrl)/drafts/update")!
     static let urlForPostsForUser = URL(string:"\(baseUrl)/posts/forUser")!
     static let urlForUsers = URL(string:"\(baseUrl)/users")!
-    static let createAndPublishURL = URL(string:"\(baseUrl)/drafts/createAndPublish")!
+    static let createAndPublishURL = URL(string:"\(baseUrl)/posts/publish")!
+    
+    
+    struct QueryPosts: Codable{
+        var users: [Int: Users]
+        var posts: [Posts]
+    }
     
     struct Posts: Codable {
         var body: [Attachments]
         var authorId: Int
         var id: Int
         var user: Model.Users?
+        var updated: String
         
-        init(body: [Attachments], authorId: Int, id: Int) {
+        init(body: [Attachments], authorId: Int, id: Int, date: String) {
             self.body = body
             self.authorId = authorId
             self.id = id
+            self.updated = date
         }
         
-        init(body: [Attachments], authorId: Int, id: Int, user: Model.Users) {
+        init(body: [Attachments], authorId: Int, id: Int, user: Model.Users,  date: String) {
             self.body = body
             self.authorId = authorId
             self.id = id
             self.user = user
-        }
-        
-        mutating func setUser(with: Users){
-            self.user = with
+            self.updated = date
         }
     }
     
     struct Users: Codable{
-        var secondName: String
+        
+        var middleName: String
+        var lastName: String
         var firstName: String
         var id: Int
+        
     }
     
     struct Attachments: Codable {
@@ -74,8 +89,15 @@ class Model{
         
         AF.request(request).response { (responce) in
             
-            guard let realResponse = responce.response, realResponse.statusCode == 204 else {
-                print("Not a 204 response")
+            guard let realResponse = responce.response, realResponse.statusCode == 200 else
+            {
+                print("Not a 200 response")
+                completion(false)
+                return
+            }
+            
+            guard let json = responce.data else { return }
+            guard let personId = Int(String(data: json, encoding: String.Encoding.utf8)!) else {
                 completion(false)
                 return
             }
@@ -86,13 +108,13 @@ class Model{
             
             HTTPCookieStorage.shared.setCookie(cookies[0])
             
-            DataStorage.standard.setIsLoggedIn(value: true, with: id)
+            DataStorage.standard.setIsLoggedIn(value: true, with: personId)
             completion(true)
         }
     }
     
     
-    static func getLast(completion: @escaping ((Channel)->())){
+    static func getLast(completion: @escaping (((users:[Int: Users], channel:Channel))->())){
         let jsonString = "30"
         var request = URLRequest(url: url1)
         
@@ -105,18 +127,15 @@ class Model{
         AF.request(request).responseJSON {
             (response) in
             
-            if response.response?.statusCode == 200 {
-                print("success")
-            } else {
-                print(response.response?.statusCode)
-            }
+            isValidTocken?(response.response?.statusCode ?? 498)
             
             let decoder = JSONDecoder()
             guard let json = response.data else { return }
-        
-            guard let newPost = try? decoder.decode([Posts].self, from: json) else {  return }
             
-            completion(Channel(title: "# General", subtitle: "No subtitle", hashtags: ["ПИ"], people: ["No"], posts: newPost))
+            guard let newQueery = try? decoder.decode(QueryPosts.self, from: json) else { print("no")
+                return }
+            
+            completion((newQueery.users, Channel(title: "# General", subtitle: "No subtitle", hashtags: ["ПИ"], people: ["No"], posts: newQueery.posts)))
         }
     }
     
@@ -168,11 +187,7 @@ class Model{
         AF.request(request).response {
             (response) in
             
-            if response.response?.statusCode == 204 {
-                print("post created")
-            } else {
-                print("failure in creating and publishing post")
-            }
+            isValidTocken?(response.response?.statusCode ?? 498)
         }
     }
     
@@ -202,9 +217,9 @@ class Model{
             let decoder = JSONDecoder()
             guard let json = response.data else { return }
             
-            guard let newPost = try? decoder.decode([Posts].self, from: json) else {  return }
+            guard let newPost = try? decoder.decode(QueryPosts.self, from: json) else {  return }
             
-            completion(newPost)
+            completion(newPost.posts)
         }
     }
     

@@ -88,7 +88,7 @@ class PostViewCell: UITableViewCell
             views.append(createTextView(with: attachment.markdown, isFullVersoin))
         }
         
-        nameLabel.setTitle("\(post.user?.firstName ?? "") \(post.user?.secondName ?? "")", for: .normal)
+        nameLabel.setTitle("\(post.user?.firstName ?? "") \(post.user?.lastName ?? "")", for: .normal)
         nameLabel.addTarget(self, action: #selector(displayProfile), for: .touchUpInside)
         fullNameLabel.text = "\(post.authorId)"
         setUpInStackView(isFullVersoin)

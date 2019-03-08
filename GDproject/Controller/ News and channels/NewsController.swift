@@ -33,9 +33,8 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
             var newPosts: [Model.Posts] = []
             
             channel?.posts.forEach({ (post) in
-                newPosts.append(Model.Posts(body: post.body, authorId: post.authorId, id: post.id, user: dictionary![post.authorId]!))
+                newPosts.append(Model.Posts(body: post.body, authorId: post.authorId, id: post.id, user: dictionary![post.authorId]!, date: post.updated))
             })
-            
             
             news.dataSourse = newPosts
             tableView.reloadData()
@@ -44,15 +43,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
     
     var channel: Channel?{
         didSet{
-            let hh = channel?.posts.map({ (post) -> Int in
-                post.authorId
-            })
-            
             navigationItem.title = channel?.title ?? ""
-            Model.getUsers(for: hh ?? []) { [weak self] (dict) in
-                self?.dictionary = dict
-                self?.refreshContr.endRefreshing()
-            }
         }
     }
     
@@ -99,8 +90,9 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
     }
     
     @objc func refreshPostsData( _ ff: UIRefreshControl){
-        Model.getLast { [weak self] (channel) in
-            self?.channel = channel
+        Model.getLast { [weak self] (tuple) in
+            self?.channel = tuple.channel
+            self?.dictionary = tuple.users
             self?.refreshContr.endRefreshing()
         }
     }
@@ -124,8 +116,9 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
         searchController.isActive = false
         // TODO:- display something if no posts are availiable
         
-        Model.getLast { [weak self] (channel) in
-            self?.channel = channel
+        Model.getLast {
+            self.channel = $0.channel
+            self.dictionary = $0.users
         }
         
         // tableView.reloadData()
