@@ -94,7 +94,7 @@ class FullPostController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: postCellId) as! PostViewCell
         
         
-        cell.fill(with: post!.body, true, post: post!)
+        cell.fill(with: PostCellData.create(with: post!.body), true, post: post!)
         cell.selectionStyle = .none
         return cell
     }

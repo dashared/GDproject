@@ -135,6 +135,7 @@ class Model{
             guard let newQueery = try? decoder.decode(QueryPosts.self, from: json) else { print("no")
                 return }
             
+            idUser = newQueery.users
             completion((newQueery.users, Channel(title: "# General", subtitle: "No subtitle", hashtags: ["ПИ"], people: ["No"], posts: newQueery.posts)))
         }
     }

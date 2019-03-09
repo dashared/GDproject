@@ -53,13 +53,8 @@ class PostViewCell: UITableViewCell
         fatalError("init(coder:) has not been implemented")
     }
     
-    func createTextView(with text: String, _ isSelectable: Bool) -> UITextView
+    func createTextView(with text: NSAttributedString, _ isSelectable: Bool) -> UITextView
     {
-        let markdownParser = MarkdownParser(font: UIFont.systemFont(ofSize: 16))
-        let markdown = text
-        markdownParser.enabledElements = .disabledAutomaticLink
-        markdownParser.code.textBackgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-        
         let textView = UITextView()
         textView.isScrollEnabled = false
         textView.isEditable = false
@@ -69,24 +64,22 @@ class PostViewCell: UITableViewCell
         } else {
             textView.isUserInteractionEnabled = false
         }
-        textView.attributedText = markdownParser.parse(markdown)
+        
+        textView.attributedText = text
         return textView
     }
     
     var views: [UIView] = []
     var post: Model.Posts?
     
-    func fill(with info: [Model.Attachments], _ isFullVersoin: Bool, post: Model.Posts)
+    func fill(with info: NSAttributedString, _ isFullVersoin: Bool, post: Model.Posts)
     {
         self.post = post
         // important
         contentView.subviews.forEach({ $0.removeFromSuperview() })
         
         views = []
-        for attachment in info
-        {
-            views.append(createTextView(with: attachment.markdown, isFullVersoin))
-        }
+        views.append(createTextView(with: info, isFullVersoin))
         
         nameLabel.setTitle("\(post.user?.firstName ?? "") \(post.user?.lastName ?? "")", for: .normal)
         nameLabel.addTarget(self, action: #selector(displayProfile), for: .touchUpInside)

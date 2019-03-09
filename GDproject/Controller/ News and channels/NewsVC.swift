@@ -7,10 +7,35 @@
 //
 
 import UIKit
+import MarkdownKit
+
+struct PostCellData{
+    var attributedData = NSAttributedString()
+    
+    static func create(with attachments: [Model.Attachments]) -> NSAttributedString{
+        var markdown = ""
+        
+        attachments.forEach { (attachment) in markdown.append(attachment.markdown) }
+        
+        let markdownParser = MarkdownParser(font: UIFont.systemFont(ofSize: 16))
+        markdownParser.enabledElements = .disabledAutomaticLink
+        markdownParser.code.textBackgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        
+        return markdownParser.parse(markdown)
+    }
+}
 
 class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
-    var dataSourse: [Model.Posts] = []
+    var dataSourse: [Model.Posts] = []{
+        didSet{
+            dataSourse.forEach { (item) in
+                cellDataSourse.append(PostCellData(attributedData: PostCellData.create(with: item.body)))
+            }
+        }
+    }
+    
+    var cellDataSourse: [PostCellData] = []
     
     var type: HeaderType = .NONE
     
@@ -37,7 +62,7 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: postCellId, for: indexPath) as! PostViewCell
         
-        cell.fill(with: dataSourse[indexPath.row].body, false, post: dataSourse[indexPath.row])
+        cell.fill(with: cellDataSourse[indexPath.row].attributedData, false, post: dataSourse[indexPath.row])
         
         switch type {
         case .NEWS:
