@@ -56,6 +56,21 @@ class Model{
             self.user = user
             self.updated = date
         }
+        
+        func convertDateFormatter() -> String
+        {
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"//this your string date format
+            dateFormatter.timeZone = NSTimeZone(name: "UTC") as TimeZone!
+            let date = dateFormatter.date(from: updated)
+            
+            dateFormatter.dateFormat = "MMM d, yyyy HH:mm" ///this is what you want to convert format
+            dateFormatter.timeZone = NSTimeZone(name: "UTC") as TimeZone!
+            let timeStamp = dateFormatter.string(from: date!)
+            
+            return timeStamp
+        }
     }
     
     struct Users: Codable{

@@ -37,12 +37,14 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
             })
             
             news.dataSourse = newPosts
+            print("and heeeere in dict")
             tableView.reloadData()
         }
     }
     
     var channel: Channel?{
         didSet{
+            print(channel!.posts.count)
             navigationItem.title = channel?.title ?? ""
         }
     }
@@ -90,6 +92,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
     }
     
     @objc func refreshPostsData( _ ff: UIRefreshControl){
+        print("I am here")
         Model.getLast { [weak self] (tuple) in
             self?.channel = tuple.channel
             self?.dictionary = tuple.users

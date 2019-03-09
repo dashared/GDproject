@@ -31,7 +31,7 @@ class PostViewCell: UITableViewCell
         return label
     }()
     
-    let commentsLabel: UILabel = {
+    let timeLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12)
         label.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
@@ -84,6 +84,7 @@ class PostViewCell: UITableViewCell
         nameLabel.setTitle("\(post.user?.firstName ?? "") \(post.user?.lastName ?? "")", for: .normal)
         nameLabel.addTarget(self, action: #selector(displayProfile), for: .touchUpInside)
         fullNameLabel.text = "\(post.authorId)"
+    
         setUpInStackView(isFullVersoin)
     }
     
@@ -151,10 +152,11 @@ class PostViewCell: UITableViewCell
 
         stackView.edgesToSuperview(excluding: [.top, .bottom], insets: .left(16) + .right(16))
         
-        let commentsSharesStackView = UIStackView(arrangedSubviews: [ commentsLabel, shareButton])
+        let commentsSharesStackView = UIStackView(arrangedSubviews: [ timeLabel, shareButton])
         contentView.addSubview(commentsSharesStackView)
         
-        commentsLabel.text = "14.02.19 в 23:00"
+        timeLabel.text = post!.convertDateFormatter()
+        
         commentsSharesStackView.axis = .horizontal
         commentsSharesStackView.distribution = .equalSpacing
         commentsSharesStackView.edgesToSuperview(excluding: .top, insets: .bottom(10) + .left(16) + .right(16))

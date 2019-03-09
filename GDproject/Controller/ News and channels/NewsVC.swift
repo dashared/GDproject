@@ -29,6 +29,7 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     var dataSourse: [Model.Posts] = []{
         didSet{
+            cellDataSourse = []
             dataSourse.forEach { (item) in
                 cellDataSourse.append(PostCellData(attributedData: PostCellData.create(with: item.body)))
             }
