@@ -10,7 +10,9 @@ import Foundation
 import Alamofire
 
 class Model{
+    
     static let invalidTocken = 498
+    
     private static var isValidTocken: ((Int)->())? = {
         responce in
         print("\(responce)")
@@ -20,6 +22,7 @@ class Model{
     }
     
     private static let baseUrl = "https://valera-denis.herokuapp.com"
+    static let decoder = JSONDecoder()
     
     static let url = URL(string:"\(baseUrl)/authentication/login")!
     static let url1 = URL(string:"\(baseUrl)/posts/last")!
@@ -27,6 +30,9 @@ class Model{
     static let urlForUsers = URL(string:"\(baseUrl)/users")!
     static let createAndPublishURL = URL(string:"\(baseUrl)/posts/publish")!
     static let channelsGetURL = URL(string: "\(baseUrl)/channels/get")!
+    static let channelsUpdateURL = URL(string: "\(baseUrl)/channels/update")!
+    static let channelsListURL = URL(string: "\(baseUrl)/channels")!
+    static let channelsCreateURL = URL(string: "\(baseUrl)/channels/create")!
     
     
     struct QueryPosts: Codable{
@@ -117,6 +123,43 @@ class Model{
         }
     }
     
+    struct Channels: Codable {
+        
+        var people: [Int]
+        var name: String
+        var id: Int?
+        var tags: [String]
+        
+        enum CodingKeys: String, CodingKey {
+            case people
+            case name
+            case id
+            case tags
+        }
+        
+        init(people: [Int], name: String, id: Int, tags: [String]) {
+            self.id = id
+            self.people = people
+            self.tags = tags
+            self.name = name
+        }
+        
+        init(people: [Int], name: String, tags: [String]) {
+            self.people = people
+            self.tags = tags
+            self.name = name
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(people, forKey: .people)
+            try container.encode(name, forKey: .name)
+            // try container.encode(id, forKey: .id)
+            try container.encode(tags, forKey: .tags)
+        }
+        
+    }
+    
     static func authenticate(with id: Int, completion: @escaping ((Bool)->())) {
         
         let json: [String:Any] = ["authenticationId" : id]
@@ -156,7 +199,7 @@ class Model{
     }
     
     
-    static func getLast(completion: @escaping (((users:[Int: Users], channel:Channel))->())){
+    static func getLast(completion: @escaping (((users:[Int: Users], posts:[Posts]))->())){
         let jsonString = "30"
         var request = URLRequest(url: url1)
         
@@ -171,21 +214,19 @@ class Model{
             
             isValidTocken?(response.response?.statusCode ?? 498)
             
-            let decoder = JSONDecoder()
             guard let json = response.data else { return }
             
             guard let newQueery = try? decoder.decode(QueryPosts.self, from: json) else { print("no")
                 return }
             
             idUser = newQueery.users
-            completion((newQueery.users, Channel(title: "# General", subtitle: "No subtitle", hashtags: ["ПИ"], people: ["No"], posts: newQueery.posts)))
+            completion((newQueery.users, newQueery.posts))
         }
     }
     
     
     static func createAndPublish(body: [Attachments], tags: [String]){
         let jsonUpd = CreatedPost(body: body, tags: tags)
-        
         var request = URLRequest(url: createAndPublishURL)
         
         request.httpMethod = "POST"
@@ -220,11 +261,8 @@ class Model{
         AF.request(request).responseJSON {
             (response) in
             
-            if response.response?.statusCode == 200 {
-                print("success")
-            }
+            isValidTocken?(response.response?.statusCode ?? 498)
             
-            let decoder = JSONDecoder()
             guard let json = response.data else { return }
             
             guard let newPost = try? decoder.decode(QueryPosts.self, from: json) else {  return }
@@ -249,11 +287,8 @@ class Model{
         AF.request(request).responseJSON {
             (response) in
             
-            if response.response?.statusCode == 200 {
-                print("successddd")
-            }
+            isValidTocken?(response.response?.statusCode ?? 498)
             
-            let decoder = JSONDecoder()
             guard let json = response.data else { return }
             
             guard let users = try? decoder.decode([Users].self, from: json) else {  return }
@@ -267,7 +302,7 @@ class Model{
     }
     
     // get channel (with id): in responce -- PostQuery
-    static func getChannels(with channelId: Int, completion: @escaping (([Posts])->())){
+    static func getChannel(with channelId: Int, completion: @escaping (((users:[Int: Users], posts:[Posts]))->())){
         let json = [
             "request" : channelId,
             "limit": 10
@@ -275,7 +310,7 @@ class Model{
         
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         
-        var request = URLRequest(url: urlForPostsForUser)
+        var request = URLRequest(url: channelsGetURL)
         request.httpMethod = "POST"
         
         // insert json data to the request
@@ -285,16 +320,48 @@ class Model{
         AF.request(request).responseJSON {
             (response) in
             
-            if response.response?.statusCode == 200 {
-                print("success")
-            }
+            isValidTocken?(response.response?.statusCode ?? 498)
             
-            let decoder = JSONDecoder()
+            
             guard let json = response.data else { return }
             
-            guard let newPost = try? decoder.decode(QueryPosts.self, from: json) else {  return }
+            guard let newQueery = try? decoder.decode(QueryPosts.self, from: json) else {  return }
             
-            completion(newPost.posts)
+            idUser = newQueery.users
+            completion((newQueery.users, newQueery.posts))
+        }
+    }
+    
+    
+    static func createChannel(with channel: Channels) {
+        
+        var request = URLRequest(url: channelsCreateURL)
+        request.httpMethod = "POST"
+        request.httpBody = try? JSONEncoder().encode(channel)
+        
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        AF.request(request).response {
+            (response) in
+            
+            isValidTocken?(response.response?.statusCode ?? 498)
+        }
+        
+    }
+    
+    static func channelsList(completion: @escaping (([Channels])->())){
+        var request = URLRequest(url: channelsListURL)
+        request.httpMethod = "POST"
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).responseJSON { (response) in
+            
+            isValidTocken?(response.response?.statusCode ?? 498)
+            
+            guard let json = response.data else { return }
+            
+            guard let channelsList = try? decoder.decode([Channels].self, from: json) else { return }
+            
+            completion(channelsList)
         }
     }
 }

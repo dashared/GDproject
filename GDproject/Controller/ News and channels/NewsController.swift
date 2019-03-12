@@ -11,7 +11,7 @@ import TinyConstraints
 import Cartography
 
 protocol UpdateableWithChannel: class {
-    var channel: Channel? { get set }
+    var channel: Model.Channels? { get set }
 }
 protocol NewPostDelegate {
     func addPost(post: Post)
@@ -23,8 +23,12 @@ protocol UpdateableWithUser: class {
 // Search is availiable within every table (posts and channels). Has button-functionality for boths post and chnnels
 class NewsController: UITableViewController, UISearchControllerDelegate, NewPostDelegate, UpdateableWithChannel, DataDelegate
 {
-    func passData(for row: Int, channel: Channel) {
-        self.channel = channel
+    func passData(for row: Int, channel: Model.Channels) {
+        if channel.id == -1{
+            self.channel = nil
+        } else {
+            self.channel = channel
+        }
     }
     
     var dictionary: [Int: Model.Users]?  {
@@ -32,7 +36,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
 
             var newPosts: [Model.Posts] = []
             
-            channel?.posts.forEach({ (post) in
+            posts!.forEach({ (post) in
                 newPosts.append(Model.Posts(body: post.body, authorId: post.authorId, id: post.id, user: dictionary![post.authorId]!, date: post.updated, tags: post.tags))
             })
             
@@ -42,10 +46,15 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
         }
     }
     
-    var channel: Channel?{
+    var posts: [Model.Posts]? {
         didSet{
-            print(channel!.posts.count)
-            navigationItem.title = channel?.title ?? ""
+            
+        }
+    }
+    
+    var channel: Model.Channels? {
+        didSet{
+            navigationItem.title = channel?.name ?? ""
         }
     }
     
@@ -94,7 +103,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
     @objc func refreshPostsData( _ ff: UIRefreshControl){
         print("I am here")
         Model.getLast { [weak self] (tuple) in
-            self?.channel = tuple.channel
+            self?.posts = tuple.posts
             self?.dictionary = tuple.users
             self?.refreshContr.endRefreshing()
         }
@@ -119,9 +128,21 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
         searchController.isActive = false
         // TODO:- display something if no posts are availiable
         
-        Model.getLast {
-            self.channel = $0.channel
-            self.dictionary = $0.users
+        if let channel = channel, let id = channel.id {
+            
+            Model.getChannel(with: id) { [weak self] in
+                self?.posts = $0.posts
+                self?.dictionary = $0.users
+            }
+            
+        } else{
+            
+            navigationItem.title = "@&% General"
+            Model.getLast { [weak self] in
+                self?.posts = $0.posts
+                self?.dictionary = $0.users
+            }
+            
         }
         
         // tableView.reloadData()

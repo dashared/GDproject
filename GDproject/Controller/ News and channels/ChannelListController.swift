@@ -17,13 +17,13 @@ struct ChannelData{
 class ChannelListController: UITableViewController, DataDelegate {
     
     // MARK: - Output -
-    var onChannelSelected: ((Channel) -> Void)?
+    var onChannelSelected: ((Model.Channels) -> Void)?
     
-    // MARK:- filter search controller
-    var filteredDataSource = [Channel]()
+    // MARK: - filter search controller
+    var filteredDataSource = [Model.Channels]()
     
     var myProtocol: DataDelegate?
-    var displayingChannel: Channel?
+    var displayingChannel: Model.Channels?
     
     var isFiltering: Bool {
         return searchController.isActive && !searchBarIsEmpty()
@@ -35,15 +35,15 @@ class ChannelListController: UITableViewController, DataDelegate {
     
     func filterContentForSearchText(_ searchText: String, scope: String = "All")
     {
-        filteredDataSource = ChannelListController.dataSource.filter({(keys : Channel) -> Bool in
-            return keys.title.lowercased().contains(searchText.lowercased())
+        filteredDataSource = dataSource.filter({(keys : Model.Channels) -> Bool in
+            return keys.name.lowercased().contains(searchText.lowercased())
         })
         
         tableView.reloadData()
     }
     
-    func passData(for row: Int, channel: Channel) {
-        ChannelListController.dataSource[row] = channel
+    func passData(for row: Int, channel: Model.Channels) {
+        dataSource[row] = channel
     }
     
     var searchController = UISearchController(searchResultsController: nil)
@@ -68,34 +68,37 @@ class ChannelListController: UITableViewController, DataDelegate {
     {
         super.viewWillAppear(animated)
         searchController.isActive = false
-        tableView.reloadData()
+        Model.channelsList { [weak self] (channels) in
+            self?.dataSource = [ChannelListController.generalChannel] + channels
+        }
     }
     
     @objc func addChannel()
     {
-        // insertion
-        tableView.beginUpdates()
-        ChannelListController.dataSource.insert(Channel(title: "Untitled", subtitle: "No", hashtags: [], people: [], posts: []), at: 1)
-        tableView.insertRows(at: [IndexPath(row: 1, section: 0)], with: .none)
-        tableView.endUpdates()
-        
         // editing mode is on automatically
         let vc = storyboard?.instantiateViewController(withIdentifier: channelControllerId) as! ChannelController
         vc.index = 1
         vc.myProtocol = self
-        vc.channel = ChannelListController.dataSource[1]
+        vc.channel = Model.Channels(people: [], name: "Untitled", tags: [])
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    static var dataSource : [Channel] = [
-        Channel(title: "General", subtitle: "All posts", hashtags: ["All"], people: ["All"], posts: [])
-    ]
+    static let generalChannel = Model.Channels(people: [], name: "General", id: -1, tags: [])
+    
+    var dataSource : [Model.Channels] = [
+        Model.Channels(people: [], name: "General", id: -1, tags: [])
+        ]
+    {
+        didSet{
+            self.tableView.reloadData()
+        }
+    }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isFiltering {
             return filteredDataSource.count
         } else {
-            return ChannelListController.dataSource.count
+            return dataSource.count
         }
     }
     
@@ -106,11 +109,11 @@ class ChannelListController: UITableViewController, DataDelegate {
         
         
         if isFiltering{
-            cell.textLabel?.text = filteredDataSource[indexPath.row].title
-            cell.detailTextLabel?.text = filteredDataSource[indexPath.row].subtitle
+            cell.textLabel?.text = filteredDataSource[indexPath.row].name
+            cell.detailTextLabel?.text = filteredDataSource[indexPath.row].tags.reduce(String(), { (r, next) -> String in "\(r) \(next)" })
         } else {
-            cell.textLabel?.text = ChannelListController.dataSource[indexPath.row].title
-            cell.detailTextLabel?.text = ChannelListController.dataSource[indexPath.row].subtitle
+            cell.textLabel?.text = dataSource[indexPath.row].name
+            cell.detailTextLabel?.text = dataSource[indexPath.row].tags.reduce(String(), { (r, next) -> String in "\(r) \(next)" })
         }
         
         return cell
@@ -133,19 +136,19 @@ class ChannelListController: UITableViewController, DataDelegate {
             let vc = self?.storyboard?.instantiateViewController(withIdentifier: channelControllerId) as! ChannelController
             vc.index = indexPath.row
             vc.myProtocol = self!
-            vc.channel = ChannelListController.dataSource[indexPath.row]
+            vc.channel = self?.dataSource[indexPath.row]
             self?.navigationController?.pushViewController(vc, animated: true)
         }
         editButton.backgroundColor = .green
         
         
         let deleteButton = UITableViewRowAction(style: .normal, title: "Delete") { [weak self] (action, indexPath) in
-            if (ChannelListController.dataSource[indexPath.row] == self!.displayingChannel!)
+            if (self!.dataSource[indexPath.row].id == self!.displayingChannel?.id ?? -1)
             {
-                self?.myProtocol?.passData(for: 0, channel: ChannelListController.dataSource[0])
+                self?.myProtocol?.passData(for: 0, channel: self!.dataSource[0])
             }
             self?.tableView.beginUpdates()
-            ChannelListController.dataSource.remove(at: indexPath.row)
+            self?.dataSource.remove(at: indexPath.row)
             self?.tableView.deleteRows(at: [indexPath], with: .none)
             self?.tableView.endUpdates()
         }
@@ -163,7 +166,7 @@ class ChannelListController: UITableViewController, DataDelegate {
             myProtocol?.passData(for: 0, channel: filteredDataSource[indexPath.row])
             navigationController?.popViewController(animated: true)
         } else {
-            myProtocol?.passData(for: 0, channel: ChannelListController.dataSource[indexPath.row])
+            myProtocol?.passData(for: 0, channel: dataSource[indexPath.row])
             navigationController?.popViewController(animated: true)
             //onChannelSelected?(ChannelListController.dataSource[indexPath.row])
         }
