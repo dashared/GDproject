@@ -39,15 +39,14 @@ class BasicInfoController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: basicInfoCellId, for: indexPath) as! BasicInfoCell
-            cell.fill(title: dataSourse[indexPath.section].title)
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+            cell.textLabel?.text = dataSourse[indexPath.section].title
             cell.accessoryType = .disclosureIndicator
             cell.selectionStyle = .none
             return cell
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: infoCellId, for: indexPath) as!  InfoCell
-            cell.fill(title: dataSourse[indexPath.section].sectionData[indexPath.row - 1])
-            cell.selectionStyle = .none
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+            cell.textLabel?.text = dataSourse[indexPath.section].sectionData[indexPath.row - 1]
             return cell
         }
     }

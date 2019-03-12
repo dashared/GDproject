@@ -33,7 +33,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
             var newPosts: [Model.Posts] = []
             
             channel?.posts.forEach({ (post) in
-                newPosts.append(Model.Posts(body: post.body, authorId: post.authorId, id: post.id, user: dictionary![post.authorId]!, date: post.updated))
+                newPosts.append(Model.Posts(body: post.body, authorId: post.authorId, id: post.id, user: dictionary![post.authorId]!, date: post.updated, tags: post.tags))
             })
             
             news.dataSourse = newPosts

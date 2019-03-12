@@ -88,8 +88,12 @@ class PostViewCell: UITableViewCell
         setUpInStackView(isFullVersoin)
     }
     
-    let hashtags = ["Программная инженерия", "ПИ", "НИУ ВШЭ", "Наука"]
+    var hashtags = [String]()
+    
     func setUpInStackView(_ full : Bool){
+        
+        hashtags = post!.tags
+        
         let nameStackView = UIStackView(arrangedSubviews: [nameLabel, fullNameLabel])
         nameStackView.axis = .vertical
         contentView.addSubview(nameStackView)

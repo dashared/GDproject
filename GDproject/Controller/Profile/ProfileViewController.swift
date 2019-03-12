@@ -60,7 +60,7 @@ class ProfileViewController: UIViewController
             var newPosts: [Model.Posts] = []
             
             dataSourse?.forEach({ (post) in
-                newPosts.append(Model.Posts(body: post.body, authorId: post.authorId, id: post.id, user: user!, date: post.updated))
+                newPosts.append(Model.Posts(body: post.body, authorId: post.authorId, id: post.id, user: user!, date: post.updated, tags: post.tags))
             })
             
             self.posts.dataSourse = newPosts

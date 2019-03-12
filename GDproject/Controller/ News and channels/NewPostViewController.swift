@@ -193,7 +193,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
     var indexOfPost = 0
     // MARK:- new post
     @objc func newPost(){
-        Model.createAndPublish(string: textView.text!)
+        Model.createAndPublish(body: [ Model.Attachments(markdown: textView!.text) ], tags: ["ПИ", "люблюСвоюРаботу", "работаРулит", "Шершаков"])
         // adding row to uiTableView after adding new post
         // myProtocol?.addPost(post: p)
         moveBackToParentVC()

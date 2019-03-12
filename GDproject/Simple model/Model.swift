@@ -13,6 +13,7 @@ class Model{
     static let invalidTocken = 498
     private static var isValidTocken: ((Int)->())? = {
         responce in
+        print("\(responce)")
         if responce == invalidTocken {
             DataStorage.standard.setIsLoggedIn(value: false, with: 0)
         }
@@ -22,12 +23,10 @@ class Model{
     
     static let url = URL(string:"\(baseUrl)/authentication/login")!
     static let url1 = URL(string:"\(baseUrl)/posts/last")!
-    static let urlForDrafts = URL(string:"\(baseUrl)/drafts/create")!
-    static let urlForPublish = URL(string:"\(baseUrl)/drafts/publish")!
-    static let urlForUpdate = URL(string:"\(baseUrl)/drafts/update")!
     static let urlForPostsForUser = URL(string:"\(baseUrl)/posts/forUser")!
     static let urlForUsers = URL(string:"\(baseUrl)/users")!
     static let createAndPublishURL = URL(string:"\(baseUrl)/posts/publish")!
+    static let channelsGetURL = URL(string: "\(baseUrl)/channels/get")!
     
     
     struct QueryPosts: Codable{
@@ -41,20 +40,23 @@ class Model{
         var id: Int
         var user: Model.Users?
         var updated: String
+        var tags: [String]
         
-        init(body: [Attachments], authorId: Int, id: Int, date: String) {
+        init(body: [Attachments], authorId: Int, id: Int, date: String,tags: [String]) {
             self.body = body
             self.authorId = authorId
             self.id = id
             self.updated = date
+            self.tags = tags
         }
         
-        init(body: [Attachments], authorId: Int, id: Int, user: Model.Users,  date: String) {
+        init(body: [Attachments], authorId: Int, id: Int, user: Model.Users,  date: String, tags: [String]) {
             self.body = body
             self.authorId = authorId
             self.id = id
             self.user = user
             self.updated = date
+            self.tags = tags
         }
         
         func convertDateFormatter() -> String
@@ -62,14 +64,30 @@ class Model{
             
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"//this your string date format
-            dateFormatter.timeZone = NSTimeZone(name: "UTC") as TimeZone!
+            dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
             let date = dateFormatter.date(from: updated)
             
             dateFormatter.dateFormat = "MMM d, yyyy HH:mm" ///this is what you want to convert format
-            dateFormatter.timeZone = NSTimeZone(name: "UTC") as TimeZone!
+            dateFormatter.timeZone = NSTimeZone.local
             let timeStamp = dateFormatter.string(from: date!)
             
             return timeStamp
+        }
+    }
+    
+    struct CreatedPost: Codable {
+        var body = [Attachments]()
+        var tags = [String]()
+        
+        enum CodingKeys: String, CodingKey {
+            case body
+            case tags
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(body, forKey: .body)
+            try container.encode(tags, forKey: .tags)
         }
     }
     
@@ -87,6 +105,15 @@ class Model{
         
         init(markdown: String) {
             self.markdown = markdown
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case markdown
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(markdown, forKey: .markdown)
         }
     }
     
@@ -155,50 +182,17 @@ class Model{
         }
     }
     
-    static func createDraft(completion: @escaping  ((Int)->())){
-        let jsonString = "[{ \"markdown\": \"# This is a markdown title\nThis is body.\" }]"
-        var request = URLRequest(url: urlForDrafts)
-        
-        request.httpMethod = "POST"
-        
-        // insert json data to the request
-        request.httpBody = jsonString.data(using: .utf8)
-        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        
-        AF.request(request).responseJSON {
-            (response) in
-            
-            if response.response?.statusCode == 200 {
-                print("success in creating draft")
-            } else {
-                print("\(response.response?.statusCode ?? 0)")
-            }
-            
-            //let decoder = JSONDecoder()
-            guard let json = response.data else { return }
-            
-            guard let id = String(data: json, encoding: String.Encoding.utf8) else {return}
-
-            print("with id \(id)")
-            completion(Int(id) ?? 0)
-        }
-    }
     
-    
-    static func createAndPublish(string: String){
-        let jsonUpd = """
-            [
-                {
-                    "markdown": "\(string)"
-                }
-            ]
-        """
+    static func createAndPublish(body: [Attachments], tags: [String]){
+        let jsonUpd = CreatedPost(body: body, tags: tags)
+        
         var request = URLRequest(url: createAndPublishURL)
         
         request.httpMethod = "POST"
         
         // insert json data to the request
-        request.httpBody = jsonUpd.data(using: .utf8)
+        request.httpBody = try? JSONEncoder().encode(jsonUpd)
+        
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         AF.request(request).response {
             (response) in
@@ -210,7 +204,7 @@ class Model{
     
     static func getPostsForUser(with id: Int, completion: @escaping (([Posts])->())){
         let json = [
-            "userId" : id,
+            "request" : id,
             "limit": 10
         ]
         
@@ -269,6 +263,38 @@ class Model{
             })
             
             completion(Model.idUser)
+        }
+    }
+    
+    // get channel (with id): in responce -- PostQuery
+    static func getChannels(with channelId: Int, completion: @escaping (([Posts])->())){
+        let json = [
+            "request" : channelId,
+            "limit": 10
+        ]
+        
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        
+        var request = URLRequest(url: urlForPostsForUser)
+        request.httpMethod = "POST"
+        
+        // insert json data to the request
+        request.httpBody = jsonData
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).responseJSON {
+            (response) in
+            
+            if response.response?.statusCode == 200 {
+                print("success")
+            }
+            
+            let decoder = JSONDecoder()
+            guard let json = response.data else { return }
+            
+            guard let newPost = try? decoder.decode(QueryPosts.self, from: json) else {  return }
+            
+            completion(newPost.posts)
         }
     }
 }
