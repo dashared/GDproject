@@ -25,14 +25,13 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
     var channel: Model.Channels?
     var myProtocol: DataDelegate?
     
-    var dataSourcePeople: [Int] = []
+    var fullTags: [String] = Array(Model.Channels.fullTags)
+    
+    var dataSourcePeople: [Model.Users] = []
+    
     var dataSourceTags: [String] = []
     
     var activeDataSource: ActiveTable = .people
-    
-    var fullPeople: [Int] = [5051,69]
-    
-    var fullTags: [String] = ["# happy", "# sad", "# meme", "# shershakov", "# pupsik"]
     
     @IBOutlet weak var viewww: UIView!
     
@@ -41,8 +40,29 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        dataSourcePeople = channel!.people
         dataSourceTags = channel!.tags
+        setUpController()
+        tableView.reloadData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        Model.getUsers(for: channel!.people) { [weak self] (people) in
+            self?.dataSourcePeople = Array(people.values)
+        }
+    }
+    
+    // TODO: update channel
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if let _ = channel?.id {        print("update")
+            Model.updateChannel(with: channel!)
+        } else {                        print("create")
+            Model.createChannel(with: channel!)
+        }
+    }
+    
+    func setUpController(){
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -58,21 +78,12 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
         textField.addTarget(self, action: #selector(changedText(_:)), for: .editingChanged)
     }
     
-    // TODO: update channel
-    override func viewWillDisappear(_ animated: Bool) {
-        if let _ = channel?.id {
-            print("update")
-            Model.updateChannel(with: channel!)
-        } else {
-            print("create")
-            Model.createChannel(with: channel!)
-        }
-    }
+    
     
     @objc func changedText(_ textField: UITextField){
         navigationItem.title = textField.text
         channel?.name = textField.text!
-        myProtocol?.passData(for: index!, channel: channel!)
+        // myProtocol?.passData(for: index!, channel: channel!)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -89,14 +100,12 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if searchBar.isFirstResponder {
-            if let cell = tableView.cellForRow(at: indexPath)
-            {
-                
+        if searchBar.isFirstResponder, let cell = tableView.cellForRow(at: indexPath)
+        {
                 if cell.accessoryType == .none{
                     switch searchBar.selectedScopeButtonIndex{
                     case 0:
-                        channel?.people.append(dataSourcePeople[indexPath.row])
+                        channel?.people.append(dataSourcePeople[indexPath.row].id)
                         print("people = \(channel!.people)")
                     case 1:
                         channel?.tags.append(dataSourceTags[indexPath.row])
@@ -104,27 +113,33 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
                     default:
                         break
                     }
-                    
                     cell.accessoryType = .checkmark
                 } else {
                     cell.accessoryType = .none
                     
                     switch searchBar.selectedScopeButtonIndex{
                     case 0:
-                        channel?.people = channel!.people.filter{ $0 == fullPeople[indexPath.row] }
-                    // TODO: dataPass
+                        let filtered = channel!.people.filter{ $0 != Model.Channels.fullPeople[indexPath.row].id }
+                        channel?.people = filtered
                     case 1:
-                        channel?.tags = channel!.tags.filter({ (s) -> Bool in
-                            !fullTags[indexPath.row].contains(s)
-                        })
-                    // TODO: dataPass
+                        let filtered = channel!.tags.filter{
+                            !fullTags[indexPath.row].contains($0)
+                        }
+                        channel?.tags = filtered
                     default:
                         break
                     }
                 }
-            }
-        } else
+        }
+        else
         {
+            switch activeDataSource{
+            case .people:
+                channel?.people.remove(at: indexPath.row)
+            case .tags:
+                channel?.tags.remove(at: indexPath.row)
+            }
+            
             tableView.beginUpdates()
             switch activeDataSource{
             case .people:
@@ -132,29 +147,20 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
             case .tags:
                 dataSourceTags.remove(at: indexPath.row)
             }
-            switch searchBar.selectedScopeButtonIndex{
-            case 0:
-                channel?.people.remove(at: indexPath.row)
-            // TODO: dataPass
-            case 1:
-                channel?.tags.remove(at: indexPath.row)
-            // TODO: dataPass
-            default:
-                break
-            }
             tableView.deleteRows(at: [indexPath], with: .none)
             tableView.endUpdates()
         }
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
         let cell = tableView.dequeueReusableCell(withIdentifier: itemCellId, for: indexPath)
         
-        cell.textLabel?.text = activeDataSource == .people ? String(dataSourcePeople[indexPath.row]) : dataSourceTags[indexPath.row]
+        cell.textLabel?.text = activeDataSource == .people ? "\(dataSourcePeople[indexPath.row].firstName) \(dataSourcePeople[indexPath.row].middleName) \(dataSourcePeople[indexPath.row].lastName)" : dataSourceTags[indexPath.row]
         cell.selectionStyle = .none
         
         if activeDataSource == .tags && channel!.tags.contains(dataSourceTags[indexPath.row]) ||
-            activeDataSource == .people && channel!.people.contains(dataSourcePeople[indexPath.row])
+            activeDataSource == .people && channel!.people.contains(dataSourcePeople[indexPath.row].id)
         {
             cell.accessoryType = .checkmark
         } else {
@@ -200,7 +206,7 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
         if searchText.isEmpty {
             switch activeDataSource {
             case .people:
-                dataSourcePeople = fullPeople
+                dataSourcePeople = Model.Channels.fullPeople
             case .tags:
                 dataSourceTags = fullTags
             }
@@ -213,7 +219,10 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
     func filterTableView(ind: Int, text: String){
         switch ind {
         case 0:
-            dataSourcePeople = fullPeople.filter { if let numb = Int(text) { return $0 == numb } else {return false}}
+            dataSourcePeople = Model.Channels.fullPeople.filter {
+                let fullName = "\($0.firstName) \($0.middleName) \($0.lastName)"
+                return fullName.lowercased().contains(text.lowercased())
+            }
             tableView.reloadData()
         case 1:
             dataSourceTags = fullTags.filter({ (s) -> Bool in
@@ -226,17 +235,16 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
     }
     
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        activeDataSource = searchBar.selectedScopeButtonIndex == 0 ? .people : .tags
         if searchBar.isFirstResponder {
             switch activeDataSource{
             case .people :
-                dataSourcePeople = fullPeople
+                dataSourcePeople = Model.Channels.fullPeople
                 dataSourceTags = []
             case .tags:
                 dataSourceTags = fullTags
                 dataSourcePeople = []
             }
-            print("\(searchBar.selectedScopeButtonIndex)")
-            activeDataSource = searchBar.selectedScopeButtonIndex == 0 ? .people : .tags
             if (!(searchBar.text?.isEmpty ?? true))
             {
                 filterTableView(ind: selectedScope, text: searchBar.text!)
@@ -245,14 +253,14 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
         } else if !(searchBar.isFirstResponder){
             switch activeDataSource{
             case .people :
-                dataSourcePeople = channel!.people
+                dataSourcePeople = channel!.people.map({ (item) -> Model.Users in
+                    Model.Channels.fullPeopleDict[item]!
+                })
                 dataSourceTags = []
             case .tags:
                 dataSourceTags = channel!.tags
                 dataSourcePeople = []
             }
-            print(" not active \(searchBar.selectedScopeButtonIndex)")
-            activeDataSource = searchBar.selectedScopeButtonIndex == 0 ? .people : .tags
             tableView.reloadData()
         }
     }
@@ -260,7 +268,9 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         switch activeDataSource{
         case .people :
-            dataSourcePeople = channel!.people
+            dataSourcePeople = channel!.people.map({ (item) -> Model.Users in
+                Model.Channels.fullPeopleDict[item]!
+            })
             dataSourceTags = []
         case .tags:
             dataSourceTags = channel!.tags
@@ -273,7 +283,7 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         switch activeDataSource{
         case .people :
-            dataSourcePeople = fullPeople
+            dataSourcePeople = Model.Channels.fullPeople
             dataSourceTags = []
         case .tags:
             dataSourceTags = fullTags

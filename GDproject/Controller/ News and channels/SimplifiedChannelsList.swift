@@ -9,6 +9,7 @@
 
 /// class for ADDing person to existing (or new) channel: like playlist in itunes
 import UIKit
+import TinyConstraints
 
 class SimplifiedChannelsList: UITableViewController {
     
@@ -23,6 +24,8 @@ class SimplifiedChannelsList: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpNavigationButtons()
+        navigationItem.largeTitleDisplayMode = .never
+        self.navigationItem.setHidesBackButton(true, animated:true)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
     }
     
@@ -53,6 +56,14 @@ class SimplifiedChannelsList: UITableViewController {
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let viewHeader = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 30))
+        let label = UILabel()
+        
+        label.text = "All channels"
+        label.font = UIFont.boldSystemFont(ofSize: 22)
+        label.textColor = .black
+        
+        viewHeader.addSubview(label)
+        label.edgesToSuperview(insets: .left(16))
         return viewHeader
     }
     

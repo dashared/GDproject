@@ -49,13 +49,16 @@ class ChannelListController: UITableViewController, DataDelegate {
     }
     
     func passData(for row: Int, channel: Model.Channels) {
-        dataSource[row] = channel
+        // dataSource[row] = channel
     }
     
     var searchController = UISearchController(searchResultsController: nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        Model.usersAllGet()
+        
         setUpNavigationBar()
         navigationItem.title = "Channels"
         searchController.searchResultsUpdater = self

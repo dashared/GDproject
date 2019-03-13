@@ -27,6 +27,7 @@ class Model{
     static let postsForUserURL = URL(string:"\(baseUrl)/posts/forUser")!
     static let postsPublishURL = URL(string:"\(baseUrl)/posts/publish")!
     static let usersURL = URL(string:"\(baseUrl)/users")!
+    static let usersAllURL = URL(string:"\(baseUrl)/users/all")!
     static let channelsGetURL = URL(string: "\(baseUrl)/channels/get")!
     static let channelsUpdateURL = URL(string: "\(baseUrl)/channels/update")!
     static let channelsListURL = URL(string: "\(baseUrl)/channels")!
@@ -125,7 +126,8 @@ class Model{
     struct Channels: Codable {
         
         static var fullTags = Set<String>()
-        static var fullPeople = [Int:Users]()
+        static var fullPeople = [Users]()
+        static var fullPeopleDict = [Int:Users]()
         
         var people: [Int]
         var name: String
@@ -294,11 +296,12 @@ class Model{
             
             guard let users = try? decoder.decode([Users].self, from: json) else {  return }
             
+            var dict: [Int:Users] = [:]
             users.forEach({ (user) in
-                Model.idUser[user.id] = user
+                dict[user.id] = user
             })
             
-            completion(Model.idUser)
+            completion(dict)
         }
     }
     
@@ -388,6 +391,28 @@ class Model{
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         AF.request(request).response {
             (response) in
+            
+            isValidTocken?(response.response?.statusCode ?? 498)
+        }
+    }
+    
+    static func usersAllGet() {
+        var request = URLRequest(url: usersAllURL)
+        request.httpMethod = "POST"
+        
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        AF.request(request).response {
+            (response) in
+            guard let json = response.data else { return }
+            
+            guard let users = try? decoder.decode([Users].self, from: json) else { return }
+            
+            Channels.fullPeople = users
+            Channels.fullPeopleDict = users.reduce([Int: Users]()) { (dict, person) -> [Int: Users] in
+                var dict = dict
+                dict[person.id] = person
+                return dict
+            }
             
             isValidTocken?(response.response?.statusCode ?? 498)
         }
