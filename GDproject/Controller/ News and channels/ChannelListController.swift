@@ -25,6 +25,12 @@ class ChannelListController: UITableViewController, DataDelegate {
     var myProtocol: DataDelegate?
     var displayingChannel: Model.Channels?
     
+    var toReload: Bool = false {
+        didSet{
+            tableView.reloadData()
+        }
+    }
+    
     var isFiltering: Bool {
         return searchController.isActive && !searchBarIsEmpty()
     }
@@ -70,6 +76,7 @@ class ChannelListController: UITableViewController, DataDelegate {
         searchController.isActive = false
         Model.channelsList { [weak self] (channels) in
             self?.dataSource = [ChannelListController.generalChannel] + channels
+            self?.toReload = true
         }
     }
     
@@ -85,14 +92,7 @@ class ChannelListController: UITableViewController, DataDelegate {
     
     static let generalChannel = Model.Channels(people: [], name: "General", id: -1, tags: [])
     
-    var dataSource : [Model.Channels] = [
-        Model.Channels(people: [], name: "General", id: -1, tags: [])
-        ]
-    {
-        didSet{
-            self.tableView.reloadData()
-        }
-    }
+    var dataSource : [Model.Channels] = [ ChannelListController.generalChannel ]
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isFiltering {
@@ -143,6 +143,11 @@ class ChannelListController: UITableViewController, DataDelegate {
         
         
         let deleteButton = UITableViewRowAction(style: .normal, title: "Delete") { [weak self] (action, indexPath) in
+            
+            Model.channelsDelete(by: self!.dataSource[indexPath.row].id!, completion: {
+                print("хз что тут делать при успехе")
+            })
+            
             if (self!.dataSource[indexPath.row].id == self!.displayingChannel?.id ?? -1)
             {
                 self?.myProtocol?.passData(for: 0, channel: self!.dataSource[0])
@@ -153,7 +158,6 @@ class ChannelListController: UITableViewController, DataDelegate {
             self?.tableView.endUpdates()
         }
         deleteButton.backgroundColor = .red
-        
         
         return [editButton, deleteButton]
     }

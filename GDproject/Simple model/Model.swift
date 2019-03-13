@@ -13,9 +13,7 @@ class Model{
     
     static let invalidTocken = 498
     
-    private static var isValidTocken: ((Int)->())? = {
-        responce in
-        print("\(responce)")
+    private static var isValidTocken: ((Int)->())? = { responce in
         if responce == invalidTocken {
             DataStorage.standard.setIsLoggedIn(value: false, with: 0)
         }
@@ -24,15 +22,16 @@ class Model{
     private static let baseUrl = "https://valera-denis.herokuapp.com"
     static let decoder = JSONDecoder()
     
-    static let url = URL(string:"\(baseUrl)/authentication/login")!
-    static let url1 = URL(string:"\(baseUrl)/posts/last")!
-    static let urlForPostsForUser = URL(string:"\(baseUrl)/posts/forUser")!
-    static let urlForUsers = URL(string:"\(baseUrl)/users")!
-    static let createAndPublishURL = URL(string:"\(baseUrl)/posts/publish")!
+    static let authenticationURL = URL(string:"\(baseUrl)/authentication/login")!
+    static let postsLastURL = URL(string:"\(baseUrl)/posts/last")!
+    static let postsForUserURL = URL(string:"\(baseUrl)/posts/forUser")!
+    static let postsPublishURL = URL(string:"\(baseUrl)/posts/publish")!
+    static let usersURL = URL(string:"\(baseUrl)/users")!
     static let channelsGetURL = URL(string: "\(baseUrl)/channels/get")!
     static let channelsUpdateURL = URL(string: "\(baseUrl)/channels/update")!
     static let channelsListURL = URL(string: "\(baseUrl)/channels")!
     static let channelsCreateURL = URL(string: "\(baseUrl)/channels/create")!
+    static let channelsDeleteURL = URL(string: "\(baseUrl)/channels/delete")!
     
     
     struct QueryPosts: Codable{
@@ -154,10 +153,9 @@ class Model{
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(people, forKey: .people)
             try container.encode(name, forKey: .name)
-            // try container.encode(id, forKey: .id)
+            try container.encode(id, forKey: .id)
             try container.encode(tags, forKey: .tags)
         }
-        
     }
     
     static func authenticate(with id: Int, completion: @escaping ((Bool)->())) {
@@ -165,7 +163,7 @@ class Model{
         let json: [String:Any] = ["authenticationId" : id]
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         
-        var request = URLRequest(url: url)
+        var request = URLRequest(url: authenticationURL)
         request.httpMethod = "POST"
         
         // insert json data to the request
@@ -201,7 +199,7 @@ class Model{
     
     static func getLast(completion: @escaping (((users:[Int: Users], posts:[Posts]))->())){
         let jsonString = "30"
-        var request = URLRequest(url: url1)
+        var request = URLRequest(url: postsLastURL)
         
         request.httpMethod = "POST"
         
@@ -227,7 +225,7 @@ class Model{
     
     static func createAndPublish(body: [Attachments], tags: [String]){
         let jsonUpd = CreatedPost(body: body, tags: tags)
-        var request = URLRequest(url: createAndPublishURL)
+        var request = URLRequest(url: postsPublishURL)
         
         request.httpMethod = "POST"
         
@@ -251,7 +249,7 @@ class Model{
         
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         
-        var request = URLRequest(url: urlForPostsForUser)
+        var request = URLRequest(url: postsForUserURL)
         request.httpMethod = "POST"
         
         // insert json data to the request
@@ -276,7 +274,7 @@ class Model{
     static func getUsers(for ids: [Int], completion: @escaping (([Int:Users])->())){
         let json = "\(Set(ids))"
         print(json)
-        var request = URLRequest(url: urlForUsers)
+        var request = URLRequest(url: usersURL)
         
         request.httpMethod = "POST"
         
@@ -362,6 +360,33 @@ class Model{
             guard let channelsList = try? decoder.decode([Channels].self, from: json) else { return }
             
             completion(channelsList)
+        }
+    }
+    
+    static func channelsDelete(by id: Int, completion: @escaping(()->())){
+        var request = URLRequest(url: channelsDeleteURL)
+        request.httpMethod = "POST"
+        request.httpBody = "\(id)".data(using: .utf8)
+        print("\(id)")
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).response { (response) in
+            isValidTocken?(response.response?.statusCode ?? 498)
+        }
+        completion()
+    }
+    
+    static func updateChannel(with channel: Channels) {
+        
+        var request = URLRequest(url: channelsUpdateURL)
+        request.httpMethod = "POST"
+        request.httpBody = try? JSONEncoder().encode(channel)
+        
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        AF.request(request).response {
+            (response) in
+            
+            isValidTocken?(response.response?.statusCode ?? 498)
         }
     }
 }

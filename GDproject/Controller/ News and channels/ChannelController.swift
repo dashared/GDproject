@@ -58,9 +58,17 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
         textField.addTarget(self, action: #selector(changedText(_:)), for: .editingChanged)
     }
     
+    // TODO: update channel
     override func viewWillDisappear(_ animated: Bool) {
-        Model.createChannel(with: channel!)
+        if let _ = channel?.id {
+            print("update")
+            Model.updateChannel(with: channel!)
+        } else {
+            print("create")
+            Model.createChannel(with: channel!)
+        }
     }
+    
     @objc func changedText(_ textField: UITextField){
         navigationItem.title = textField.text
         channel?.name = textField.text!

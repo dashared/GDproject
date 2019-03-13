@@ -41,7 +41,6 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
             })
             
             news.dataSourse = newPosts
-            print("and heeeere in dict")
             tableView.reloadData()
         }
     }
