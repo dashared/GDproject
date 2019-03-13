@@ -142,7 +142,13 @@ class PostViewCell: UITableViewCell
         contentView.addSubview(mainView)
         mainView.edgesToSuperview(excluding: [.top, .bottom])
         mainView.topToBottom(of: nameStackView, offset: 5)
-        mainView.height(30)
+        
+        // TODO:- change!!!!!!!!!!!!
+        if hashtags.isEmpty{
+            mainView.height(0)
+        } else {
+            mainView.height(30)
+        }
         
         let stackView = MyStackView(arrangedSubviews: views)
         stackView.isFull = full

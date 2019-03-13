@@ -124,17 +124,13 @@ class Model{
     
     struct Channels: Codable {
         
+        static var fullTags = Set<String>()
+        static var fullPeople = [Int:Users]()
+        
         var people: [Int]
         var name: String
         var id: Int?
         var tags: [String]
-        
-        enum CodingKeys: String, CodingKey {
-            case people
-            case name
-            case id
-            case tags
-        }
         
         init(people: [Int], name: String, id: Int, tags: [String]) {
             self.id = id
@@ -147,6 +143,13 @@ class Model{
             self.people = people
             self.tags = tags
             self.name = name
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case people
+            case name
+            case id
+            case tags
         }
         
         func encode(to encoder: Encoder) throws {

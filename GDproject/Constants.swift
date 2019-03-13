@@ -44,3 +44,5 @@ let logInController = "LogInController"
 
 
 let profileViewController = "ProfileViewController"
+
+let simplifiedChannelsList = "SimplifiedChannelsList"

@@ -32,13 +32,18 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
     }
     
     var dictionary: [Int: Model.Users]?  {
-        didSet{
+        didSet {
 
             var newPosts: [Model.Posts] = []
             
             posts!.forEach({ (post) in
+                
                 newPosts.append(Model.Posts(body: post.body, authorId: post.authorId, id: post.id, user: dictionary![post.authorId]!, date: post.updated, tags: post.tags))
+                
+                post.tags.forEach { Model.Channels.fullTags.insert($0) }
+                
             })
+            
             
             news.dataSourse = newPosts
             tableView.reloadData()

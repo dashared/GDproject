@@ -70,14 +70,23 @@ class ChannelListController: UITableViewController, DataDelegate {
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addChannel))]
     }
     
-    override func viewWillAppear(_ animated: Bool)
+    override func viewDidAppear(_ animated: Bool)
     {
-        super.viewWillAppear(animated)
+        super.viewDidAppear(animated)
         searchController.isActive = false
+        askForUpdates()
+    }
+    
+    private func askForUpdates(){
         Model.channelsList { [weak self] (channels) in
             self?.dataSource = [ChannelListController.generalChannel] + channels
             self?.toReload = true
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        askForUpdates()
     }
     
     @objc func addChannel()
@@ -157,6 +166,7 @@ class ChannelListController: UITableViewController, DataDelegate {
             self?.tableView.deleteRows(at: [indexPath], with: .none)
             self?.tableView.endUpdates()
         }
+        
         deleteButton.backgroundColor = .red
         
         return [editButton, deleteButton]

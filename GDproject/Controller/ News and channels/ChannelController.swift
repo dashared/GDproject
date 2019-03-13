@@ -198,7 +198,7 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
-            switch activeDataSource{
+            switch activeDataSource {
             case .people:
                 dataSourcePeople = fullPeople
             case .tags:
@@ -235,6 +235,7 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
                 dataSourceTags = fullTags
                 dataSourcePeople = []
             }
+            print("\(searchBar.selectedScopeButtonIndex)")
             activeDataSource = searchBar.selectedScopeButtonIndex == 0 ? .people : .tags
             if (!(searchBar.text?.isEmpty ?? true))
             {
@@ -250,6 +251,7 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
                 dataSourceTags = channel!.tags
                 dataSourcePeople = []
             }
+            print(" not active \(searchBar.selectedScopeButtonIndex)")
             activeDataSource = searchBar.selectedScopeButtonIndex == 0 ? .people : .tags
             tableView.reloadData()
         }

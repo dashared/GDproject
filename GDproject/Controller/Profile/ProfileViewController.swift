@@ -47,6 +47,9 @@ class ProfileViewController: UIViewController
     var user: Model.Users? {
         didSet {
             self.fill(with: user!)
+            Model.getPostsForUser(with: user!.id) { [weak self] (posts) in
+                self?.dataSourse = posts
+            }
             navigationItem.title = "\(user?.id ?? 0)"
         }
     }
@@ -108,9 +111,7 @@ class ProfileViewController: UIViewController
                 }
             }
             
-            Model.getPostsForUser(with: id) { [weak self] (posts) in
-                self?.dataSourse = posts
-            }
+            // requst for postsforuser was here. moved because of concrr
         }
         
         setUpNavigarionBar()
@@ -136,7 +137,21 @@ class ProfileViewController: UIViewController
         // saved
         
         let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        let editAction = UIAlertAction(title: "Edit profile", style: .default)
+        let channelAction = UIAlertAction(title: "Add to the channel", style: .default){
+            [weak self] (_) in
+            
+            let vc = self?.storyboard?.instantiateViewController(withIdentifier: simplifiedChannelsList) as! SimplifiedChannelsList
+            
+            vc.user = self?.user!
+            
+            let transition = CATransition()
+            transition.duration = 0.5
+            transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+            transition.type = CATransitionType.moveIn
+            transition.subtype = CATransitionSubtype.fromTop
+            self?.navigationController?.view.layer.add(transition, forKey: nil)
+            self?.navigationController?.pushViewController(vc, animated: false)
+        }
         let settingsAction = UIAlertAction(title: "Setting", style: .default)
         { [weak self] (_) in
             
@@ -151,7 +166,7 @@ class ProfileViewController: UIViewController
             DataStorage.standard.setIsLoggedIn(value: false, with: 0)
         }
         
-        optionMenu.addAction(editAction)
+        optionMenu.addAction(channelAction)
         optionMenu.addAction(settingsAction)
         optionMenu.addAction(copyLink)
         optionMenu.addAction(logoutAction)

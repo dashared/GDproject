@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1210A0BB223940310080686D /* SimplifiedChannelsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1210A0BA223940310080686D /* SimplifiedChannelsList.swift */; };
 		123E37A5221F1B3200F6E42A /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123E37A4221F1B3200F6E42A /* LogInViewController.swift */; };
 		123E37A7221F1DD700F6E42A /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123E37A6221F1DD700F6E42A /* MainController.swift */; };
 		124CC7032221C00C009DF531 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124CC7022221C00C009DF531 /* Model.swift */; };
@@ -72,6 +73,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1210A0BA223940310080686D /* SimplifiedChannelsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplifiedChannelsList.swift; sourceTree = "<group>"; };
 		123E37A4221F1B3200F6E42A /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		123E37A6221F1DD700F6E42A /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		124CC7022221C00C009DF531 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 			children = (
 				12D7D134221C42B700B35452 /* ChannelController.swift */,
 				12D7D132221C321600B35452 /* ChannelListController.swift */,
+				1210A0BA223940310080686D /* SimplifiedChannelsList.swift */,
 				12E36DC922144635006FCDD7 /* NewPostViewController.swift */,
 				12E36DD022148122006FCDD7 /* FullPostController.swift */,
 				12E36D9D221424EA006FCDD7 /* NewsController.swift */,
@@ -332,6 +335,7 @@
 				12D7D137221D78E800B35452 /* Channel.swift in Sources */,
 				1291BE3622218DBF009D3F23 /* LogInCoordinator.swift in Sources */,
 				12E36DB922144016006FCDD7 /* User.swift in Sources */,
+				1210A0BB223940310080686D /* SimplifiedChannelsList.swift in Sources */,
 				125BD5812217314A008A3575 /* NewsVC.swift in Sources */,
 				12E36DB72214400A006FCDD7 /* Post.swift in Sources */,
 				12DB7FDF221877160096878E /* InviteViewController.swift in Sources */,
