@@ -151,7 +151,7 @@ class ChannelListController: UITableViewController, DataDelegate {
             vc.channel = self?.dataSource[indexPath.row]
             self?.navigationController?.pushViewController(vc, animated: true)
         }
-        editButton.backgroundColor = .green
+        editButton.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         
         
         let deleteButton = UITableViewRowAction(style: .normal, title: "Delete") { [weak self] (action, indexPath) in
@@ -170,7 +170,7 @@ class ChannelListController: UITableViewController, DataDelegate {
             self?.tableView.endUpdates()
         }
         
-        deleteButton.backgroundColor = .red
+        deleteButton.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
         
         return [editButton, deleteButton]
     }

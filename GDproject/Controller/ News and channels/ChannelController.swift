@@ -45,10 +45,17 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
         tableView.reloadData()
     }
     
+    var reloadtable: Bool = false {
+        didSet{
+            tableView.reloadData()
+        }
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         Model.getUsers(for: channel!.people) { [weak self] (people) in
             self?.dataSourcePeople = Array(people.values)
+            self?.reloadtable = true
         }
     }
     

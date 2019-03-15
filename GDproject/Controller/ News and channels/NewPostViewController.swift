@@ -26,6 +26,8 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
     var myProtocol: NewPostDelegate?
     
     static var draft: String = ""
+    static var hashTagsDraft: [String] = []
+    
     var textView: UITextView!
     
     // buttons for attaching images
@@ -95,6 +97,8 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.title = "New post"
         textView.text = NewPostViewController.draft
+        tagsField.addTags(NewPostViewController.hashTagsDraft)
+
     }
     
     func setUpAccessoryView(){
@@ -227,6 +231,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
             [weak self]
             _ in
             NewPostViewController.draft = self?.textView.text ?? ""
+            NewPostViewController.hashTagsDraft = self?.tagsField.tags.map { $0.text } ?? []
             self?.moveBackToParentVC()
         }
         
@@ -235,6 +240,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
             [weak self] (_)
             in
             NewPostViewController.draft = ""
+            NewPostViewController.hashTagsDraft = []
             self?.moveBackToParentVC()
         }
         
@@ -307,7 +313,7 @@ extension NewPostViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == tagsField {
-            // hz
+            textView.becomeFirstResponder()
         }
         return true
     }

@@ -24,9 +24,10 @@ class SimplifiedChannelsList: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpNavigationButtons()
+        navigationItem.title = "All channels"
         navigationItem.largeTitleDisplayMode = .never
         self.navigationItem.setHidesBackButton(true, animated:true)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell1")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -56,6 +57,7 @@ class SimplifiedChannelsList: UITableViewController {
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let viewHeader = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 30))
+        viewHeader.backgroundColor = .white
         let label = UILabel()
         
         label.text = "All channels"
@@ -82,10 +84,10 @@ class SimplifiedChannelsList: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell1", for: indexPath)
         
         cell.textLabel?.text = dataSource![indexPath.row].name
-        cell.detailTextLabel?.text = "\(dataSource![indexPath.row].id!)"
+        cell.detailTextLabel?.text = "hello"
         
         return cell
     }

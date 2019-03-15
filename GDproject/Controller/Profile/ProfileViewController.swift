@@ -138,7 +138,7 @@ class ProfileViewController: UIViewController
         // saved
         
         let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        let channelAction = UIAlertAction(title: "Add to the channel", style: .default){
+        let channelAction = UIAlertAction(title: "Add to a channel", style: .default){
             [weak self] (_) in
             
             let vc = self?.storyboard?.instantiateViewController(withIdentifier: simplifiedChannelsList) as! SimplifiedChannelsList
