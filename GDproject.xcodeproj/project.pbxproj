@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1210A0BB223940310080686D /* SimplifiedChannelsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1210A0BA223940310080686D /* SimplifiedChannelsList.swift */; };
+		123AD0E3223C1C3900326173 /* WSTagsField.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 123AD0E2223C1C3900326173 /* WSTagsField.framework */; };
+		123AD0E5223C1C4300326173 /* WSTagsField.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 123AD0E2223C1C3900326173 /* WSTagsField.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		123E37A5221F1B3200F6E42A /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123E37A4221F1B3200F6E42A /* LogInViewController.swift */; };
 		123E37A7221F1DD700F6E42A /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123E37A6221F1DD700F6E42A /* MainController.swift */; };
 		124CC7032221C00C009DF531 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124CC7022221C00C009DF531 /* Model.swift */; };
@@ -65,6 +67,7 @@
 				12E36DC4221441EA006FCDD7 /* Cartography.framework in Embed Frameworks */,
 				12E36DD9221594A9006FCDD7 /* TagListView.framework in Embed Frameworks */,
 				12E36DBD221441D5006FCDD7 /* TinyConstraints.framework in Embed Frameworks */,
+				123AD0E5223C1C4300326173 /* WSTagsField.framework in Embed Frameworks */,
 				12E36DC2221441E1006FCDD7 /* MarkdownKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -74,6 +77,7 @@
 
 /* Begin PBXFileReference section */
 		1210A0BA223940310080686D /* SimplifiedChannelsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplifiedChannelsList.swift; sourceTree = "<group>"; };
+		123AD0E2223C1C3900326173 /* WSTagsField.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WSTagsField.framework; path = Carthage/Build/iOS/WSTagsField.framework; sourceTree = "<group>"; };
 		123E37A4221F1B3200F6E42A /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		123E37A6221F1DD700F6E42A /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		124CC7022221C00C009DF531 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
@@ -125,6 +129,7 @@
 				12E36DDB221594B1006FCDD7 /* MarkdownKit.framework in Frameworks */,
 				12E36DD8221594A9006FCDD7 /* TagListView.framework in Frameworks */,
 				12E36DAF22143D40006FCDD7 /* Cartography.framework in Frameworks */,
+				123AD0E3223C1C3900326173 /* WSTagsField.framework in Frameworks */,
 				12E36DB322143D4E006FCDD7 /* Marklight.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -165,6 +170,7 @@
 		12E36D8F221424EA006FCDD7 = {
 			isa = PBXGroup;
 			children = (
+				123AD0E2223C1C3900326173 /* WSTagsField.framework */,
 				124CC7042221C2BA009DF531 /* Alamofire.framework */,
 				12E36DD622159493006FCDD7 /* TagListView.framework */,
 				12E36DB422143D54006FCDD7 /* TinyConstraints.framework */,

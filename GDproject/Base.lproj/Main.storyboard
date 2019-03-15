@@ -364,23 +364,34 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sSz-uJ-A7n">
-                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aRT-Du-PVE">
+                                <rect key="frame" x="0.0" y="55" width="375" height="612"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="368-bf-QU6">
+                                <rect key="frame" x="0.0" y="20" width="375" height="35"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="5ER-su-0Yf"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="sSz-uJ-A7n" firstAttribute="leading" secondItem="wxD-Ek-mgv" secondAttribute="leading" id="2J7-Bi-PzG"/>
-                            <constraint firstItem="wxD-Ek-mgv" firstAttribute="trailing" secondItem="sSz-uJ-A7n" secondAttribute="trailing" id="HrU-bs-qsE"/>
-                            <constraint firstItem="wxD-Ek-mgv" firstAttribute="bottom" secondItem="sSz-uJ-A7n" secondAttribute="bottom" id="oZ7-xQ-9Cb"/>
-                            <constraint firstItem="sSz-uJ-A7n" firstAttribute="top" secondItem="wxD-Ek-mgv" secondAttribute="top" id="zuN-mZ-hgU"/>
+                            <constraint firstItem="wxD-Ek-mgv" firstAttribute="trailing" secondItem="aRT-Du-PVE" secondAttribute="trailing" id="2ee-e8-G7A"/>
+                            <constraint firstItem="368-bf-QU6" firstAttribute="leading" secondItem="wxD-Ek-mgv" secondAttribute="leading" id="9Rl-wh-kZf"/>
+                            <constraint firstItem="aRT-Du-PVE" firstAttribute="leading" secondItem="wxD-Ek-mgv" secondAttribute="leading" id="UBy-Ch-zSL"/>
+                            <constraint firstItem="aRT-Du-PVE" firstAttribute="top" secondItem="368-bf-QU6" secondAttribute="bottom" id="WaE-kh-6w3"/>
+                            <constraint firstItem="368-bf-QU6" firstAttribute="top" secondItem="wxD-Ek-mgv" secondAttribute="top" id="aI9-JQ-7dq"/>
+                            <constraint firstItem="368-bf-QU6" firstAttribute="trailing" secondItem="wxD-Ek-mgv" secondAttribute="trailing" id="haz-0r-Cud"/>
+                            <constraint firstItem="wxD-Ek-mgv" firstAttribute="bottom" secondItem="aRT-Du-PVE" secondAttribute="bottom" id="x3f-eb-ACt"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="wxD-Ek-mgv"/>
                     </view>
                     <connections>
-                        <outlet property="bottomTextViewConstraint" destination="oZ7-xQ-9Cb" id="6In-71-0TX"/>
-                        <outlet property="view1" destination="sSz-uJ-A7n" id="5nX-oT-kUi"/>
+                        <outlet property="bottomTextViewConstraint" destination="x3f-eb-ACt" id="ktT-im-InH"/>
+                        <outlet property="view1" destination="aRT-Du-PVE" id="m3d-kW-vqW"/>
+                        <outlet property="viewForTags" destination="368-bf-QU6" id="M5s-RZ-Fq7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3fd-7N-vPg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -517,7 +528,6 @@
             <objects>
                 <navigationController storyboardIdentifier="root" id="609-2j-gc9" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Ah8-NU-AsD">
-                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                 </navigationController>

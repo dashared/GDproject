@@ -57,7 +57,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
     }
     
     var channel: Model.Channels? {
-        didSet{
+        didSet {
             navigationItem.title = channel?.name ?? ""
         }
     }
@@ -86,7 +86,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
         tableView.register(PostViewCell.self, forCellReuseIdentifier: postCellId)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
-        setUpSearchContr()
+        // setUpSearchContr()
         
         news.viewController = self
         news.type = .NEWS
@@ -105,12 +105,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
     }
     
     @objc func refreshPostsData( _ ff: UIRefreshControl){
-        print("I am here")
-        Model.getLast { [weak self] (tuple) in
-            self?.posts = tuple.posts
-            self?.dictionary = tuple.users
-            self?.refreshContr.endRefreshing()
-        }
+        decideWhatChannelDisplay()
     }
     
     deinit {
@@ -132,24 +127,30 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
         searchController.isActive = false
         // TODO:- display something if no posts are availiable
         
+        decideWhatChannelDisplay()
+        
+        // tableView.reloadData()
+    }
+    
+    func decideWhatChannelDisplay(){
         if let channel = channel, let id = channel.id {
             
             Model.getChannel(with: id) { [weak self] in
                 self?.posts = $0.posts
                 self?.dictionary = $0.users
+                self?.refreshContr.endRefreshing()
             }
             
-        } else{
+        } else {
             
-            navigationItem.title = "@&% General"
             Model.getLast { [weak self] in
                 self?.posts = $0.posts
                 self?.dictionary = $0.users
+                self?.refreshContr.endRefreshing()
+                self?.navigationItem.title = "General"
             }
             
         }
-        
-        // tableView.reloadData()
     }
     
     func setUpNavigationItemsforPosts(){

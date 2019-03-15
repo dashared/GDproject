@@ -30,14 +30,15 @@ class ProfileViewController: UIViewController
     
     @IBOutlet weak var newMessageButton: UIButton!
     
+    var protoDictionary: [Int: UIImage] = [9: #imageLiteral(resourceName: "9"), 5051: #imageLiteral(resourceName: "5051"), 69: #imageLiteral(resourceName: "69"), 42: #imageLiteral(resourceName: "42")]
     
     func fill(with user: Model.Users){
         self.facultyLabel.text = "Студент: Факультет Компьютерных Наук"
         self.nameLabel.text = "\(user.firstName) \(user.middleName)"
         self.surnameLabel.text = "\(user.lastName)"
-        self.profileImageView.image = #imageLiteral(resourceName: "kitten").roundedImage
+        self.profileImageView.image = protoDictionary[user.id]?.roundedImage
         self.placeLabel.text = "📍Москва, Кочновский пр.3"
-        if user.id == DataStorage.standard.getUserId(){
+        if user.id == DataStorage.standard.getUserId() {
             newMessageButton.isHidden  = true
         } else {
             newMessageButton.isHidden  = false
@@ -50,7 +51,7 @@ class ProfileViewController: UIViewController
             Model.getPostsForUser(with: user!.id) { [weak self] (posts) in
                 self?.dataSourse = posts
             }
-            navigationItem.title = "\(user?.id ?? 0)"
+            navigationItem.title = "\(user!.firstName) \(user!.lastName)"
         }
     }
     

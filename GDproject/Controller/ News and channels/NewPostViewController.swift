@@ -10,10 +10,15 @@ import UIKit
 import Cartography
 import Marklight
 import TinyConstraints
+import WSTagsField
 
 class NewPostViewController: UIViewController, UITextViewDelegate {
     
     @IBOutlet weak var view1: UIView!
+    
+    @IBOutlet weak var viewForTags: UIView!
+    
+    fileprivate let tagsField = WSTagsField()
     // Keep strong instance of the `NSTextStorage` subclass
     let textStorage = MarklightTextStorage()
     
@@ -51,8 +56,38 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         setUpMD()
         setUpTextView()
         setUpAccessoryView()
+        setUpTagsView()
     }
 
+    func setUpTagsView(){
+        tagsField.frame = viewForTags.bounds
+        viewForTags.addSubview(tagsField)
+        
+        // tagsField.translatesAutoresizingMaskIntoConstraints = false
+        // tagsField.heightAnchor.constraint(lessThanOrEqualToConstant: 150).isActive = true
+        
+        tagsField.cornerRadius = 3.0
+        tagsField.spaceBetweenLines = 10
+        tagsField.spaceBetweenTags = 10
+        
+        //tagsField.numberOfLines = 3
+        //tagsField.maxHeight = 100.0
+        
+        tagsField.layoutMargins = UIEdgeInsets(top: 2, left: 6, bottom: 2, right: 6)
+        tagsField.contentInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10) //old padding
+        
+        tagsField.placeholder = "Enter a tag"
+        tagsField.placeholderColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
+        tagsField.placeholderAlwaysVisible = true
+        tagsField.backgroundColor = #colorLiteral(red: 0.937254902, green: 0.937254902, blue: 0.9568627451, alpha: 1)
+        tagsField.returnKeyType = .next
+        tagsField.delimiter = ""
+        
+        tagsField.textDelegate = self
+        tagsField.acceptTagOption = .space
+        
+        textFieldEvents()
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -151,23 +186,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
     
     @objc func addMathBrackets()
     {
-        if textView.text.count != 0 &&  textView.text.last != "\n" {
-            textView.insertText("\n\\[\n      ")
-        }
-        else {
-            textView.insertText("\\[\n      ")
-        }
-        
-        if let selectedRange = textView.selectedTextRange
-        {
-            textView.insertText("\n\\]\n")
-            
-            if let newPosition = textView.position(from: selectedRange.start, offset: 0)
-            {
-                // set the new position
-                textView.selectedTextRange = textView.textRange(from: newPosition, to: newPosition)
-            }
-        }
+       // nothing
     }
     
     func setUpMD(){
@@ -193,7 +212,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
     var indexOfPost = 0
     // MARK:- new post
     @objc func newPost(){
-        Model.createAndPublish(body: [ Model.Attachments(markdown: textView!.text) ], tags: ["ПИ", "люблюСвоюРаботу", "работаРулит", "Шершаков"])
+        Model.createAndPublish(body: [Model.Attachments(markdown: textView!.text)], tags: tagsField.tags.map { $0.text })
         // adding row to uiTableView after adding new post
         // myProtocol?.addPost(post: p)
         moveBackToParentVC()
@@ -255,4 +274,42 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         rect.size.height = rect.size.height + textView.textContainerInset.bottom
         textView.scrollRectToVisible(rect, animated: animated)
     }
+    
+    fileprivate func textFieldEvents() {
+        tagsField.onDidAddTag = { _, _ in
+            print("onDidAddTag")
+        }
+        
+        tagsField.onDidRemoveTag = { _, _ in
+            print("onDidRemoveTag")
+        }
+        
+        tagsField.onDidChangeText = { _, text in
+            print("onDidChangeText")
+        }
+        
+        tagsField.onDidChangeHeightTo = { _, height in
+            print("HeightTo \(height)")
+        }
+        
+        tagsField.onDidSelectTagView = { _, tagView in
+            print("Select \(tagView)")
+        }
+        
+        tagsField.onDidUnselectTagView = { _, tagView in
+            print("Unselect \(tagView)")
+        }
+    }
+}
+
+
+extension NewPostViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == tagsField {
+            // hz
+        }
+        return true
+    }
+    
 }
