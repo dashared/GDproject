@@ -12,6 +12,7 @@ import TinyConstraints
 class FullPostController: UITableViewController {
 
     var post: Model.Posts?
+    var type: HeaderType = .NONE
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -96,10 +97,15 @@ class FullPostController: UITableViewController {
         
         cell.fill(with: PostCellData.create(with: post!.body), true, post: post!)
         
-        cell.onUserDisplay = { [weak self] (id) in
-            let vc = self?.storyboard!.instantiateViewController(withIdentifier: profileViewController) as! ProfileViewController
-            vc.idProfile = id
-            self?.navigationController?.pushViewController(vc, animated: true)
+        switch type {
+        case .NEWS:
+            cell.onUserDisplay = { [weak self] (id) in
+                let vc = self?.storyboard!.instantiateViewController(withIdentifier: profileViewController) as! ProfileViewController
+                vc.idProfile = id
+                self?.navigationController?.pushViewController(vc, animated: true)
+            }
+        default:
+            break
         }
         
         cell.selectionStyle = .none

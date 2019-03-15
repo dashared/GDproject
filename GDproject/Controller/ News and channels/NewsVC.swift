@@ -27,7 +27,7 @@ struct PostCellData{
 
 class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
-    var dataSourse: [Model.Posts] = []{
+    var dataSourse: [Model.Posts] = [] {
         didSet {
             cellDataSourse = []
             dataSourse.forEach { (item) in
@@ -50,7 +50,7 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     {
         tableView.deselectRow(at: indexPath, animated: true)
         let vc = viewController!.storyboard!.instantiateViewController(withIdentifier: fullPostControllerId) as! FullPostController
-        
+        vc.type = type
         vc.post = dataSourse[indexPath.row]
         viewController!.navigationController!.pushViewController(vc, animated: true)
     }

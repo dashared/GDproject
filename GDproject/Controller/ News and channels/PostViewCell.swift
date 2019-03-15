@@ -83,7 +83,12 @@ class PostViewCell: UITableViewCell
         
         nameLabel.setTitle("\(post.user?.firstName ?? "") \(post.user?.lastName ?? "")", for: .normal)
         nameLabel.addTarget(self, action: #selector(displayProfile), for: .touchUpInside)
-        fullNameLabel.text = "\(post.authorId)"
+        if let user = post.user{
+            fullNameLabel.text = "\(user.firstName) \(user.middleName) \(user.lastName)"
+        }
+        else {
+            fullNameLabel.text = "\(post.authorId)"
+        }
     
         setUpInStackView(isFullVersoin)
     }
