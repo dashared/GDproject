@@ -11,24 +11,54 @@ import TinyConstraints
 import Cartography
 
 protocol UpdateableWithChannel: class {
-    var channel: Channel? { get set }
+    var channel: Model.Channels? { get set }
 }
 protocol NewPostDelegate {
     func addPost(post: Post)
 }
-
+protocol UpdateableWithUser: class {
+    var user: Model.Users? { get set }
+}
 // MARK:- Controller with posts and channels availiable.
 // Search is availiable within every table (posts and channels). Has button-functionality for boths post and chnnels
 class NewsController: UITableViewController, UISearchControllerDelegate, NewPostDelegate, UpdateableWithChannel, DataDelegate
 {
-    func passData(for row: Int, channel: Channel) {
-        self.channel = channel
+    func passData(for row: Int, channel: Model.Channels) {
+        if channel.id == -1{
+            self.channel = nil
+        } else {
+            self.channel = channel
+        }
     }
     
-    var channel: Channel?{
+    var dictionary: [Int: Model.Users]?  {
+        didSet {
+
+            var newPosts: [Model.Posts] = []
+            
+            posts!.forEach({ (post) in
+                
+                newPosts.append(Model.Posts(body: post.body, authorId: post.authorId, id: post.id, user: dictionary![post.authorId]!, date: post.updated, tags: post.tags))
+                
+                post.tags.forEach { Model.Channels.fullTags.insert($0) }
+                
+            })
+            
+            
+            news.dataSourse = newPosts
+            tableView.reloadData()
+        }
+    }
+    
+    var posts: [Model.Posts]? {
         didSet{
-            news.dataSourse = channel?.posts ?? []
-            navigationItem.title = channel?.title ?? ""
+            
+        }
+    }
+    
+    var channel: Model.Channels? {
+        didSet {
+            navigationItem.title = channel?.name ?? ""
         }
     }
     
@@ -36,37 +66,51 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
     var onSelectChannel: (() -> Void)?
 
     func addPost(post: Post) {
-        news.dataSourse.insert(post, at: 0)
+        //news.dataSourse.insert(post, at: 0)
     }
     
     var searchController = UISearchController(searchResultsController: nil)
 
     var news = NewsVC()
     
+    var refreshContr =  UIRefreshControl()
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        channel = ChannelListController.dataSource[0]
-        
+        navigationItem.title = "Loading ..."
+        tableView.refreshControl = refreshContr
+        // Configure Refresh Control
+        refreshContr.addTarget(self, action: #selector(refreshPostsData(_:)), for: .valueChanged)
+    
         tableView.register(PostViewCell.self, forCellReuseIdentifier: postCellId)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
-        searchController.delegate = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        navigationItem.searchController = searchController
-        definesPresentationContext = true
-        searchController.searchBar.placeholder  = "Search anything"
+        // setUpSearchContr()
         
-        news.dataSourse = channel!.posts
         news.viewController = self
-        
-        news.type = .NONE
+        news.type = .NEWS
         
         setUpNavigationItemsforPosts()
 
         //setUpBanner()
     }
     
+    func setUpSearchContr(){
+        searchController.delegate = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+        searchController.searchBar.placeholder  = "Search anything"
+    }
+    
+    @objc func refreshPostsData( _ ff: UIRefreshControl){
+        decideWhatChannelDisplay()
+    }
+    
+    deinit {
+        print("news clear")
+    }
     
     let label : UILabel = {
         let label = UILabel()
@@ -82,7 +126,31 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
         super.viewWillAppear(animated)
         searchController.isActive = false
         // TODO:- display something if no posts are availiable
-        tableView.reloadData()
+        
+        decideWhatChannelDisplay()
+        
+        // tableView.reloadData()
+    }
+    
+    func decideWhatChannelDisplay(){
+        if let channel = channel, let id = channel.id {
+            
+            Model.getChannel(with: id) { [weak self] in
+                self?.posts = $0.posts
+                self?.dictionary = $0.users
+                self?.refreshContr.endRefreshing()
+            }
+            
+        } else {
+            
+            Model.getLast { [weak self] in
+                self?.posts = $0.posts
+                self?.dictionary = $0.users
+                self?.refreshContr.endRefreshing()
+                self?.navigationItem.title = "General"
+            }
+            
+        }
     }
     
     func setUpNavigationItemsforPosts(){

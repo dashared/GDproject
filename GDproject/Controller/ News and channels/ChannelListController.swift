@@ -17,13 +17,19 @@ struct ChannelData{
 class ChannelListController: UITableViewController, DataDelegate {
     
     // MARK: - Output -
-    var onChannelSelected: ((Channel) -> Void)?
+    var onChannelSelected: ((Model.Channels) -> Void)?
     
-    // MARK:- filter search controller
-    var filteredDataSource = [Channel]()
+    // MARK: - filter search controller
+    var filteredDataSource = [Model.Channels]()
     
     var myProtocol: DataDelegate?
-    var displayingChannel: Channel?
+    var displayingChannel: Model.Channels?
+    
+    var toReload: Bool = false {
+        didSet{
+            tableView.reloadData()
+        }
+    }
     
     var isFiltering: Bool {
         return searchController.isActive && !searchBarIsEmpty()
@@ -35,21 +41,24 @@ class ChannelListController: UITableViewController, DataDelegate {
     
     func filterContentForSearchText(_ searchText: String, scope: String = "All")
     {
-        filteredDataSource = ChannelListController.dataSource.filter({(keys : Channel) -> Bool in
-            return keys.title.lowercased().contains(searchText.lowercased())
+        filteredDataSource = dataSource.filter({(keys : Model.Channels) -> Bool in
+            return keys.name.lowercased().contains(searchText.lowercased())
         })
         
         tableView.reloadData()
     }
     
-    func passData(for row: Int, channel: Channel) {
-        ChannelListController.dataSource[row] = channel
+    func passData(for row: Int, channel: Model.Channels) {
+        // dataSource[row] = channel
     }
     
     var searchController = UISearchController(searchResultsController: nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        Model.usersAllGet()
+        
         setUpNavigationBar()
         navigationItem.title = "Channels"
         searchController.searchResultsUpdater = self
@@ -60,49 +69,48 @@ class ChannelListController: UITableViewController, DataDelegate {
     }
     
     func setUpNavigationBar(){
-        navigationController?.navigationItem.largeTitleDisplayMode = .always
+        navigationItem.largeTitleDisplayMode = .always
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addChannel))]
     }
     
-    override func viewWillAppear(_ animated: Bool)
+    override func viewDidAppear(_ animated: Bool)
     {
-        super.viewWillAppear(animated)
+        super.viewDidAppear(animated)
         searchController.isActive = false
-        tableView.reloadData()
+        askForUpdates()
+    }
+    
+    private func askForUpdates(){
+        Model.channelsList { [weak self] (channels) in
+            self?.dataSource = [ChannelListController.generalChannel] + channels
+            self?.toReload = true
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        askForUpdates()
     }
     
     @objc func addChannel()
     {
-        // insertion
-        tableView.beginUpdates()
-        ChannelListController.dataSource.insert(Channel(title: "Untitled", subtitle: "No", hashtags: [], people: [], posts: []), at: 1)
-        tableView.insertRows(at: [IndexPath(row: 1, section: 0)], with: .none)
-        tableView.endUpdates()
-        
         // editing mode is on automatically
         let vc = storyboard?.instantiateViewController(withIdentifier: channelControllerId) as! ChannelController
         vc.index = 1
         vc.myProtocol = self
-        vc.channel = ChannelListController.dataSource[1]
+        vc.channel = Model.Channels(people: [], name: "Untitled", tags: [])
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    static var dataSource : [Channel] = [
-        Channel(title: "General", subtitle: "All posts", hashtags: ["All"], people: ["All"], posts: []),
-        Channel(title: "Title", subtitle: "subtitle", hashtags: ["# sad", "# happy"], people: ["Seva", "Andrey"], posts: [Post(dataArray: [.text("Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard.")], from: User(name: "vbogomazova", id: 2, fullName: "Богомазова Вероника Львовна"), date: "14.02.19 в 12:05")]),
-        Channel(title: "Title2", subtitle: "subtitle2", hashtags: ["# studyhard", "# university"], people: ["Pasha", "Olya", "Andrey", "Ilya"], posts:
-            [
-            Post(dataArray: [.text("L'avantage du Lorem Ipsum sur un texte générique comme 'Du texte. Du texte. Du texte.' est qu'il possède une distribution de lettres plus ou moins normale.")], from: User(name: "vbogomazova", id: 2, fullName: "Богомазова Вероника Львовна"), date: "14.02.19 в 12:05"),
-            Post(dataArray: [.text("par accident, souvent intentionnellement (histoire d'y rajouter de petits clins d'oeil, voire des phrases embarassantes).")], from: User(name: "vbogomazova", id: 2, fullName: "Богомазова Вероника Львовна"), date: "14.02.19 в 12:05")
-            ]),
-        Channel(title: "Title3", subtitle: "subtitle3", hashtags: ["# lol", "# meme", "# hehe"], people: ["Superman"], posts: [Post(dataArray: [.text("Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié.")], from: User(name: "vbogomazova", id: 2, fullName: "Богомазова Вероника Львовна"), date: "14.02.19 в 12:05")])
-    ]
+    static let generalChannel = Model.Channels(people: [], name: "General", id: -1, tags: [])
+    
+    var dataSource : [Model.Channels] = [ ChannelListController.generalChannel ]
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isFiltering {
             return filteredDataSource.count
         } else {
-            return ChannelListController.dataSource.count
+            return dataSource.count
         }
     }
     
@@ -113,11 +121,11 @@ class ChannelListController: UITableViewController, DataDelegate {
         
         
         if isFiltering{
-            cell.textLabel?.text = filteredDataSource[indexPath.row].title
-            cell.detailTextLabel?.text = filteredDataSource[indexPath.row].subtitle
+            cell.textLabel?.text = filteredDataSource[indexPath.row].name
+            cell.detailTextLabel?.text = filteredDataSource[indexPath.row].tags.reduce(String(), { (r, next) -> String in "\(r) \(next)" })
         } else {
-            cell.textLabel?.text = ChannelListController.dataSource[indexPath.row].title
-            cell.detailTextLabel?.text = ChannelListController.dataSource[indexPath.row].subtitle
+            cell.textLabel?.text = dataSource[indexPath.row].name
+            cell.detailTextLabel?.text = dataSource[indexPath.row].tags.reduce(String(), { (r, next) -> String in "\(r) \(next)" })
         }
         
         return cell
@@ -140,24 +148,29 @@ class ChannelListController: UITableViewController, DataDelegate {
             let vc = self?.storyboard?.instantiateViewController(withIdentifier: channelControllerId) as! ChannelController
             vc.index = indexPath.row
             vc.myProtocol = self!
-            vc.channel = ChannelListController.dataSource[indexPath.row]
+            vc.channel = self?.dataSource[indexPath.row]
             self?.navigationController?.pushViewController(vc, animated: true)
         }
-        editButton.backgroundColor = .green
+        editButton.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         
         
         let deleteButton = UITableViewRowAction(style: .normal, title: "Delete") { [weak self] (action, indexPath) in
-            if (ChannelListController.dataSource[indexPath.row] == self!.displayingChannel!)
+            
+            Model.channelsDelete(by: self!.dataSource[indexPath.row].id!, completion: {
+                print("хз что тут делать при успехе")
+            })
+            
+            if (self!.dataSource[indexPath.row].id == self!.displayingChannel?.id ?? -1)
             {
-                self?.myProtocol?.passData(for: 0, channel: ChannelListController.dataSource[0])
+                self?.myProtocol?.passData(for: 0, channel: self!.dataSource[0])
             }
             self?.tableView.beginUpdates()
-            ChannelListController.dataSource.remove(at: indexPath.row)
+            self?.dataSource.remove(at: indexPath.row)
             self?.tableView.deleteRows(at: [indexPath], with: .none)
             self?.tableView.endUpdates()
         }
-        deleteButton.backgroundColor = .red
         
+        deleteButton.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
         
         return [editButton, deleteButton]
     }
@@ -170,7 +183,7 @@ class ChannelListController: UITableViewController, DataDelegate {
             myProtocol?.passData(for: 0, channel: filteredDataSource[indexPath.row])
             navigationController?.popViewController(animated: true)
         } else {
-            myProtocol?.passData(for: 0, channel: ChannelListController.dataSource[indexPath.row])
+            myProtocol?.passData(for: 0, channel: dataSource[indexPath.row])
             navigationController?.popViewController(animated: true)
             //onChannelSelected?(ChannelListController.dataSource[indexPath.row])
         }

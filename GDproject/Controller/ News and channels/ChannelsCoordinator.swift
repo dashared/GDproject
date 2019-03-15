@@ -12,11 +12,11 @@ import UIKit
 final class ChannelsCoordinator{
     
     // MARK: - Properties
-    private var channel: Channel { didSet { updateInterfaces() } }
+    private var channel: Model.Channels { didSet { updateInterfaces() } }
     private weak var navigationController: UINavigationController?
     
     // MARK:- Init
-    init(currentChannel: Channel, navigationController: UINavigationController) {
+    init(currentChannel: Model.Channels, navigationController: UINavigationController) {
         self.channel = currentChannel
         self.navigationController = navigationController
     }

@@ -22,9 +22,9 @@ class Channel: Equatable {
     var hashtags: [String] = []
     var people: [String] = []
     
-    var posts: [Post] = []
+    var posts: [Model.Posts] = []
     
-    init(title: String, subtitle: String, hashtags: [String], people: [String], posts: [Post])
+    init(title: String, subtitle: String = "none", hashtags: [String] = [], people: [String] = [], posts: [Model.Posts])
     {
         self.title = title
         self.subtitle = subtitle

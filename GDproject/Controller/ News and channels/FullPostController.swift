@@ -11,7 +11,8 @@ import TinyConstraints
 
 class FullPostController: UITableViewController {
 
-    var post: Post?
+    var post: Model.Posts?
+    var type: HeaderType = .NONE
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,13 +21,11 @@ class FullPostController: UITableViewController {
         
         setUpNavigationBar()
         tableView.separatorStyle = .none
-        
-        
     }
 
     func setUpNavigationBar(){
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationItem.title = "\(post?.fromUser.login ?? "")"
+        navigationItem.largeTitleDisplayMode = .never
+        navigationItem.title = "\(post?.authorId ?? 0)"
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(self.options))]
     }
     
@@ -83,7 +82,7 @@ class FullPostController: UITableViewController {
         case 0:
             return 1
         case 1:
-            return post?.comments.count ?? 0
+            return 0
         default:
             return 0
         }
@@ -95,7 +94,20 @@ class FullPostController: UITableViewController {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: postCellId) as! PostViewCell
         
-        cell.fill(with: post!.dataArray, true, post: post!)
+        
+        cell.fill(with: PostCellData.create(with: post!.body), true, post: post!)
+        
+        switch type {
+        case .NEWS:
+            cell.onUserDisplay = { [weak self] (id) in
+                let vc = self?.storyboard!.instantiateViewController(withIdentifier: profileViewController) as! ProfileViewController
+                vc.idProfile = id
+                self?.navigationController?.pushViewController(vc, animated: true)
+            }
+        default:
+            break
+        }
+        
         cell.selectionStyle = .none
         return cell
     }

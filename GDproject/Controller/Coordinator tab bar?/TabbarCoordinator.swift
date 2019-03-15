@@ -2,9 +2,10 @@ import UIKit
 
 class TabbarCoordinator{
     var window: UIWindow!
-    
+
     func start(){
-        window.rootViewController = UIStoryboard.tabBarController()
+        let tabbar = UIStoryboard.tabBarController()
+        window.rootViewController = tabbar
     }
     
     init(window: UIWindow) {

@@ -30,27 +30,53 @@ class ProfileViewController: UIViewController
     
     @IBOutlet weak var newMessageButton: UIButton!
     
+    var protoDictionary: [Int: UIImage] = [9: #imageLiteral(resourceName: "9"), 5051: #imageLiteral(resourceName: "5051"), 69: #imageLiteral(resourceName: "69"), 42: #imageLiteral(resourceName: "42")]
     
-    func fill(with user: User){
-        self.facultyLabel.text = user.faculty ?? ""
-        self.nameLabel.text = "\(user.initials.name) \(user.initials.optional ?? "")"
-        self.surnameLabel.text = user.initials.surname
-        self.profileImageView.image = #imageLiteral(resourceName: "kitten").roundedImage
-        self.placeLabel.text = user.placeOfWork
+    func fill(with user: Model.Users){
+        self.facultyLabel.text = "Студент: Факультет Компьютерных Наук"
+        self.nameLabel.text = "\(user.firstName) \(user.middleName)"
+        self.surnameLabel.text = "\(user.lastName)"
+        self.profileImageView.image = protoDictionary[user.id]?.roundedImage
+        self.placeLabel.text = "📍Москва, Кочновский пр.3"
+        if user.id == DataStorage.standard.getUserId() {
+            newMessageButton.isHidden  = true
+        } else {
+            newMessageButton.isHidden  = false
+        }
     }
     
-    var user: User = User(surname: "Богомазова", name: "Вероника", optional: "Львовна", emailName: "vbogomazova", id: 2, place: "📍Москва, Кочновский пр. 3", faculty: "Методист: Факультет Компьютерных наук")
+    var user: Model.Users? {
+        didSet {
+            self.fill(with: user!)
+            Model.getPostsForUser(with: user!.id) { [weak self] (posts) in
+                self?.dataSourse = posts
+            }
+            navigationItem.title = "\(user!.firstName) \(user!.lastName)"
+        }
+    }
     
-    let basicInfo = BasicInfoController()
-    let posts = NewsVC()
+    var basicInfo = BasicInfoController()
+    var posts = NewsVC()
+    
+    var dataSourse: [Model.Posts]?{
+        didSet{
+            
+            var newPosts: [Model.Posts] = []
+            
+            dataSourse?.forEach({ (post) in
+                newPosts.append(Model.Posts(body: post.body, authorId: post.authorId, id: post.id, user: user!, date: post.updated, tags: post.tags))
+            })
+            
+            self.posts.dataSourse = newPosts
+            tableView.reloadData()
+        }
+    }
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
-        posts.dataSourse = [Post(dataArray: [.text("Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. comme Aldus PageMaker. est qu'il possède une distribution de lettres plus ou moins normale, et en tout cas comparable avec celle du français standard. De nombreuses suites logicielles de mise en page ou éditeurs de sites Web ont fait du Lorem Ipsum leur faux texte par défaut, et une recherche pour 'Lorem Ipsum' vous conduira vers de nombreux sites qui n'en sont encore qu'à leur phase de construction. Plusieurs versions sont apparues avec le temps, parfois par accident, souvent intentionnellement (histoire d'y rajouter de petits clins d'oeil, voire des phrases embarassantes).")]), Post(dataArray: [.text("Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker. .")])]
         
-       // basicInfo.dataSourse =
         
         posts.viewController = self
         posts.type = .NONE
@@ -65,19 +91,36 @@ class ProfileViewController: UIViewController
         
         posts.viewController = self
         
-        fill(with: user)
         tableView.delegate = posts
         tableView.dataSource = posts
         tableView.reloadData()
     }
     
+    var idProfile: Int?
+    
     override func viewWillAppear(_ animated: Bool) {
+        if idProfile == nil {
+            idProfile = DataStorage.standard.getUserId()
+        }
+        
+        if let id = idProfile {
+            if let user = Model.idUser[id] {
+                self.user = user
+            } else {
+                Model.getUsers(for: [id]) { [weak self] (dic) in
+                    self?.user = dic[id]
+                }
+            }
+            
+            // requst for postsforuser was here. moved because of concrr
+        }
+        
         setUpNavigarionBar()
     }
     
     func setUpNavigarionBar(){
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = user.login
+        //navigationItem.title = "\(user?.id ?? 0)"
         let uibarbutton = UIBarButtonItem(title: "More", style: .plain, target: self, action: #selector(showInformation))
         navigationItem.rightBarButtonItems = [uibarbutton]
         navigationItem.largeTitleDisplayMode = .always
@@ -95,7 +138,21 @@ class ProfileViewController: UIViewController
         // saved
         
         let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        let editAction = UIAlertAction(title: "Edit profile", style: .default)
+        let channelAction = UIAlertAction(title: "Add to a channel", style: .default){
+            [weak self] (_) in
+            
+            let vc = self?.storyboard?.instantiateViewController(withIdentifier: simplifiedChannelsList) as! SimplifiedChannelsList
+            
+            vc.user = self?.user!
+            
+            let transition = CATransition()
+            transition.duration = 0.5
+            transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+            transition.type = CATransitionType.moveIn
+            transition.subtype = CATransitionSubtype.fromTop
+            self?.navigationController?.view.layer.add(transition, forKey: nil)
+            self?.navigationController?.pushViewController(vc, animated: false)
+        }
         let settingsAction = UIAlertAction(title: "Setting", style: .default)
         { [weak self] (_) in
             
@@ -104,17 +161,24 @@ class ProfileViewController: UIViewController
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        let shareAction = UIAlertAction(title: "Share", style: .default)
+        let logoutAction = UIAlertAction(title: "Log out", style: .destructive)
+        {
+            (_) in
+            DataStorage.standard.setIsLoggedIn(value: false, with: 0)
+        }
         
-        optionMenu.addAction(editAction)
+        optionMenu.addAction(channelAction)
         optionMenu.addAction(settingsAction)
         optionMenu.addAction(copyLink)
-        optionMenu.addAction(shareAction)
+        optionMenu.addAction(logoutAction)
         optionMenu.addAction(cancelAction)
         
         self.present(optionMenu, animated: true, completion: nil)
     }
     
+    deinit {
+        print("profile clear")
+    }
     
     @IBAction func valueChanged(_ sender: UISegmentedControl) {
         let index = sender.selectedSegmentIndex

@@ -7,14 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1210A0BB223940310080686D /* SimplifiedChannelsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1210A0BA223940310080686D /* SimplifiedChannelsList.swift */; };
+		123AD0E3223C1C3900326173 /* WSTagsField.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 123AD0E2223C1C3900326173 /* WSTagsField.framework */; };
+		123AD0E5223C1C4300326173 /* WSTagsField.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 123AD0E2223C1C3900326173 /* WSTagsField.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		123E37A5221F1B3200F6E42A /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123E37A4221F1B3200F6E42A /* LogInViewController.swift */; };
 		123E37A7221F1DD700F6E42A /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123E37A6221F1DD700F6E42A /* MainController.swift */; };
+		124CC7032221C00C009DF531 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124CC7022221C00C009DF531 /* Model.swift */; };
+		124CC7052221C2BB009DF531 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 124CC7042221C2BA009DF531 /* Alamofire.framework */; };
+		124CC7072221C2C3009DF531 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 124CC7042221C2BA009DF531 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1253867D2223DC9F00CC5EA7 /* RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1253867C2223DC9F00CC5EA7 /* RepeatingTimer.swift */; };
 		125BD57D22171D2A008A3575 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD57C22171D2A008A3575 /* ProfileViewController.swift */; };
 		125BD57F22171D73008A3575 /* Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD57E22171D73008A3575 /* Extentions.swift */; };
 		125BD5812217314A008A3575 /* NewsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD5802217314A008A3575 /* NewsVC.swift */; };
 		1288B5CE221F1158002BE6B1 /* DataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1288B5CD221F1158002BE6B1 /* DataStorage.swift */; };
 		1291BE2D2221312D009D3F23 /* ChannelsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE2C2221312C009D3F23 /* ChannelsCoordinator.swift */; };
 		1291BE342221569B009D3F23 /* TabbarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE332221569B009D3F23 /* TabbarCoordinator.swift */; };
+		1291BE3622218DBF009D3F23 /* LogInCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE3522218DBF009D3F23 /* LogInCoordinator.swift */; };
 		12D7D133221C321600B35452 /* ChannelListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D7D132221C321600B35452 /* ChannelListController.swift */; };
 		12D7D135221C42B700B35452 /* ChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D7D134221C42B700B35452 /* ChannelController.swift */; };
 		12D7D137221D78E800B35452 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D7D136221D78E800B35452 /* Channel.swift */; };
@@ -55,9 +63,11 @@
 			dstSubfolderSpec = 10;
 			files = (
 				12E36DC0221441DB006FCDD7 /* Marklight.framework in Embed Frameworks */,
+				124CC7072221C2C3009DF531 /* Alamofire.framework in Embed Frameworks */,
 				12E36DC4221441EA006FCDD7 /* Cartography.framework in Embed Frameworks */,
 				12E36DD9221594A9006FCDD7 /* TagListView.framework in Embed Frameworks */,
 				12E36DBD221441D5006FCDD7 /* TinyConstraints.framework in Embed Frameworks */,
+				123AD0E5223C1C4300326173 /* WSTagsField.framework in Embed Frameworks */,
 				12E36DC2221441E1006FCDD7 /* MarkdownKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -66,14 +76,20 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1210A0BA223940310080686D /* SimplifiedChannelsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplifiedChannelsList.swift; sourceTree = "<group>"; };
+		123AD0E2223C1C3900326173 /* WSTagsField.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WSTagsField.framework; path = Carthage/Build/iOS/WSTagsField.framework; sourceTree = "<group>"; };
 		123E37A4221F1B3200F6E42A /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		123E37A6221F1DD700F6E42A /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
+		124CC7022221C00C009DF531 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		124CC7042221C2BA009DF531 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
+		1253867C2223DC9F00CC5EA7 /* RepeatingTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatingTimer.swift; sourceTree = "<group>"; };
 		125BD57C22171D2A008A3575 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		125BD57E22171D73008A3575 /* Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extentions.swift; sourceTree = "<group>"; };
 		125BD5802217314A008A3575 /* NewsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsVC.swift; sourceTree = "<group>"; };
 		1288B5CD221F1158002BE6B1 /* DataStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStorage.swift; sourceTree = "<group>"; };
 		1291BE2C2221312C009D3F23 /* ChannelsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsCoordinator.swift; sourceTree = "<group>"; };
 		1291BE332221569B009D3F23 /* TabbarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbarCoordinator.swift; sourceTree = "<group>"; };
+		1291BE3522218DBF009D3F23 /* LogInCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInCoordinator.swift; sourceTree = "<group>"; };
 		12D7D132221C321600B35452 /* ChannelListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelListController.swift; sourceTree = "<group>"; };
 		12D7D134221C42B700B35452 /* ChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelController.swift; sourceTree = "<group>"; };
 		12D7D136221D78E800B35452 /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
@@ -109,9 +125,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				12E36DB522143D54006FCDD7 /* TinyConstraints.framework in Frameworks */,
+				124CC7052221C2BB009DF531 /* Alamofire.framework in Frameworks */,
 				12E36DDB221594B1006FCDD7 /* MarkdownKit.framework in Frameworks */,
 				12E36DD8221594A9006FCDD7 /* TagListView.framework in Frameworks */,
 				12E36DAF22143D40006FCDD7 /* Cartography.framework in Frameworks */,
+				123AD0E3223C1C3900326173 /* WSTagsField.framework in Frameworks */,
 				12E36DB322143D4E006FCDD7 /* Marklight.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -140,9 +158,20 @@
 			path = "Coordinator tab bar?";
 			sourceTree = "<group>";
 		};
+		1291BE3722218DC4009D3F23 /* Log In */ = {
+			isa = PBXGroup;
+			children = (
+				123E37A4221F1B3200F6E42A /* LogInViewController.swift */,
+				1291BE3522218DBF009D3F23 /* LogInCoordinator.swift */,
+			);
+			path = "Log In";
+			sourceTree = "<group>";
+		};
 		12E36D8F221424EA006FCDD7 = {
 			isa = PBXGroup;
 			children = (
+				123AD0E2223C1C3900326173 /* WSTagsField.framework */,
+				124CC7042221C2BA009DF531 /* Alamofire.framework */,
 				12E36DD622159493006FCDD7 /* TagListView.framework */,
 				12E36DB422143D54006FCDD7 /* TinyConstraints.framework */,
 				12E36DB222143D4E006FCDD7 /* Marklight.framework */,
@@ -182,6 +211,7 @@
 		12E36DBA2214401B006FCDD7 /* Simple model */ = {
 			isa = PBXGroup;
 			children = (
+				124CC7022221C00C009DF531 /* Model.swift */,
 				12E36DB62214400A006FCDD7 /* Post.swift */,
 				12D7D136221D78E800B35452 /* Channel.swift */,
 				12E36DB822144016006FCDD7 /* User.swift */,
@@ -202,8 +232,9 @@
 		12E36DCF22145923006FCDD7 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				1253867C2223DC9F00CC5EA7 /* RepeatingTimer.swift */,
 				1291BE32222154C3009D3F23 /* Coordinator tab bar? */,
-				123E37A4221F1B3200F6E42A /* LogInViewController.swift */,
+				1291BE3722218DC4009D3F23 /* Log In */,
 				1288B5CC221F0EFE002BE6B1 /* Profile */,
 				12E36DD322156519006FCDD7 /*  News and channels */,
 			);
@@ -215,6 +246,7 @@
 			children = (
 				12D7D134221C42B700B35452 /* ChannelController.swift */,
 				12D7D132221C321600B35452 /* ChannelListController.swift */,
+				1210A0BA223940310080686D /* SimplifiedChannelsList.swift */,
 				12E36DC922144635006FCDD7 /* NewPostViewController.swift */,
 				12E36DD022148122006FCDD7 /* FullPostController.swift */,
 				12E36D9D221424EA006FCDD7 /* NewsController.swift */,
@@ -304,9 +336,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				124CC7032221C00C009DF531 /* Model.swift in Sources */,
 				12E36DD522156559006FCDD7 /* MyStackView.swift in Sources */,
 				12D7D137221D78E800B35452 /* Channel.swift in Sources */,
+				1291BE3622218DBF009D3F23 /* LogInCoordinator.swift in Sources */,
 				12E36DB922144016006FCDD7 /* User.swift in Sources */,
+				1210A0BB223940310080686D /* SimplifiedChannelsList.swift in Sources */,
 				125BD5812217314A008A3575 /* NewsVC.swift in Sources */,
 				12E36DB72214400A006FCDD7 /* Post.swift in Sources */,
 				12DB7FDF221877160096878E /* InviteViewController.swift in Sources */,
@@ -321,6 +356,7 @@
 				12E36DD122148122006FCDD7 /* FullPostController.swift in Sources */,
 				1288B5CE221F1158002BE6B1 /* DataStorage.swift in Sources */,
 				125BD57D22171D2A008A3575 /* ProfileViewController.swift in Sources */,
+				1253867D2223DC9F00CC5EA7 /* RepeatingTimer.swift in Sources */,
 				12DB7FDB2218590C0096878E /* InfoCell.swift in Sources */,
 				12DB7FD922181E660096878E /* BasicInfoCell.swift in Sources */,
 				12D7D135221C42B700B35452 /* ChannelController.swift in Sources */,

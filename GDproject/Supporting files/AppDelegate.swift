@@ -11,7 +11,8 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    var coordinator: ChannelsCoordinator!
+    
+    var coordinator: LogInCoordinator!
     var tabCoordinator: TabbarCoordinator!
     
     var window: UIWindow?
@@ -19,16 +20,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return self.window!.rootViewController as? UINavigationController
     }
 
-    private func makeCoordinator(with: UINavigationController) -> ChannelsCoordinator {
-        return ChannelsCoordinator(currentChannel: Channel(title: "example", subtitle: "ex", hashtags: ["none"], people: ["none"], posts: []), navigationController: with)
+    func logInAgain(){
+        let root = UIStoryboard.navRoot()
+        window?.rootViewController = root
+        window?.makeKeyAndVisible()
+        coordinator = LogInCoordinator(navigationController: root, window: UIApplication.shared.keyWindow!)
+        coordinator!.start()
     }
+    
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
-        
-        // TODO:- determine what to do here: log in or tabbar
+        coordinator = LogInCoordinator(navigationController: rootController!, window: window!)
         tabCoordinator = TabbarCoordinator(window: window!)
-        tabCoordinator.start()
+        // TODO:- determine what to do here: log in or tabbar
+        if DataStorage.standard.isLoggedIn {
+            tabCoordinator.start()
+        } else {
+            coordinator.start()
+        }
         
         return true
     }

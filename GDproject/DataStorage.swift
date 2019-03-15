@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 /**
  _DataStorage_ class is aimed to store user private settings
@@ -16,24 +17,37 @@ class DataStorage{
     
     private init(){}
     
+    //weak var coordinator: LogInCoordinator?
     static let standard = DataStorage()
-    
-    // add channel
-    
-    // delete channel
     
     /**
       Function for setting log in status of user
      */
-    func setIsLoggedIn(value: Bool){
+    func setIsLoggedIn(value: Bool, with id: Int){
         UserDefaults.standard.set(value, forKey: UserDefaultsKeys.loggedIn.rawValue)
+        setUserKey(with: id)
+        isLoggedIn = UserDefaults.standard.bool(forKey: UserDefaultsKeys.loggedIn.rawValue)
+    }
+    
+    func setUserKey(with id: Int){
+        UserDefaults.standard.set(id, forKey: UserDefaultsKeys.id.rawValue)
+    }
+    
+    func getUserId() -> Int {
+        return UserDefaults.standard.integer(forKey: UserDefaultsKeys.id.rawValue)
     }
     
     /**
      Function to determine is user logged in already or not
     */
-    func isLoggedIn() -> Bool {
-        return UserDefaults.standard.bool(forKey: UserDefaultsKeys.loggedIn.rawValue)
+    var isLoggedIn: Bool = UserDefaults.standard.bool(forKey: UserDefaultsKeys.loggedIn.rawValue) {
+        didSet{
+            if isLoggedIn  && getUserId() != 0 {
+                (UIApplication.shared.delegate as? AppDelegate)?.tabCoordinator.start()
+            } else {
+                (UIApplication.shared.delegate as? AppDelegate)?.logInAgain()
+            }
+        }
     }
 }
 
@@ -42,4 +56,5 @@ class DataStorage{
  */
 enum UserDefaultsKeys: String{
     case loggedIn
+    case id
 }

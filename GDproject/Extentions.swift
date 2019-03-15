@@ -52,7 +52,11 @@ extension UIStoryboard {
         return UIStoryboard.userEdit.instantiateViewController(withIdentifier: "TabBar") as! UITabBarController
     }
     
-    class func navChannels() ->UINavigationController{
-        return UIStoryboard.userEdit.instantiateViewController(withIdentifier: "navChannels") as! UINavigationController
+    class func navRoot() -> UINavigationController{
+        return UIStoryboard.userEdit.instantiateViewController(withIdentifier: "root") as! UINavigationController
+    }
+    
+    class func makeLogIn() -> LogInViewController {
+        return UIStoryboard.userEdit.instantiateViewController(withIdentifier: logInController) as! LogInViewController
     }
 }

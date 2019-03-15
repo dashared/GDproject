@@ -12,6 +12,19 @@ class LogInViewController: UIViewController {
     
     @IBOutlet weak var mailTextField: UITextField!
     
+    @IBOutlet weak var indicatorView: UIActivityIndicatorView!
+    
+    var onLogIn: ((Int)->())?
+    
+    var authenticateSucceeded: Bool? {
+        didSet {
+            if !authenticateSucceeded! {
+                indicatorView.stopAnimating()
+                indicatorView.isHidden = true
+            } 
+        }
+    }
+    
     static let titleColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 0.5)
     
     var bottomConstraint: NSLayoutConstraint?
@@ -40,14 +53,10 @@ class LogInViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // MARK:- uncomment when mail registration will be availiable
-        //self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        // MARK:- uncomment when mail registration will be availiable
-        //self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     private func configureTapgesture(){
@@ -62,16 +71,20 @@ class LogInViewController: UIViewController {
     @objc func activateLogInProcess(){
         if logInButton.isEnabled {
             // MARK:- when log in is succeeded do I need to go there?
-            let vc = storyboard!.instantiateViewController(withIdentifier: newsController) as! NewsController
-            present(vc, animated: true) {
-                print("logged in")
+            if let id = Int(mailTextField.text!){
+                indicatorView.isHidden = false
+                indicatorView.startAnimating()
+                onLogIn?(id)
+                view.endEditing(true)
+            } else {
+                logInButton.isEnabled = false
+                logInButton.setTitleColor(LogInViewController.titleColor.withAlphaComponent(0.5), for: .normal)
             }
-            DataStorage.standard.setIsLoggedIn(value: true)
-            view.endEditing(true)
         }
     }
     
     func setUpView(){
+        indicatorView.isHidden = true
         mailTextField.delegate = self
         view.addSubview(keyboardBar)
         
@@ -80,6 +93,10 @@ class LogInViewController: UIViewController {
         
         setUpBarComponents()
         
+        configureKeyboardBehavior()
+    }
+    
+    func configureKeyboardBehavior(){
         bottomConstraint = NSLayoutConstraint(item: keyboardBar, attribute: .bottom, relatedBy: .equal, toItem: view.safeAreaLayoutGuide, attribute: .bottom, multiplier: 1, constant: 0)
         view.addConstraint(bottomConstraint!)
         
@@ -115,9 +132,7 @@ class LogInViewController: UIViewController {
             
             UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
                 self.view.layoutIfNeeded()
-            }) { (completed) in
-                
-            }
+            })
         }
     }
     

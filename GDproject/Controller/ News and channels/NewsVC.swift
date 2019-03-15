@@ -7,14 +7,40 @@
 //
 
 import UIKit
+import MarkdownKit
+
+struct PostCellData{
+    var attributedData = NSAttributedString()
+    
+    static func create(with attachments: [Model.Attachments]) -> NSAttributedString{
+        var markdown = ""
+        
+        attachments.forEach { (attachment) in markdown.append(attachment.markdown) }
+        
+        let markdownParser = MarkdownParser(font: UIFont.systemFont(ofSize: 16))
+        markdownParser.enabledElements = .disabledAutomaticLink
+        markdownParser.code.textBackgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        
+        return markdownParser.parse(markdown)
+    }
+}
 
 class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
-    var dataSourse: [Post] = []
+    var dataSourse: [Model.Posts] = [] {
+        didSet {
+            cellDataSourse = []
+            dataSourse.forEach { (item) in
+                cellDataSourse.append(PostCellData(attributedData: PostCellData.create(with: item.body)))
+            }
+        }
+    }
+    
+    var cellDataSourse: [PostCellData] = []
     
     var type: HeaderType = .NONE
     
-    var viewController: UIViewController?
+    weak var viewController: UIViewController?
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -24,7 +50,7 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     {
         tableView.deselectRow(at: indexPath, animated: true)
         let vc = viewController!.storyboard!.instantiateViewController(withIdentifier: fullPostControllerId) as! FullPostController
-        
+        vc.type = type
         vc.post = dataSourse[indexPath.row]
         viewController!.navigationController!.pushViewController(vc, animated: true)
     }
@@ -37,7 +63,21 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: postCellId, for: indexPath) as! PostViewCell
         
-        cell.fill(with: dataSourse[indexPath.row].dataArray, false, post: dataSourse[indexPath.row])
+        cell.fill(with: cellDataSourse[indexPath.row].attributedData, false, post: dataSourse[indexPath.row])
+        
+        switch type {
+        case .NEWS:
+            cell.onUserDisplay = { [weak self] (id) in
+                let vc = self?.viewController!.storyboard!.instantiateViewController(withIdentifier: profileViewController) as! ProfileViewController
+                vc.idProfile = id
+                self?.viewController!.navigationController!.pushViewController(vc, animated: true)
+            }
+        case .NONE:
+            cell.onUserDisplay = { (id) in
+                print("tapped when profile is open already \(id)")
+            }
+        }
+        
         cell.selectionStyle = .none
         return cell
     }
