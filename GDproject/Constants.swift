@@ -6,6 +6,7 @@
 //  Copyright © 2019 drHSE. All rights reserved.
 //
 
+import UIKit
 /// constant for cell in posts NewsController.swift
 let postCellId = "PostCell"
 
@@ -46,3 +47,6 @@ let logInController = "LogInController"
 let profileViewController = "ProfileViewController"
 
 let simplifiedChannelsList = "SimplifiedChannelsList"
+
+let blueSystemColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 0.5)
+

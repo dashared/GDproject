@@ -30,6 +30,12 @@ class ProfileViewController: UIViewController
     
     @IBOutlet weak var newMessageButton: UIButton!
     
+    var logOut: (()->())?
+    
+    var onSettings: (()->())?
+    
+    var onChannelsListToAddAPerson: ((Model.Users)->())?
+    
     var protoDictionary: [Int: UIImage] = [9: #imageLiteral(resourceName: "9"), 5051: #imageLiteral(resourceName: "5051"), 69: #imageLiteral(resourceName: "69"), 42: #imageLiteral(resourceName: "42")]
     
     func fill(with user: Model.Users){
@@ -76,8 +82,6 @@ class ProfileViewController: UIViewController
     {
         super.viewDidLoad()
         
-        
-        
         posts.viewController = self
         posts.type = .NONE
         
@@ -99,6 +103,7 @@ class ProfileViewController: UIViewController
     var idProfile: Int?
     
     override func viewWillAppear(_ animated: Bool) {
+        
         if idProfile == nil {
             idProfile = DataStorage.standard.getUserId()
         }
@@ -111,8 +116,6 @@ class ProfileViewController: UIViewController
                     self?.user = dic[id]
                 }
             }
-            
-            // requst for postsforuser was here. moved because of concrr
         }
         
         setUpNavigarionBar()
@@ -120,56 +123,35 @@ class ProfileViewController: UIViewController
     
     func setUpNavigarionBar(){
         navigationController?.navigationBar.prefersLargeTitles = true
-        //navigationItem.title = "\(user?.id ?? 0)"
         let uibarbutton = UIBarButtonItem(title: "More", style: .plain, target: self, action: #selector(showInformation))
         navigationItem.rightBarButtonItems = [uibarbutton]
         navigationItem.largeTitleDisplayMode = .always
     }
     
-    
-    let copyLink: UIAlertAction = {
-        let b = UIAlertAction(title: "Copy link", style: .default)
-        return b
-    }()
-    
     @objc func showInformation(){
         
-        // drafts
-        // saved
-        
         let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
         let channelAction = UIAlertAction(title: "Add to a channel", style: .default){
             [weak self] (_) in
-            
-            let vc = self?.storyboard?.instantiateViewController(withIdentifier: simplifiedChannelsList) as! SimplifiedChannelsList
-            
-            vc.user = self?.user!
-            
-            let transition = CATransition()
-            transition.duration = 0.5
-            transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-            transition.type = CATransitionType.moveIn
-            transition.subtype = CATransitionSubtype.fromTop
-            self?.navigationController?.view.layer.add(transition, forKey: nil)
-            self?.navigationController?.pushViewController(vc, animated: false)
+            self?.onChannelsListToAddAPerson?(self!.user!)
         }
+        
         let settingsAction = UIAlertAction(title: "Setting", style: .default)
         { [weak self] (_) in
-            
-           let vc = self?.storyboard?.instantiateViewController(withIdentifier: "SettingsViewController") as! SettingsViewController
-            self?.navigationController?.pushViewController(vc, animated: true)
+           self?.onSettings?()
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
         let logoutAction = UIAlertAction(title: "Log out", style: .destructive)
-        {
+        { [weak self]
             (_) in
-            DataStorage.standard.setIsLoggedIn(value: false, with: 0)
+            self?.logOut?()
         }
         
         optionMenu.addAction(channelAction)
         optionMenu.addAction(settingsAction)
-        optionMenu.addAction(copyLink)
         optionMenu.addAction(logoutAction)
         optionMenu.addAction(cancelAction)
         

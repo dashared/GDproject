@@ -1,128 +1,110 @@
 //
 //  LogInViewController.swift
-//  NewsFeed
+//  RxSwift
 //
-//  Created by cstore on 20/01/2019.
+//  Created by cstore on 01/03/2019.
 //  Copyright © 2019 drHSE. All rights reserved.
 //
 
 import UIKit
+import TinyConstraints
+import ReactiveSwift
+import ReactiveCocoa
+import Result
 
 class LogInViewController: UIViewController {
     
-    @IBOutlet weak var mailTextField: UITextField!
+    var authenticate: ((Int)->())?
     
-    @IBOutlet weak var indicatorView: UIActivityIndicatorView!
+    let logInLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Log In"
+        label.textColor = .black
+        label.font = UIFont.boldSystemFont(ofSize: 34)
+        return label
+    }()
     
-    var onLogIn: ((Int)->())?
-    
-    var authenticateSucceeded: Bool? {
-        didSet {
-            if !authenticateSucceeded! {
-                indicatorView.stopAnimating()
-                indicatorView.isHidden = true
-            } 
-        }
-    }
-    
-    static let titleColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 0.5)
-    
-    var bottomConstraint: NSLayoutConstraint?
+    let mailTextField: UITextField = {
+        let textField = UITextField()
+        textField.backgroundColor = #colorLiteral(red: 0.937254902, green: 0.937254902, blue: 0.9568627451, alpha: 1)
+        textField.placeholder = "Mail"
+        textField.borderStyle = .roundedRect
+        textField.textColor = .black
+        textField.clearButtonMode = .always
+        return textField
+    }()
     
     let logInButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Log In", for: .normal)
-        button.setTitleColor(titleColor, for: .normal)
+        button.setTitleColor(blueSystemColor, for: .normal)
         button.titleLabel?.font  = UIFont.boldSystemFont(ofSize: 16)
+        button.addTarget(self, action: #selector(handleTap), for: .touchUpInside)
         button.isEnabled = false
-        button.addTarget(self, action: #selector(activateLogInProcess), for: .touchUpInside)
         return button
     }()
     
-    let keyboardBar: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        return view
-    }()
+    @objc func handleTap(){
+        authenticate?(Int(mailTextField.text!)!)
+    }
+    
+    private lazy var keyboardBar = UIView()
+    private lazy var contentView = UIView()
+    private var bottomConstraint: NSLayoutConstraint?
+    
+    func setUpView(){
+        // logIn stack with textField and label
+        view.addSubview(contentView)
+        contentView.edgesToSuperview(excluding: .bottom, insets: .left(16) + .right(16) + .top(80), usingSafeArea: true)
+        let views = [logInLabel, mailTextField]
+        contentView.stack(views, axis: .vertical, spacing: 10)
+    }
+    
+    func configureKeyboard(){
+        
+        // configure keyboardBar setUp
+        view.addSubview(keyboardBar)
+        keyboardBar.height(50)
+        keyboardBar.edgesToSuperview(excluding: [.top,.bottom])
+        bottomConstraint = NSLayoutConstraint(item: keyboardBar, attribute: .bottom, relatedBy: .equal, toItem: view.safeAreaLayoutGuide, attribute: .bottom, multiplier: 1, constant: 0)
+        view.addConstraint(bottomConstraint!)
+        
+        // configure keyboardBar components
+        keyboardBar.addSubview(logInButton)
+        logInButton.height(50)
+        logInButton.leftToSuperview(view.leftAnchor, offset: 16, relation: .equal, isActive: true)
+        
+    }
+    
+    func logicOfLogInInputValidation() -> ((String?)->()) {
+        
+        let logic: ((String?)->()) = { [weak self] (someText) in
+            if let text = someText, !text.isEmpty, let id = Int(text) {
+                self?.logInButton.isEnabled = true
+            } else {
+                self?.logInButton.isEnabled = false
+            }
+        }
+        
+        return logic
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = .white
         setUpView()
-        configureTapgesture()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-    }
-    
-    private func configureTapgesture(){
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
-        view.addGestureRecognizer(tapGesture)
-    }
-    
-    @objc func handleTap(){
-        view.endEditing(true)
-    }
-    
-    @objc func activateLogInProcess(){
-        if logInButton.isEnabled {
-            // MARK:- when log in is succeeded do I need to go there?
-            if let id = Int(mailTextField.text!){
-                indicatorView.isHidden = false
-                indicatorView.startAnimating()
-                onLogIn?(id)
-                view.endEditing(true)
-            } else {
-                logInButton.isEnabled = false
-                logInButton.setTitleColor(LogInViewController.titleColor.withAlphaComponent(0.5), for: .normal)
-            }
-        }
-    }
-    
-    func setUpView(){
-        indicatorView.isHidden = true
-        mailTextField.delegate = self
-        view.addSubview(keyboardBar)
+        configureKeyboard()
         
-        view.addConstraintsWithFormat(format: "H:|[v0]|", views: keyboardBar)
-        view.addConstraintsWithFormat(format: "V:[v0(50)]", views: keyboardBar)
+        let mailFieldValuesSignal: Signal<String?, NoError> = mailTextField.reactive.continuousTextValues
         
-        setUpBarComponents()
-        
-        configureKeyboardBehavior()
-    }
-    
-    func configureKeyboardBehavior(){
-        bottomConstraint = NSLayoutConstraint(item: keyboardBar, attribute: .bottom, relatedBy: .equal, toItem: view.safeAreaLayoutGuide, attribute: .bottom, multiplier: 1, constant: 0)
-        view.addConstraint(bottomConstraint!)
+        mailFieldValuesSignal.observeValues(logicOfLogInInputValidation())
         
         // for keyboard notifications
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotifications), name: UIResponder.keyboardWillShowNotification, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotifications), name: UIResponder.keyboardWillHideNotification, object: nil)
-        
-        // for log in button notifications
-        NotificationCenter.default.addObserver(self, selector: #selector(inputDidChanged), name: UITextField.textDidChangeNotification, object: mailTextField)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(inputDidChanged), name: UITextField.textDidBeginEditingNotification, object: mailTextField)
     }
     
-    @objc func inputDidChanged(notification: NSNotification){
-        if mailTextField.text?.isEmpty ?? true
-        {
-            logInButton.isEnabled = false
-            logInButton.setTitleColor(LogInViewController.titleColor.withAlphaComponent(0.5), for: .normal)
-        }
-        else
-        {
-            logInButton.isEnabled = true
-            logInButton.setTitleColor(LogInViewController.titleColor.withAlphaComponent(1), for: .normal)
-        }
-    }
     
     @objc func handleKeyboardNotifications(notification: NSNotification){
         if let userInfo = notification.userInfo{
@@ -136,18 +118,13 @@ class LogInViewController: UIViewController {
         }
     }
     
-    func setUpBarComponents(){
-        keyboardBar.addSubview(logInButton)
-        keyboardBar.addConstraintsWithFormat(format: "H:[v0(60)]-16-|", views: logInButton)
-        keyboardBar.addConstraintsWithFormat(format: "V:|[v0]|", views: logInButton)
-    }
 }
 
-
-extension LogInViewController: UITextFieldDelegate{
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool
-    {
-        textField.resignFirstResponder()
-        return true
+extension UIButton {
+    override open var isEnabled: Bool {
+        didSet {
+            let color = isEnabled ? self.titleLabel?.textColor.withAlphaComponent(1) : self.titleLabel?.textColor.withAlphaComponent(0.5)
+            self.setTitleColor(color, for: .normal)
+        }
     }
 }
