@@ -34,18 +34,38 @@ class ChannelsCoordinator: BaseCoordinator{
         navigationController?.setViewControllers([channels,presentNewsController()], animated: false)
     }
     
-    private func presentNewsController(with channel: Model.Channels? = nil) -> PulleyViewController {
+    func presentNewsController(with channel: Model.Channels? = nil) -> PulleyViewController {
         
         let mainContentVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: newsController) as! NewsController
-        mainContentVC.channel = channel
-        
         let drawerContentVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DrawerContentViewController")
+        
+        mainContentVC.channel = channel
+        mainContentVC.news.onFullPost = {
+            [weak self] (type,post) in
+            
+            let vc = self?.storyboard.instantiateViewController(withIdentifier: fullPostControllerId) as! FullPostController
+            vc.type = type
+            vc.post = post
+            self?.navigationController!.pushViewController(vc, animated: true)
+        }
+        
+        mainContentVC.news.onChannelDidChange = {
+            [weak self, weak mainContentVC] (tuple) in print("hep")
+            switch mainContentVC!.news.type {
+            case .ANONYMOUS:
+                mainContentVC!.posts = tuple.1
+                mainContentVC!.dictionary = tuple.0
+            default:
+                let vc = self!.presentNewsController()
+                (vc.primaryContentViewController as! NewsController).anonymousChannel = tuple
+                (vc.primaryContentViewController as! NewsController).type = .ANONYMOUS
+                self?.navigationController?.pushViewController(vc, animated: true)
+            }
+        }
         
         let pulleyDrawerVC = PulleyViewController(contentViewController: mainContentVC, drawerViewController: drawerContentVC)
         
         pulleyDrawerVC.initialDrawerPosition = .collapsed
-        
-        
         mainContentVC.changedChannelName = {
             [weak pulleyDrawerVC] (title) in pulleyDrawerVC?.navigationItem.title = title
         }

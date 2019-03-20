@@ -27,6 +27,10 @@ struct PostCellData{
 
 class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
+    var onChannelDidChange: ((([Int: Model.Users],[Model.Posts]))->())?
+    
+    var onFullPost: ((HeaderType, Model.Posts)->())?
+    
     var dataSourse: [Model.Posts] = [] {
         didSet {
             cellDataSourse = []
@@ -48,11 +52,7 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let vc = viewController!.storyboard!.instantiateViewController(withIdentifier: fullPostControllerId) as! FullPostController
-        vc.type = type
-        vc.post = dataSourse[indexPath.row]
-        viewController!.navigationController!.pushViewController(vc, animated: true)
+        onFullPost?(type, dataSourse[indexPath.row])
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -72,10 +72,17 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
                 vc.idProfile = id
                 self?.viewController!.navigationController!.pushViewController(vc, animated: true)
             }
-        case .NONE:
+        default:
             cell.onUserDisplay = { (id) in
                 print("tapped when profile is open already \(id)")
             }
+        }
+        
+        cell.onAnonymousChannelDisplay = {
+            [weak self] (tag) in
+            Model.getAnonymousChannel(by: Model.AnonymousChannel(people: [], tags: [tag]),
+                                      completion: { (tuple) in self?.onChannelDidChange?(tuple) }
+            )
         }
         
         cell.selectionStyle = .none
@@ -95,4 +102,5 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
 enum HeaderType {
     case NONE
     case NEWS
+    case ANONYMOUS
 }

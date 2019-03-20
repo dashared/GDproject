@@ -14,6 +14,7 @@ class Model{
     static let invalidTocken = 498
     
     private static var isValidTocken: ((Int)->())? = { responce in
+        print(responce)
         if responce == invalidTocken {
             DataStorage.standard.setIsLoggedIn(value: false, with: 0)
         }
@@ -33,6 +34,7 @@ class Model{
     static let channelsListURL = URL(string: "\(baseUrl)/channels")!
     static let channelsCreateURL = URL(string: "\(baseUrl)/channels/create")!
     static let channelsDeleteURL = URL(string: "\(baseUrl)/channels/delete")!
+    static let channelsGetAnonURL = URL(string: "\(baseUrl)/channels/getAnonymous")!
     
     
     struct QueryPosts: Codable{
@@ -415,6 +417,86 @@ class Model{
             }
             
             isValidTocken?(response.response?.statusCode ?? 498)
+        }
+    }
+    
+    struct AnonymousChannel: Codable {
+        
+        var limit = 10
+        var request: RequestPeopleTags
+        
+        enum CodingKeys: String, CodingKey {
+            case limit
+            case request
+        }
+        
+        init(people: [Int], tags: [String]) {
+            self.request = RequestPeopleTags(people: people, tags: tags)
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(limit, forKey: .limit)
+            try container.encode(request, forKey: .request)
+        }
+        
+        struct RequestPeopleTags: Codable {
+            
+            var people: [Int]
+            var tags: [String]
+            
+            init(people: [Int], tags: [String]) {
+                self.people = people
+                self.tags = tags
+            }
+            
+            func encode(to encoder: Encoder) throws {
+                var container = encoder.container(keyedBy: CodingKeys.self)
+                try container.encode(people, forKey: .people)
+                try container.encode(tags, forKey: .tags)
+            }
+            
+            enum CodingKeys: String, CodingKey {
+                case people
+                case tags
+            }
+            
+        }
+    }
+    /*
+     {
+     "limit": 11,
+     "request": {
+         "people": [
+                2,
+                7,
+                8
+            ],
+         "tags": [
+                "thisIsHashTag",
+                "thisIsAlsoHashTag"
+            ]
+         }
+     }
+     */
+    static func getAnonymousChannel(by anonymousChannel: Model.AnonymousChannel, completion: @escaping (((users:[Int: Users], posts:[Posts]))->())){
+       
+        var request = URLRequest(url: channelsGetAnonURL)
+        request.httpMethod = "POST"
+        request.httpBody = try? JSONEncoder().encode(anonymousChannel)
+        
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        AF.request(request).response {
+            (response) in
+            
+            isValidTocken?(response.response?.statusCode ?? 498)
+            
+            guard let json = response.data else { return }
+            
+            guard let newQueery = try? decoder.decode(QueryPosts.self, from: json) else {  return }
+            
+            // idUser = newQueery.users
+            completion((newQueery.users, newQueery.posts))
         }
     }
 }

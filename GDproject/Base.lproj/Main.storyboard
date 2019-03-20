@@ -526,6 +526,7 @@
                             <constraint firstItem="4pw-5n-XsC" firstAttribute="leading" secondItem="Qwh-6O-iyN" secondAttribute="leading" id="nau-1I-Bh7"/>
                             <constraint firstAttribute="trailing" secondItem="4pw-5n-XsC" secondAttribute="trailing" id="vnT-kX-h1h"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="uUX-ik-SiW"/>
                     </view>
                     <connections>
                         <outlet property="tableView" destination="4pw-5n-XsC" id="usq-Vi-rXA"/>
@@ -543,6 +544,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="323.5"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="Vki-Ji-EOU"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KTe-P9-g8t" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -15,6 +15,8 @@ class PostViewCell: UITableViewCell
 {
     var onUserDisplay: ((Int)->())?
     
+    var onAnonymousChannelDisplay: ((String)->())?
+    
     let nameLabel: UIButton = {
         let button = UIButton()
         button.setTitleColor(.black, for: .normal)
@@ -120,8 +122,7 @@ class PostViewCell: UITableViewCell
         for hash in hashtags {
             let button = UIButton()
             button.setTitle("#" + hash, for: .normal)
-            //button.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-            //button.layer.cornerRadius = 10
+            button.addTarget(self, action: #selector(setAnonymousChannel(on:)), for: .touchUpInside)
             button.titleLabel?.font = UIFont.monospacedDigitSystemFont(ofSize: 15, weight: .semibold)
             button.setTitleColor(#colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1), for: .normal)
             buttons.append(button)
@@ -179,7 +180,11 @@ class PostViewCell: UITableViewCell
     }
     
     @objc func displayProfile(){
-        print("buttonTapped")
         onUserDisplay?(post!.authorId)
+    }
+    
+    @objc func setAnonymousChannel(on button: UIButton){
+        print("\(button.titleLabel?.text ?? "nothing")")
+        onAnonymousChannelDisplay?(String(button.titleLabel!.text!.dropFirst()))
     }
 }

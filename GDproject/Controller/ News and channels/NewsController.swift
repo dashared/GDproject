@@ -21,18 +21,9 @@ protocol UpdateableWithUser: class {
 }
 // MARK:- Controller with posts and channels availiable.
 // Search is availiable within every table (posts and channels). Has button-functionality for boths post and chnnels
-class NewsController: UIViewController, UISearchControllerDelegate, NewPostDelegate, UpdateableWithChannel, DataDelegate
+class NewsController: UIViewController, UISearchControllerDelegate, NewPostDelegate, UpdateableWithChannel
 {
-
     var changedChannelName: ((String)->())?
-    
-    func passData(for row: Int, channel: Model.Channels) {
-        if channel.id == -1{
-            self.channel = nil
-        } else {
-            self.channel = channel
-        }
-    }
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -49,19 +40,15 @@ class NewsController: UIViewController, UISearchControllerDelegate, NewPostDeleg
                 
             })
             
-            
             news.dataSourse = newPosts
             tableView.reloadData()
         }
     }
     
-    var posts: [Model.Posts]? {
-        didSet{
-            
-        }
-    }
+    var posts: [Model.Posts]?
     
     var channel: Model.Channels?
+    var anonymousChannel: (users: [Int: Model.Users],posts: [Model.Posts])?
     
     // MARK: - Output -
     var onSelectChannel: (() -> Void)?
@@ -73,6 +60,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, NewPostDeleg
     var searchController = UISearchController(searchResultsController: nil)
 
     var news = NewsVC()
+    var type: HeaderType? = .NEWS
     
     var refreshContr =  UIRefreshControl()
     
@@ -90,7 +78,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, NewPostDeleg
         // setUpSearchContr()
         
         news.viewController = self
-        news.type = .NEWS
+        news.type = type == .NEWS ? .NEWS : type!
         
         setUpNavigationItemsforPosts()
 
@@ -134,22 +122,32 @@ class NewsController: UIViewController, UISearchControllerDelegate, NewPostDeleg
     }
     
     func decideWhatChannelDisplay(){
-        if let channel = channel, let id = channel.id {
-            
-            Model.getChannel(with: id) { [weak self] in
-                self?.posts = $0.posts
-                self?.dictionary = $0.users
-                self?.refreshContr.endRefreshing()
-                self?.changedChannelName?(channel.name)
+        switch type! {
+        case .NEWS, .NONE:
+            if let channel = channel, let id = channel.id {
+                
+                Model.getChannel(with: id) { [weak self] in
+                    self?.posts = $0.posts
+                    self?.dictionary = $0.users
+                    self?.refreshContr.endRefreshing()
+                    self?.changedChannelName?(channel.name)
+                }
+                
+            } else if let _ = posts {
+                print("here!")
+            } else {
+                Model.getLast { [weak self] in
+                    self?.posts = $0.posts
+                    self?.dictionary = $0.users
+                    self?.refreshContr.endRefreshing()
+                    self?.changedChannelName?("General")
+                }
             }
-            
-        } else {
-            
-            Model.getLast { [weak self] in
-                self?.posts = $0.posts
-                self?.dictionary = $0.users
-                self?.refreshContr.endRefreshing()
-                self?.changedChannelName?("General")
+        default:
+            if let anonChannel = anonymousChannel {
+                posts = anonChannel.posts
+                dictionary = anonChannel.users
+                changedChannelName?("Anonymous")
             }
         }
     }

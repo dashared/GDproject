@@ -100,7 +100,7 @@ class ChannelListController: UITableViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    static let generalChannel = Model.Channels(people: [], name: "General", id: -1, tags: [])
+    static let generalChannel = Model.Channels(people: [], name: "General", tags: [])
     
     var dataSource : [Model.Channels] = [ ChannelListController.generalChannel ]
     
