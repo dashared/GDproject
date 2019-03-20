@@ -61,11 +61,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, NewPostDeleg
         }
     }
     
-    var channel: Model.Channels? {
-        didSet {
-            navigationItem.title = channel?.name ?? ""
-        }
-    }
+    var channel: Model.Channels?
     
     // MARK: - Output -
     var onSelectChannel: (() -> Void)?
@@ -144,6 +140,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, NewPostDeleg
                 self?.posts = $0.posts
                 self?.dictionary = $0.users
                 self?.refreshContr.endRefreshing()
+                self?.changedChannelName?(channel.name)
             }
             
         } else {
@@ -158,38 +155,11 @@ class NewsController: UIViewController, UISearchControllerDelegate, NewPostDeleg
     }
     
     func setUpNavigationItemsforPosts(){
-        navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(self.writePost(_:))),UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(self.showChannels(_:)))
-        ]
         tableView.delegate = news
         tableView.dataSource = news
         tableView.reloadData()
     }
     
-    // MARK:- attempt with coordinator
-    @objc func showChannels(_ barItem: UIBarButtonItem){
-        let vc = UIStoryboard.makeChannelsListController()
-        vc.myProtocol = self
-        vc.displayingChannel = channel
-        self.navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    @objc func writePost(_ barItem: UIBarButtonItem)
-    {
-        let vc = storyboard?.instantiateViewController(withIdentifier: "NewPostViewController") as! NewPostViewController
-        
-        vc.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Post", style: .plain, target: vc, action: #selector(vc.newPost))
-        vc.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: vc, action: #selector(vc.closeView))
-        
-        vc.myProtocol = self
-        
-        let transition = CATransition()
-        transition.duration = 0.5
-        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        transition.type = CATransitionType.moveIn
-        transition.subtype = CATransitionSubtype.fromTop
-        navigationController?.view.layer.add(transition, forKey: nil)
-        navigationController?.pushViewController(vc, animated: false)
-    }
     
     // for animating the banner
     var topConstraint: NSLayoutConstraint?

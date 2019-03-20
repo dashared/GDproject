@@ -26,10 +26,12 @@ class ProfileCoordinator: BaseCoordinator {
     private func show() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let profile = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+        
         profile.logOut = { [weak self] in
             DataStorage.standard.setIsLoggedIn(value: false, with: 0)
             self?.didEndSession?()
         }
+        
         profile.onSettings = { [weak self, weak storyboard] in
             let vc = storyboard?.instantiateViewController(withIdentifier: "SettingsViewController") as! SettingsViewController
             self?.navigationController?.pushViewController(vc, animated: true)

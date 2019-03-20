@@ -22,9 +22,6 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
     // Keep strong instance of the `NSTextStorage` subclass
     let textStorage = MarklightTextStorage()
     
-    weak var parentVC: NewsController?
-    var myProtocol: NewPostDelegate?
-    
     static var draft: String = ""
     static var hashTagsDraft: [String] = []
     
@@ -219,7 +216,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         Model.createAndPublish(body: [Model.Attachments(markdown: textView!.text)], tags: tagsField.tags.map { $0.text })
         // adding row to uiTableView after adding new post
         // myProtocol?.addPost(post: p)
-        moveBackToParentVC()
+        moveBackToParentVC?()
         // somewhere here i will be sending server notifications about new post arrival
     }
     
@@ -232,7 +229,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
             _ in
             NewPostViewController.draft = self?.textView.text ?? ""
             NewPostViewController.hashTagsDraft = self?.tagsField.tags.map { $0.text } ?? []
-            self?.moveBackToParentVC()
+            self?.moveBackToParentVC?()
         }
         
         let deleteAction = UIAlertAction(title: "Delete draft", style: .destructive)
@@ -241,7 +238,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
             in
             NewPostViewController.draft = ""
             NewPostViewController.hashTagsDraft = []
-            self?.moveBackToParentVC()
+            self?.moveBackToParentVC?()
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
@@ -258,16 +255,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         actionSaveDraft()
     }
     
-    func moveBackToParentVC(){
-        let transition = CATransition()
-        transition.duration = 0.5
-        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        transition.type = CATransitionType.reveal
-        transition.subtype = CATransitionSubtype.fromBottom
-        navigationController?.view.layer.add(transition, forKey: nil)
-        navigationController?.popViewController(animated: false)
-        textView!.resignFirstResponder()
-    }
+    var moveBackToParentVC: (()->())?
     
     
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {

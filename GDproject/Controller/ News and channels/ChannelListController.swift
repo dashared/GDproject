@@ -14,7 +14,7 @@ struct ChannelData{
 }
 
 // TODO: make search controller availiable
-class ChannelListController: UITableViewController, DataDelegate {
+class ChannelListController: UITableViewController {
     
     // MARK: - Output -
     var onChannelSelected: ((Model.Channels) -> Void)?
@@ -22,7 +22,6 @@ class ChannelListController: UITableViewController, DataDelegate {
     // MARK: - filter search controller
     var filteredDataSource = [Model.Channels]()
     
-    var myProtocol: DataDelegate?
     var displayingChannel: Model.Channels?
     
     var toReload: Bool = false {
@@ -97,7 +96,6 @@ class ChannelListController: UITableViewController, DataDelegate {
         // editing mode is on automatically
         let vc = storyboard?.instantiateViewController(withIdentifier: channelControllerId) as! ChannelController
         vc.index = 1
-        vc.myProtocol = self
         vc.channel = Model.Channels(people: [], name: "Untitled", tags: [])
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -147,7 +145,6 @@ class ChannelListController: UITableViewController, DataDelegate {
         let editButton = UITableViewRowAction(style: .normal, title: "Edit") { [weak self] (action, indexPath) in
             let vc = self?.storyboard?.instantiateViewController(withIdentifier: channelControllerId) as! ChannelController
             vc.index = indexPath.row
-            vc.myProtocol = self!
             vc.channel = self?.dataSource[indexPath.row]
             self?.navigationController?.pushViewController(vc, animated: true)
         }
@@ -159,11 +156,7 @@ class ChannelListController: UITableViewController, DataDelegate {
             Model.channelsDelete(by: self!.dataSource[indexPath.row].id!, completion: {
                 print("хз что тут делать при успехе")
             })
-            
-            if (self!.dataSource[indexPath.row].id == self!.displayingChannel?.id ?? -1)
-            {
-                self?.myProtocol?.passData(for: 0, channel: self!.dataSource[0])
-            }
+
             self?.tableView.beginUpdates()
             self?.dataSource.remove(at: indexPath.row)
             self?.tableView.deleteRows(at: [indexPath], with: .none)
@@ -175,17 +168,12 @@ class ChannelListController: UITableViewController, DataDelegate {
         return [editButton, deleteButton]
     }
     
-    // TODO: remove popping
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         if isFiltering {
-            //onChannelSelected?(filteredDataSource[indexPath.row])
-            myProtocol?.passData(for: 0, channel: filteredDataSource[indexPath.row])
-            navigationController?.popViewController(animated: true)
+            onChannelSelected?(filteredDataSource[indexPath.row])
         } else {
-            myProtocol?.passData(for: 0, channel: dataSource[indexPath.row])
-            navigationController?.popViewController(animated: true)
-            //onChannelSelected?(ChannelListController.dataSource[indexPath.row])
+            onChannelSelected?(dataSource[indexPath.row])
         }
     }
 }
