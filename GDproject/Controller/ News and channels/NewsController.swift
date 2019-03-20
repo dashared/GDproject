@@ -21,8 +21,11 @@ protocol UpdateableWithUser: class {
 }
 // MARK:- Controller with posts and channels availiable.
 // Search is availiable within every table (posts and channels). Has button-functionality for boths post and chnnels
-class NewsController: UITableViewController, UISearchControllerDelegate, NewPostDelegate, UpdateableWithChannel, DataDelegate
+class NewsController: UIViewController, UISearchControllerDelegate, NewPostDelegate, UpdateableWithChannel, DataDelegate
 {
+
+    var changedChannelName: ((String)->())?
+    
     func passData(for row: Int, channel: Model.Channels) {
         if channel.id == -1{
             self.channel = nil
@@ -30,6 +33,8 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
             self.channel = channel
         }
     }
+    
+    @IBOutlet weak var tableView: UITableView!
     
     var dictionary: [Int: Model.Users]?  {
         didSet {
@@ -147,9 +152,8 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
                 self?.posts = $0.posts
                 self?.dictionary = $0.users
                 self?.refreshContr.endRefreshing()
-                self?.navigationItem.title = "General"
+                self?.changedChannelName?("General")
             }
-            
         }
     }
     
@@ -245,7 +249,7 @@ class NewsController: UITableViewController, UISearchControllerDelegate, NewPost
     
     var isBannerVisible: Bool = false
     
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         print(scrollView.contentOffset.y)
         if scrollView.contentOffset.y >= 50 && !isBannerVisible{
             isBannerVisible = true

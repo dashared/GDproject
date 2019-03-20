@@ -63,6 +63,8 @@
 		12F3D6BE2241130000A69214 /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 12F3D6B7224112E800A69214 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		12F3D6C02241130200A69214 /* ReactiveSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 12F3D6B5224112E000A69214 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		12F3D6C22241130400A69214 /* ReactiveMapKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 12F3D6B3224112D600A69214 /* ReactiveMapKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		12F3D6C92242645800A69214 /* Pulley.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12F3D6C72242644D00A69214 /* Pulley.framework */; };
+		12F3D6CA2242645800A69214 /* Pulley.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 12F3D6C72242644D00A69214 /* Pulley.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -81,6 +83,7 @@
 				12F3D6C02241130200A69214 /* ReactiveSwift.framework in Embed Frameworks */,
 				12F3D6BC224112FD00A69214 /* ReactiveCocoa.framework in Embed Frameworks */,
 				123AD0E5223C1C4300326173 /* WSTagsField.framework in Embed Frameworks */,
+				12F3D6CA2242645800A69214 /* Pulley.framework in Embed Frameworks */,
 				12E36DC2221441E1006FCDD7 /* MarkdownKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -137,6 +140,7 @@
 		12F3D6B5224112E000A69214 /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveSwift.framework; path = Carthage/Build/iOS/ReactiveSwift.framework; sourceTree = "<group>"; };
 		12F3D6B7224112E800A69214 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
 		12F3D6B9224112F500A69214 /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveCocoa.framework; path = Carthage/Build/iOS/ReactiveCocoa.framework; sourceTree = "<group>"; };
+		12F3D6C72242644D00A69214 /* Pulley.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Pulley.framework; path = Carthage/Build/iOS/Pulley.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +151,7 @@
 				12E36DB522143D54006FCDD7 /* TinyConstraints.framework in Frameworks */,
 				12F3D6B4224112D600A69214 /* ReactiveMapKit.framework in Frameworks */,
 				124CC7052221C2BB009DF531 /* Alamofire.framework in Frameworks */,
+				12F3D6C92242645800A69214 /* Pulley.framework in Frameworks */,
 				12F3D6BB224112FD00A69214 /* ReactiveCocoa.framework in Frameworks */,
 				12F3D6B8224112E900A69214 /* Result.framework in Frameworks */,
 				12F3D6B6224112E100A69214 /* ReactiveSwift.framework in Frameworks */,
@@ -199,6 +204,7 @@
 		12E36D8F221424EA006FCDD7 = {
 			isa = PBXGroup;
 			children = (
+				12F3D6C72242644D00A69214 /* Pulley.framework */,
 				12F3D6B9224112F500A69214 /* ReactiveCocoa.framework */,
 				12F3D6B7224112E800A69214 /* Result.framework */,
 				12F3D6B5224112E000A69214 /* ReactiveSwift.framework */,
