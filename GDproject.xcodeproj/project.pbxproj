@@ -22,6 +22,8 @@
 		1291BE2D2221312D009D3F23 /* ChannelsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE2C2221312C009D3F23 /* ChannelsCoordinator.swift */; };
 		1291BE342221569B009D3F23 /* TabbarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE332221569B009D3F23 /* TabbarCoordinator.swift */; };
 		1291BE3622218DBF009D3F23 /* LogInCoordinator1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE3522218DBF009D3F23 /* LogInCoordinator1.swift */; };
+		12924BD6224401D4003813B9 /* Hero.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12924BD5224401D4003813B9 /* Hero.framework */; };
+		12924BD8224401DC003813B9 /* Hero.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 12924BD5224401D4003813B9 /* Hero.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		12BA4B9B224101A400DF93D7 /* ApplicationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12BA4B9A224101A400DF93D7 /* ApplicationCoordinator.swift */; };
 		12BA4B9D224101E700DF93D7 /* BaseCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12BA4B9C224101E700DF93D7 /* BaseCoordinator.swift */; };
 		12BA4B9F224102B700DF93D7 /* LogInCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12BA4B9E224102B700DF93D7 /* LogInCoordinator.swift */; };
@@ -82,6 +84,7 @@
 				12E36DBD221441D5006FCDD7 /* TinyConstraints.framework in Embed Frameworks */,
 				12F3D6C02241130200A69214 /* ReactiveSwift.framework in Embed Frameworks */,
 				12F3D6BC224112FD00A69214 /* ReactiveCocoa.framework in Embed Frameworks */,
+				12924BD8224401DC003813B9 /* Hero.framework in Embed Frameworks */,
 				123AD0E5223C1C4300326173 /* WSTagsField.framework in Embed Frameworks */,
 				12F3D6CA2242645800A69214 /* Pulley.framework in Embed Frameworks */,
 				12E36DC2221441E1006FCDD7 /* MarkdownKit.framework in Embed Frameworks */,
@@ -105,6 +108,7 @@
 		1291BE2C2221312C009D3F23 /* ChannelsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsCoordinator.swift; sourceTree = "<group>"; };
 		1291BE332221569B009D3F23 /* TabbarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbarCoordinator.swift; sourceTree = "<group>"; };
 		1291BE3522218DBF009D3F23 /* LogInCoordinator1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInCoordinator1.swift; sourceTree = "<group>"; };
+		12924BD5224401D4003813B9 /* Hero.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Hero.framework; path = Carthage/Build/iOS/Hero.framework; sourceTree = "<group>"; };
 		12BA4B9A224101A400DF93D7 /* ApplicationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationCoordinator.swift; sourceTree = "<group>"; };
 		12BA4B9C224101E700DF93D7 /* BaseCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCoordinator.swift; sourceTree = "<group>"; };
 		12BA4B9E224102B700DF93D7 /* LogInCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInCoordinator.swift; sourceTree = "<group>"; };
@@ -156,6 +160,7 @@
 				12F3D6B8224112E900A69214 /* Result.framework in Frameworks */,
 				12F3D6B6224112E100A69214 /* ReactiveSwift.framework in Frameworks */,
 				12E36DDB221594B1006FCDD7 /* MarkdownKit.framework in Frameworks */,
+				12924BD6224401D4003813B9 /* Hero.framework in Frameworks */,
 				12E36DAF22143D40006FCDD7 /* Cartography.framework in Frameworks */,
 				123AD0E3223C1C3900326173 /* WSTagsField.framework in Frameworks */,
 				12E36DB322143D4E006FCDD7 /* Marklight.framework in Frameworks */,
@@ -204,6 +209,7 @@
 		12E36D8F221424EA006FCDD7 = {
 			isa = PBXGroup;
 			children = (
+				12924BD5224401D4003813B9 /* Hero.framework */,
 				12F3D6C72242644D00A69214 /* Pulley.framework */,
 				12F3D6B9224112F500A69214 /* ReactiveCocoa.framework */,
 				12F3D6B7224112E800A69214 /* Result.framework */,

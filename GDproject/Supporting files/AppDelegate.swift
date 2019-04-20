@@ -28,5 +28,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return true
     }
+    
+    func relaunch(){
+        appCoordinator.start()
+    }
 }
 

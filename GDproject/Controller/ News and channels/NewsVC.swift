@@ -98,6 +98,15 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     }
 }
 
+//extension NewsVC {
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+//    {
+//        if let currentCell = sender as? PostViewCell,
+//            let vc = segue.destination as? FullPostController {
+//
+//        }
+//    }
+//}
 
 enum HeaderType {
     case NONE

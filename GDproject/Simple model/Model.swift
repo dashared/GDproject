@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import Alamofire
 
 class Model{
@@ -17,6 +18,7 @@ class Model{
         print(responce)
         if responce == invalidTocken {
             DataStorage.standard.setIsLoggedIn(value: false, with: 0)
+            (UIApplication.shared.delegate as! AppDelegate).relaunch()
         }
     }
     

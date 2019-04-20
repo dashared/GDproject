@@ -81,7 +81,7 @@ class ProfileViewController: UIViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
+        print("hell")
         posts.viewController = self
         posts.type = .NONE
         

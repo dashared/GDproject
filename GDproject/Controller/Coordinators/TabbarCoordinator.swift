@@ -15,7 +15,7 @@ class TabBarCoordinator: BaseCoordinator {
     var didEndFlow: (()->())?
     
     private let tabbarView: TabbarView
-    private let window: UIWindow?
+    private weak var window: UIWindow?
     
     init(tabbarView: TabbarView, window: UIWindow) {
         self.tabbarView = tabbarView

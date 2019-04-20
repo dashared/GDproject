@@ -23,7 +23,7 @@ class BaseCoordinator: Coordinator {
     
     // add only unique object
     func addDependency(_ coordinator: Coordinator) {
-        guard !childCoordinators.contains(where: { $0 === coordinator }) else { return }
+        guard !childCoordinators.contains(where: { $0 === coordinator }) else {  return }
         childCoordinators.append(coordinator)
     }
     
