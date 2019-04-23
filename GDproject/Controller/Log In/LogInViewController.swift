@@ -79,7 +79,7 @@ class LogInViewController: UIViewController {
     func logicOfLogInInputValidation() -> ((String?)->()) {
         
         let logic: ((String?)->()) = { [weak self] (someText) in
-            if let text = someText, !text.isEmpty, let id = Int(text) {
+            if let text = someText, !text.isEmpty, let _ = Int(text) {
                 self?.logInButton.isEnabled = true
             } else {
                 self?.logInButton.isEnabled = false
@@ -95,7 +95,7 @@ class LogInViewController: UIViewController {
         setUpView()
         configureKeyboard()
         
-        let mailFieldValuesSignal: Signal<String?, NoError> = mailTextField.reactive.continuousTextValues
+        let mailFieldValuesSignal: Signal<String, Never> = mailTextField.reactive.continuousTextValues
         
         mailFieldValuesSignal.observeValues(logicOfLogInInputValidation())
         

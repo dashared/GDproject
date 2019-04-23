@@ -31,13 +31,34 @@ class ChannelsCoordinator: BaseCoordinator{
             (channel) in
             self?.navigationController?.pushViewController(self!.presentNewsController(with: channel), animated: true)
         }
-        navigationController?.setViewControllers([channels,presentNewsController()], animated: false)
+        
+        channels.onEditingModeBegins = { [unowned self] (channel, indexPath) in
+            let vc = self.presentEditingChannelController(with: channel)
+            self.navigationController?.pushViewController(vc, animated: true)
+            vc.tabBarController?.tabBar.isHidden = true
+        }
+        
+        let nc = presentNewsController()
+        navigationController?.setViewControllers([channels, nc], animated: false)
+    }
+    
+    func presentEditingChannelController(with channel: Model.Channels? = nil) -> PulleyViewController {
+        
+        let mainContentVC = storyboard.instantiateViewController(withIdentifier: newsController+"1") as! NewsController
+        let drawerContentVC = storyboard.instantiateViewController(withIdentifier: "DrawerContentViewController1")
+        
+        mainContentVC.channel = channel
+        let pulleyDrawerVC = PulleyViewController(contentViewController: mainContentVC, drawerViewController: drawerContentVC)
+        
+        pulleyDrawerVC.initialDrawerPosition = .collapsed
+        
+        return pulleyDrawerVC
     }
     
     func presentNewsController(with channel: Model.Channels? = nil) -> PulleyViewController {
         
-        let mainContentVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: newsController) as! NewsController
-        let drawerContentVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DrawerContentViewController")
+        let mainContentVC =  storyboard.instantiateViewController(withIdentifier: newsController) as! NewsController
+        let drawerContentVC =  storyboard.instantiateViewController(withIdentifier: "DrawerContentViewController")
         
         mainContentVC.channel = channel
         mainContentVC.news.onFullPost = {

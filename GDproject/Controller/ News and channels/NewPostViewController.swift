@@ -10,7 +10,7 @@ import UIKit
 import Cartography
 import Marklight
 import TinyConstraints
-import WSTagsField
+// import WSTagsField
 
 class NewPostViewController: UIViewController, UITextViewDelegate {
     
@@ -18,7 +18,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
     
     @IBOutlet weak var viewForTags: UIView!
     
-    fileprivate let tagsField = WSTagsField()
+    // fileprivate let tagsField = WSTagsField()
     // Keep strong instance of the `NSTextStorage` subclass
     let textStorage = MarklightTextStorage()
     
@@ -55,10 +55,10 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         setUpMD()
         setUpTextView()
         setUpAccessoryView()
-        setUpTagsView()
+        //setUpTagsView()
     }
 
-    func setUpTagsView(){
+   /* func setUpTagsView(){
         tagsField.frame = viewForTags.bounds
         viewForTags.addSubview(tagsField)
         
@@ -86,7 +86,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         tagsField.acceptTagOption = .space
         
         textFieldEvents()
-    }
+    }*/
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -94,7 +94,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.title = "New post"
         textView.text = NewPostViewController.draft
-        tagsField.addTags(NewPostViewController.hashTagsDraft)
+        // tagsField.addTags(NewPostViewController.hashTagsDraft)
 
     }
     
@@ -213,7 +213,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
     var indexOfPost = 0
     // MARK:- new post
     @objc func newPost(){
-        Model.createAndPublish(body: [Model.Attachments(markdown: textView!.text)], tags: tagsField.tags.map { $0.text })
+        Model.createAndPublish(body: [Model.Attachments(markdown: textView!.text)], tags: /*tagsField.tags.map { $0.text }*/ [])
         // adding row to uiTableView after adding new post
         // myProtocol?.addPost(post: p)
         moveBackToParentVC?()
@@ -228,7 +228,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
             [weak self]
             _ in
             NewPostViewController.draft = self?.textView.text ?? ""
-            NewPostViewController.hashTagsDraft = self?.tagsField.tags.map { $0.text } ?? []
+            NewPostViewController.hashTagsDraft = /*self?.tagsField.tags.map { $0.text } ??*/ []
             self?.moveBackToParentVC?()
         }
         
@@ -269,7 +269,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         textView.scrollRectToVisible(rect, animated: animated)
     }
     
-    fileprivate func textFieldEvents() {
+    /*fileprivate func textFieldEvents() {
         tagsField.onDidAddTag = { _, _ in
             print("onDidAddTag")
         }
@@ -293,16 +293,16 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         tagsField.onDidUnselectTagView = { _, tagView in
             print("Unselect \(tagView)")
         }
-    }
+    }*/
 }
 
 
 extension NewPostViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == tagsField {
+        /*if textField == tagsField {
             textView.becomeFirstResponder()
-        }
+        }*/
         return true
     }
     

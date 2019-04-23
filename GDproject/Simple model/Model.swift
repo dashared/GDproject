@@ -37,11 +37,11 @@ class Model{
     static let channelsCreateURL = URL(string: "\(baseUrl)/channels/create")!
     static let channelsDeleteURL = URL(string: "\(baseUrl)/channels/delete")!
     static let channelsGetAnonURL = URL(string: "\(baseUrl)/channels/getAnonymous")!
+    static let complexURL = URL(string: "\(baseUrl)/complex")!
     
-    
-    struct QueryPosts: Codable{
+    struct QueryPosts: Codable {
         var users: [Int: Users]
-        var posts: [Posts]
+        var response: [Posts]
     }
     
     struct Posts: Codable {
@@ -227,7 +227,7 @@ class Model{
                 return }
             
             idUser = newQueery.users
-            completion((newQueery.users, newQueery.posts))
+            completion((newQueery.users, newQueery.response))
         }
     }
     
@@ -274,7 +274,7 @@ class Model{
             
             guard let newPost = try? decoder.decode(QueryPosts.self, from: json) else {  return }
             
-            completion(newPost.posts)
+            completion(newPost.response)
         }
     }
     
@@ -336,7 +336,7 @@ class Model{
             guard let newQueery = try? decoder.decode(QueryPosts.self, from: json) else {  return }
             
             idUser = newQueery.users
-            completion((newQueery.users, newQueery.posts))
+            completion((newQueery.users, newQueery.response))
         }
     }
     
@@ -498,7 +498,10 @@ class Model{
             guard let newQueery = try? decoder.decode(QueryPosts.self, from: json) else {  return }
             
             // idUser = newQueery.users
-            completion((newQueery.users, newQueery.posts))
+            completion((newQueery.users, newQueery.response))
         }
     }
+    
+    
+    
 }

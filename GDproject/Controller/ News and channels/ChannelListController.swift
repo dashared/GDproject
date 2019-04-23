@@ -13,11 +13,16 @@ struct ChannelData{
     var subtitle = String()
 }
 
+protocol ChannelListData: class {
+    func reloadData (with channels: [Model.Channels])
+}
+
 // TODO: make search controller availiable
 class ChannelListController: UITableViewController {
     
     // MARK: - Output -
     var onChannelSelected: ((Model.Channels) -> Void)?
+    var onEditingModeBegins: ((Model.Channels, IndexPath)->Void)?
     
     // MARK: - filter search controller
     var filteredDataSource = [Model.Channels]()
@@ -88,16 +93,14 @@ class ChannelListController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        askForUpdates()
+        //askForUpdates()
+        tabBarController?.tabBar.isHidden = false
     }
     
     @objc func addChannel()
     {
         // editing mode is on automatically
-        let vc = storyboard?.instantiateViewController(withIdentifier: channelControllerId) as! ChannelController
-        vc.index = 1
-        vc.channel = Model.Channels(people: [], name: "Untitled", tags: [])
-        navigationController?.pushViewController(vc, animated: true)
+        onEditingModeBegins?(Model.Channels(people: [], name: "Untitled", tags: []),IndexPath(row: 1, section: 0))
     }
     
     static let generalChannel = Model.Channels(people: [], name: "General", tags: [])
@@ -141,15 +144,11 @@ class ChannelListController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]?
     {
-        
-        let editButton = UITableViewRowAction(style: .normal, title: "Edit") { [weak self] (action, indexPath) in
-            let vc = self?.storyboard?.instantiateViewController(withIdentifier: channelControllerId) as! ChannelController
-            vc.index = indexPath.row
-            vc.channel = self?.dataSource[indexPath.row]
-            self?.navigationController?.pushViewController(vc, animated: true)
+        let editButton = UITableViewRowAction(style: .normal, title: "Edit") { [unowned self] (rowAction, indexPath) in
+            self.onEditingModeBegins?(self.dataSource[indexPath.row], indexPath)
         }
-        editButton.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         
+        editButton.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         
         let deleteButton = UITableViewRowAction(style: .normal, title: "Delete") { [weak self] (action, indexPath) in
             
