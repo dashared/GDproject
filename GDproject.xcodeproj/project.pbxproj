@@ -36,7 +36,6 @@
 		12E36DA3221424ED006FCDD7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 12E36DA2221424ED006FCDD7 /* Assets.xcassets */; };
 		12E36DA6221424ED006FCDD7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12E36DA4221424ED006FCDD7 /* LaunchScreen.storyboard */; };
 		12E36DB72214400A006FCDD7 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E36DB62214400A006FCDD7 /* Post.swift */; };
-		12E36DB922144016006FCDD7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E36DB822144016006FCDD7 /* User.swift */; };
 		12E36DCA22144635006FCDD7 /* NewPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E36DC922144635006FCDD7 /* NewPostViewController.swift */; };
 		12E36DCC22144725006FCDD7 /* PostViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E36DCB22144725006FCDD7 /* PostViewCell.swift */; };
 		12E36DCE22144756006FCDD7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E36DCD22144756006FCDD7 /* Constants.swift */; };
@@ -121,7 +120,6 @@
 		12E36DA5221424ED006FCDD7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		12E36DA7221424ED006FCDD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		12E36DB62214400A006FCDD7 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
-		12E36DB822144016006FCDD7 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		12E36DC922144635006FCDD7 /* NewPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostViewController.swift; sourceTree = "<group>"; };
 		12E36DCB22144725006FCDD7 /* PostViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewCell.swift; sourceTree = "<group>"; };
 		12E36DCD22144756006FCDD7 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -248,7 +246,6 @@
 				124CC7022221C00C009DF531 /* Model.swift */,
 				12E36DB62214400A006FCDD7 /* Post.swift */,
 				12D7D136221D78E800B35452 /* Channel.swift */,
-				12E36DB822144016006FCDD7 /* User.swift */,
 			);
 			path = "Simple model";
 			sourceTree = "<group>";
@@ -379,7 +376,6 @@
 				12E36DD522156559006FCDD7 /* MyStackView.swift in Sources */,
 				12D7D137221D78E800B35452 /* Channel.swift in Sources */,
 				1291BE3622218DBF009D3F23 /* LogInCoordinator1.swift in Sources */,
-				12E36DB922144016006FCDD7 /* User.swift in Sources */,
 				1210A0BB223940310080686D /* SimplifiedChannelsList.swift in Sources */,
 				125BD5812217314A008A3575 /* NewsVC.swift in Sources */,
 				12E36DB72214400A006FCDD7 /* Post.swift in Sources */,

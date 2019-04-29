@@ -45,6 +45,7 @@ class Model{
     }
     
     struct Posts: Codable {
+        
         var body: [Attachments]
         var authorId: Int
         var id: Int
@@ -205,15 +206,34 @@ class Model{
         }
     }
     
-    
-    static func getLast(completion: @escaping (((users:[Int: Users], posts:[Posts]))->())){
-        let jsonString = "30"
-        var request = URLRequest(url: postsLastURL)
+    struct PostsLastRequest: Codable {
+        var limit: Int
+        var exclusiveFrom: Int?
+        var request: [Int] = []
         
+        enum CodingKeys: String, CodingKey {
+            case limit
+            case exclusiveFrom
+            case request
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(limit, forKey: .limit)
+            try container.encode(exclusiveFrom, forKey: .exclusiveFrom)
+            try container.encode(request, forKey: .request)
+        }
+    }
+    
+    static func getLast(on limit: Int = 10, from pointInTime: Int? = nil, completion: @escaping (((users:[Int: Users], posts:[Posts]))->()))
+    {
+        let postRequest = PostsLastRequest(limit: limit, exclusiveFrom: pointInTime, request: [])
+        
+        var request = URLRequest(url: postsLastURL)
+        request.httpBody = try? JSONEncoder().encode(postRequest)
         request.httpMethod = "POST"
         
         // insert json data to the request
-        request.httpBody = jsonString.data(using: .utf8)
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         
         AF.request(request).responseJSON {

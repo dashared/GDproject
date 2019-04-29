@@ -74,8 +74,9 @@ class ChannelsCoordinator: BaseCoordinator{
             [weak self, weak mainContentVC] (tuple) in print("hep")
             switch mainContentVC!.news.type {
             case .ANONYMOUS:
-                mainContentVC!.posts = tuple.1
-                mainContentVC!.dictionary = tuple.0
+                print("nothing to diplay")
+                // mainContentVC!.posts = tuple.1
+                //mainContentVC!.dictionary = tuple.0
             default:
                 let vc = self!.presentNewsController()
                 (vc.primaryContentViewController as! NewsController).anonymousChannel = tuple
