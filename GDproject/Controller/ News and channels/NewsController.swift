@@ -88,7 +88,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, UpdateableWi
     func decideWhatChannelDisplay(){
         switch type! {
         case .NEWS, .NONE:
-            if let channel = channel, let id = channel.id {
+            if let channel = channel, let id = channel.id, id != -1 {
                 
                 Model.getChannel(with: id) { [weak self] in
                     self?.news.dataSourse = $0.posts

@@ -103,7 +103,7 @@ class ChannelListController: UITableViewController {
         onEditingModeBegins?(Model.Channels(people: [], name: "Untitled", tags: []),IndexPath(row: 1, section: 0))
     }
     
-    static let generalChannel = Model.Channels(people: [], name: "General", tags: [])
+    static let generalChannel = Model.Channels(people: [], name: "General", id: -1, tags: [])
     
     var dataSource : [Model.Channels] = [ ChannelListController.generalChannel ]
     

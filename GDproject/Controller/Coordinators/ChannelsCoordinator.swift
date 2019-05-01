@@ -27,13 +27,13 @@ class ChannelsCoordinator: BaseCoordinator{
         
         let channels = storyboard.instantiateViewController(withIdentifier: channelListControllerId) as! ChannelListController
         
-        channels.onChannelSelected = { [weak self]
+        channels.onChannelSelected = { [unowned self]
             (channel) in
-            self?.navigationController?.pushViewController(self!.presentNewsController(with: channel), animated: true)
+            self.navigationController?.pushViewController(self.presentNewsController(with: channel), animated: true)
         }
         
         channels.onEditingModeBegins = { [unowned self] (channel, indexPath) in
-            let vc = self.presentEditingChannelController(with: channel)
+            let vc = self.presentNewsController(with: channel)
             self.navigationController?.pushViewController(vc, animated: true)
             vc.tabBarController?.tabBar.isHidden = true
         }
@@ -42,60 +42,33 @@ class ChannelsCoordinator: BaseCoordinator{
         navigationController?.setViewControllers([channels, nc], animated: false)
     }
     
-    func presentEditingChannelController(with channel: Model.Channels? = nil) -> PulleyViewController {
-        
-        let mainContentVC = storyboard.instantiateViewController(withIdentifier: newsController+"1") as! NewsController
-        let drawerContentVC = storyboard.instantiateViewController(withIdentifier: "DrawerContentViewController1")
-        
+    func presentNewsController(with channel: Model.Channels? = nil) -> NewsController {
+        let mainContentVC = storyboard.instantiateViewController(withIdentifier: newsController) as! NewsController
         mainContentVC.channel = channel
-        let pulleyDrawerVC = PulleyViewController(contentViewController: mainContentVC, drawerViewController: drawerContentVC)
         
-        pulleyDrawerVC.initialDrawerPosition = .collapsed
-        
-        return pulleyDrawerVC
-    }
-    
-    func presentNewsController(with channel: Model.Channels? = nil) -> PulleyViewController {
-        
-        let mainContentVC =  storyboard.instantiateViewController(withIdentifier: newsController) as! NewsController
-        let drawerContentVC =  storyboard.instantiateViewController(withIdentifier: "DrawerContentViewController")
-        
-        mainContentVC.channel = channel
-        mainContentVC.news.onFullPost = {
-            [weak self] (type,post) in
-            
-            let vc = self?.storyboard.instantiateViewController(withIdentifier: fullPostControllerId) as! FullPostController
-            vc.type = type
-            vc.post = post
-            self?.navigationController!.pushViewController(vc, animated: true)
-        }
-        
-        mainContentVC.news.onChannelDidChange = {
-            [weak self, weak mainContentVC] (tuple) in print("hep")
-            switch mainContentVC!.news.type {
-            case .ANONYMOUS:
-                print("nothing to diplay")
-                // mainContentVC!.posts = tuple.1
-                //mainContentVC!.dictionary = tuple.0
-            default:
-                let vc = self!.presentNewsController()
-                (vc.primaryContentViewController as! NewsController).anonymousChannel = tuple
-                (vc.primaryContentViewController as! NewsController).type = .ANONYMOUS
-                self?.navigationController?.pushViewController(vc, animated: true)
+        if channel == nil || channel?.id == -1 {
+            mainContentVC.news.onFullPost = {
+                [weak self] (type,post) in
+                
+                let vc = self?.storyboard.instantiateViewController(withIdentifier: fullPostControllerId) as! FullPostController
+                vc.type = type
+                vc.post = post
+                self?.navigationController!.pushViewController(vc, animated: true)
             }
+            
+            mainContentVC.news.onChannelDidChange = {
+                print("anon with \($0.0.count) users")
+            }
+            
+            mainContentVC.changedChannelName = {
+                [weak mainContentVC] (title) in mainContentVC?.navigationItem.title = title
+            }
+            
+            mainContentVC.navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(writePost(_:)))
+            ]
         }
         
-        let pulleyDrawerVC = PulleyViewController(contentViewController: mainContentVC, drawerViewController: drawerContentVC)
-        
-        pulleyDrawerVC.initialDrawerPosition = .collapsed
-        mainContentVC.changedChannelName = {
-            [weak pulleyDrawerVC] (title) in pulleyDrawerVC?.navigationItem.title = title
-        }
-        
-        pulleyDrawerVC.navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(writePost(_:)))
-        ]
-        
-        return pulleyDrawerVC
+        return mainContentVC
     }
     
     @objc private func writePost(_ barItem: UIBarButtonItem)
