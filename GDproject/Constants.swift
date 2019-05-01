@@ -43,9 +43,13 @@ let newsController = "NewsController"
 /// constant for switching to view controller for log in app
 let logInController = "LogInController"
 
-// constant for getting to messages
+/// constant for getting to messages
 let messagesViewControllerId = "MessagesViewController"
 
+/// constant for displaying list of people to send message to
+let peopleToWriteVC = "PeopleToWriteViewController"
+
+let dialogVC = "DialogViewController"
 
 let profileViewController = "ProfileViewController"
 

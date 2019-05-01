@@ -1,5 +1,5 @@
 //
-//  MessagesViewController.swift
+//  DialogViewController.swift
 //  GDproject
 //
 //  Created by cstore on 01/05/2019.
@@ -8,63 +8,40 @@
 
 import UIKit
 
-class MessagesViewController: UITableViewController {
+class DialogViewController: UITableViewController {
 
-    // curreent Active which can be displayed
-    var currentActiveDialogs: [(id: Int, name: String)] = [(id: Int, name: String)]()
-    
-    var onUserDisplayList: (()->())?
-    
-    var onDialogDisplay: (((id: Int, name: String))->())?
-    
-    let searchC = UISearchController(searchResultsController: nil)
+    var currentDialog: (id: Int, name: String)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Write", style: .plain, target: self, action: #selector(choosePerson))
-        
-        self.navigationItem.title = "Messages"
-        // self.navigationItem.largeTitleDisplayMode = .always
-        self.navigationItem.searchController = searchC
-        navigationController?.navigationBar.prefersLargeTitles = true
-        self.navigationItem.hidesSearchBarWhenScrolling = false
+        if let person = currentDialog {
+            navigationItem.title = person.name
+        }
     }
 
-    @objc func choosePerson(){
-        onUserDisplayList?()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        tableView.reloadData()
-    }
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        // #warning Incomplete implementation, return the number of sections
+        return 0
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return currentActiveDialogs.count
+        // #warning Incomplete implementation, return the number of rows
+        return 0
     }
 
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MessagesCell", for: indexPath)
-        
-        cell.textLabel?.text = currentActiveDialogs[indexPath.row].name
-        cell.detailTextLabel?.text = "from \(currentActiveDialogs[indexPath.row].name) some message is displayed here..."
+    /*
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
+
+        // Configure the cell...
 
         return cell
     }
- 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        onDialogDisplay?(currentActiveDialogs[indexPath.row])
-    }
+    */
+
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
