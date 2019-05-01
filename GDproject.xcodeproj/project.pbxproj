@@ -19,6 +19,8 @@
 		1291BE2D2221312D009D3F23 /* ChannelsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE2C2221312C009D3F23 /* ChannelsCoordinator.swift */; };
 		1291BE342221569B009D3F23 /* TabbarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE332221569B009D3F23 /* TabbarCoordinator.swift */; };
 		1291BE3622218DBF009D3F23 /* LogInCoordinator1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE3522218DBF009D3F23 /* LogInCoordinator1.swift */; };
+		129320042279B4270035C7B3 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129320032279B4270035C7B3 /* MessagesViewController.swift */; };
+		129320072279B5690035C7B3 /* MessagesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129320062279B5690035C7B3 /* MessagesCoordinator.swift */; };
 		12BA4B9B224101A400DF93D7 /* ApplicationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12BA4B9A224101A400DF93D7 /* ApplicationCoordinator.swift */; };
 		12BA4B9D224101E700DF93D7 /* BaseCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12BA4B9C224101E700DF93D7 /* BaseCoordinator.swift */; };
 		12BA4B9F224102B700DF93D7 /* LogInCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12BA4B9E224102B700DF93D7 /* LogInCoordinator.swift */; };
@@ -101,6 +103,8 @@
 		1291BE2C2221312C009D3F23 /* ChannelsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsCoordinator.swift; sourceTree = "<group>"; };
 		1291BE332221569B009D3F23 /* TabbarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbarCoordinator.swift; sourceTree = "<group>"; };
 		1291BE3522218DBF009D3F23 /* LogInCoordinator1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInCoordinator1.swift; sourceTree = "<group>"; };
+		129320032279B4270035C7B3 /* MessagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
+		129320062279B5690035C7B3 /* MessagesCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesCoordinator.swift; sourceTree = "<group>"; };
 		12BA4B9A224101A400DF93D7 /* ApplicationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationCoordinator.swift; sourceTree = "<group>"; };
 		12BA4B9C224101E700DF93D7 /* BaseCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCoordinator.swift; sourceTree = "<group>"; };
 		12BA4B9E224102B700DF93D7 /* LogInCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInCoordinator.swift; sourceTree = "<group>"; };
@@ -177,6 +181,7 @@
 			isa = PBXGroup;
 			children = (
 				12BA4B9A224101A400DF93D7 /* ApplicationCoordinator.swift */,
+				129320062279B5690035C7B3 /* MessagesCoordinator.swift */,
 				12F3D6AF224106F700A69214 /* TabbarController.swift */,
 				12F3D6B12241097B00A69214 /* ProfileCoordinator.swift */,
 				12BA4B9E224102B700DF93D7 /* LogInCoordinator.swift */,
@@ -194,6 +199,14 @@
 				1291BE3522218DBF009D3F23 /* LogInCoordinator1.swift */,
 			);
 			path = "Log In";
+			sourceTree = "<group>";
+		};
+		129320052279B4300035C7B3 /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				129320032279B4270035C7B3 /* MessagesViewController.swift */,
+			);
+			path = Messages;
 			sourceTree = "<group>";
 		};
 		12E36D8F221424EA006FCDD7 = {
@@ -264,6 +277,7 @@
 			isa = PBXGroup;
 			children = (
 				1291BE32222154C3009D3F23 /* Coordinators */,
+				129320052279B4300035C7B3 /* Messages */,
 				1291BE3722218DC4009D3F23 /* Log In */,
 				1288B5CC221F0EFE002BE6B1 /* Profile */,
 				12E36DD322156519006FCDD7 /*  News and channels */,
@@ -371,6 +385,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				129320072279B5690035C7B3 /* MessagesCoordinator.swift in Sources */,
 				124CC7032221C00C009DF531 /* Model.swift in Sources */,
 				12F3D6B0224106F700A69214 /* TabbarController.swift in Sources */,
 				12E36DD522156559006FCDD7 /* MyStackView.swift in Sources */,
@@ -391,6 +406,7 @@
 				12BA4B9B224101A400DF93D7 /* ApplicationCoordinator.swift in Sources */,
 				1291BE2D2221312D009D3F23 /* ChannelsCoordinator.swift in Sources */,
 				12E36DD122148122006FCDD7 /* FullPostController.swift in Sources */,
+				129320042279B4270035C7B3 /* MessagesViewController.swift in Sources */,
 				1288B5CE221F1158002BE6B1 /* DataStorage.swift in Sources */,
 				12BA4B9F224102B700DF93D7 /* LogInCoordinator.swift in Sources */,
 				12F3D6B22241097B00A69214 /* ProfileCoordinator.swift in Sources */,

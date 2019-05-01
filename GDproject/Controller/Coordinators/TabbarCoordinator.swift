@@ -26,6 +26,7 @@ class TabBarCoordinator: BaseCoordinator {
         tabbarView.onViewDidLoad = runChannelsFlow()
         tabbarView.onChannelsFlowSelect = runChannelsFlow()
         tabbarView.onProfileFlowSelect = runProfileFlow()
+        tabbarView.onMessagesFlowSelect = runMessagesFlow()
         window?.rootViewController = tabbarView as! TabbarController
     }
     
@@ -36,6 +37,16 @@ class TabBarCoordinator: BaseCoordinator {
                 let channelCoordinator = ChannelsCoordinator(nc: navController)
                 self.addDependency(channelCoordinator)
                 channelCoordinator.start()
+            }
+        }
+    }
+    
+    private func runMessagesFlow() -> ((UINavigationController) -> ()){
+        return { [unowned self] navController in
+            if navController.viewControllers.isEmpty == true {
+                let messagesCoordinator = MessagesCoordinator(nc: navController)
+                self.addDependency(messagesCoordinator)
+                messagesCoordinator.start()
             }
         }
     }

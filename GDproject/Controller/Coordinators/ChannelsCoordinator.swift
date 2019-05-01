@@ -33,7 +33,7 @@ class ChannelsCoordinator: BaseCoordinator{
         }
         
         channels.onEditingModeBegins = { [unowned self] (channel, indexPath) in
-            let vc = self.presentNewsController(with: channel)
+            let vc = self.presentChannelController(with: channel)
             self.navigationController?.pushViewController(vc, animated: true)
             vc.tabBarController?.tabBar.isHidden = true
         }
@@ -42,11 +42,26 @@ class ChannelsCoordinator: BaseCoordinator{
         navigationController?.setViewControllers([channels, nc], animated: false)
     }
     
-    func presentNewsController(with channel: Model.Channels? = nil) -> NewsController {
+    /// Function that presents channel controller
+    ///
+    /// - Parameter channel: channel that needs to be displayed
+    func presentChannelController(with channel: Model.Channels? = nil) -> ChannelController {
+        let mainContentVC = storyboard.instantiateViewController(withIdentifier: channelControllerId) as! ChannelController
+        
+        // to show preview we need to instantiate newsController but with different functionality
+        mainContentVC.onShowingPreview = { [weak mainContentVC, unowned self] ch in
+            let vc = self.presentNewsController(with: ch, previewMode: true)
+            mainContentVC?.navigationController?.pushViewController(vc, animated: true)
+        }
+        mainContentVC.channel = channel
+        return mainContentVC
+    }
+    
+    func presentNewsController(with channel: Model.Channels? = nil, previewMode: Bool = false) -> NewsController {
         let mainContentVC = storyboard.instantiateViewController(withIdentifier: newsController) as! NewsController
         mainContentVC.channel = channel
         
-        if channel == nil || channel?.id == -1 {
+        if !previewMode {
             mainContentVC.news.onFullPost = {
                 [weak self] (type,post) in
                 

@@ -12,6 +12,7 @@ import UIKit
 protocol TabbarView: class {
     var onChannelsFlowSelect: ((UINavigationController) -> ())? { get set }
     var onProfileFlowSelect: ((UINavigationController) -> ())? { get set }
+    var onMessagesFlowSelect: ((UINavigationController) -> ())? { get set }
     var onViewDidLoad: ((UINavigationController) -> ())? { get set }
 }
 
@@ -20,6 +21,8 @@ final class TabbarController: UITabBarController, UITabBarControllerDelegate, Ta
     
     var onChannelsFlowSelect: ((UINavigationController) -> ())?
     var onProfileFlowSelect: ((UINavigationController) -> ())?
+    var onMessagesFlowSelect: ((UINavigationController) -> ())?
+    
     var onViewDidLoad: ((UINavigationController) -> ())?
     
     override func viewDidLoad() {
@@ -38,8 +41,10 @@ final class TabbarController: UITabBarController, UITabBarControllerDelegate, Ta
         
         if selectedIndex == 0 {
             onChannelsFlowSelect?(controller)
-        } else {
+        } else if selectedIndex == 2 {
             onProfileFlowSelect?(controller)
+        } else {
+            onMessagesFlowSelect?(controller)
         }
     }
 }
