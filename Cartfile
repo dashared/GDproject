@@ -5,4 +5,4 @@ github "macteo/Marklight"
 github "Alamofire/Alamofire" "5.0.0-beta.5"
 github "52inc/Pulley"
 github "HeroTransitions/Hero"
-github "ReactiveCocoa/ReactiveCocoa" "1c089a8"
+github "ReactiveCocoa/ReactiveCocoa" ~> 9.0

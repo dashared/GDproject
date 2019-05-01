@@ -121,7 +121,7 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
                 self?.dataSourse.append(contentsOf: $0.posts)
                 $0.users.forEach { self?.dictionary[$0.key] = $0.value }
             }
-            
+
             prevLast = indexPath.row
         }
     }

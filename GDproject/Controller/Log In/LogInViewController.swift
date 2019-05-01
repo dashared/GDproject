@@ -95,7 +95,7 @@ class LogInViewController: UIViewController {
         setUpView()
         configureKeyboard()
         
-        let mailFieldValuesSignal: Signal<String, Never> = mailTextField.reactive.continuousTextValues
+        let mailFieldValuesSignal: Signal<String, NoError> = mailTextField.reactive.continuousTextValues
         
         mailFieldValuesSignal.observeValues(logicOfLogInInputValidation())
         

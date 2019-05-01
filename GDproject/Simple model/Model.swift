@@ -133,7 +133,7 @@ class Model{
     
     struct Channels: Codable {
         
-        static var fullTags = Set<String>()
+        // static var fullTags = Set<String>()
         static var fullPeople = [Users]()
         static var fullPeopleDict = [Int:Users]()
         

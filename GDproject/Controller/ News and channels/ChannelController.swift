@@ -25,7 +25,7 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
     var channel: Model.Channels?
     var myProtocol: DataDelegate?
     
-    var fullTags: [String] = Array(Model.Channels.fullTags)
+    var fullTags: [String] = CompletionTree.getCompletion(tree: Model.hashTagTree!, word: "")
     
     var dataSourcePeople: [Model.Users] = []
     
@@ -252,9 +252,7 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
             }
             tableView.reloadData()
         case 1:
-            dataSourceTags = fullTags.filter({ (s) -> Bool in
-                s.lowercased().contains(text.lowercased())
-            })
+            dataSourceTags = CompletionTree.getCompletion(tree: Model.hashTagTree!, word: text)
             tableView.reloadData()
         default:
             break
