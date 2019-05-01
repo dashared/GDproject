@@ -22,6 +22,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
         
         // window?.rootViewController = UINavigationController()
+        Model.getCompl { (complTree) in
+            Model.hashTagTree = complTree
+        }
         
         appCoordinator = ApplicationCoordinator(window: window!)
         appCoordinator.start()

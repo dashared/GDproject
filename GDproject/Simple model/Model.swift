@@ -14,6 +14,8 @@ class Model{
     
     static let invalidTocken = 498
     
+    static var hashTagTree: CompletionTree? 
+    
     private static var isValidTocken: ((Int)->())? = { responce in
         print(responce)
         if responce == invalidTocken {
@@ -38,6 +40,7 @@ class Model{
     static let channelsDeleteURL = URL(string: "\(baseUrl)/channels/delete")!
     static let channelsGetAnonURL = URL(string: "\(baseUrl)/channels/getAnonymous")!
     static let complexURL = URL(string: "\(baseUrl)/complex")!
+    static let hashTagTreeURL = URL(string: "\(baseUrl)/tagCompletions")!
     
     struct QueryPosts: Codable {
         var users: [Int: Users]
@@ -522,6 +525,15 @@ class Model{
         }
     }
     
-    
+    static func getCompl(completion: @escaping ((CompletionTree)->())) {
+        
+        AF.request(URLRequest(url: hashTagTreeURL)).responseJSON {
+            (response) in
+            
+            guard let json = response.data else { return }
+            guard let tree = try? decoder.decode(CompletionTree.self, from: json) else {  return }
+            completion(tree)
+        }
+    }
     
 }
