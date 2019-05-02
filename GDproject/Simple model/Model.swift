@@ -112,6 +112,9 @@ class Model{
         var firstName: String
         var id: Int
         
+        func fullName() -> String {
+            return "\(firstName) \(lastName)"
+        }
     }
     
     struct Attachments: Codable {
@@ -209,10 +212,10 @@ class Model{
         }
     }
     
-    struct PostsLastRequest: Codable {
+    struct PostsLastRequest<T: Codable>: Codable {
         var limit: Int
         var exclusiveFrom: Int?
-        var request: [Int] = []
+        var request: T
         
         enum CodingKeys: String, CodingKey {
             case limit
@@ -230,7 +233,7 @@ class Model{
     
     static func getLast(on limit: Int = 10, from pointInTime: Int? = nil, completion: @escaping (((users:[Int: Users], posts:[Posts]))->()))
     {
-        let postRequest = PostsLastRequest(limit: limit, exclusiveFrom: pointInTime, request: [])
+        let postRequest = PostsLastRequest<[Int]>(limit: limit, exclusiveFrom: pointInTime, request: [])
         
         var request = URLRequest(url: postsLastURL)
         request.httpBody = try? JSONEncoder().encode(postRequest)
@@ -333,13 +336,10 @@ class Model{
     }
     
     // get channel (with id): in responce -- PostQuery
-    static func getChannel(with channelId: Int, completion: @escaping (((users:[Int: Users], posts:[Posts]))->())){
-        let json = [
-            "request" : channelId,
-            "limit": 10
-        ]
-        
-        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+    static func getChannel(with channelId: Int, on limit: Int = 10, from pointInTime: Int? = nil, completion: @escaping (((users:[Int: Users], posts:[Posts]))->()))
+    {
+        let postRequest = PostsLastRequest<Int>(limit: limit, exclusiveFrom: pointInTime, request: channelId)
+        let jsonData = try? JSONEncoder().encode(postRequest)
         
         var request = URLRequest(url: channelsGetURL)
         request.httpMethod = "POST"

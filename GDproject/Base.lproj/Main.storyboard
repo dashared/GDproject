@@ -546,10 +546,86 @@
             </objects>
             <point key="canvasLocation" x="4336" y="937"/>
         </scene>
+        <!--Channel View Controller-->
+        <scene sceneID="myW-UY-uGB">
+            <objects>
+                <tableViewController storyboardIdentifier="ChannelViewController" id="M45-Em-JMM" customClass="ChannelViewController" customModule="GDproject" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="poy-7L-m8s">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="titleCell" id="x0n-Is-bsF" customClass="TitleCell" customModule="GDproject" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="x0n-Is-bsF" id="5aI-NN-BRQ">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Name the channel" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jTk-cs-cpn">
+                                            <rect key="frame" x="16" y="7" width="343" height="30"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="30" id="ZDL-Wx-W4e"/>
+                                            </constraints>
+                                            <nil key="textColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </textField>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="jTk-cs-cpn" secondAttribute="trailing" constant="16" id="KLT-Mg-Igg"/>
+                                        <constraint firstAttribute="bottom" secondItem="jTk-cs-cpn" secondAttribute="bottom" constant="6.5" id="Yuh-81-wLm"/>
+                                        <constraint firstItem="jTk-cs-cpn" firstAttribute="leading" secondItem="5aI-NN-BRQ" secondAttribute="leading" constant="16" id="tx2-BD-LW1"/>
+                                        <constraint firstItem="jTk-cs-cpn" firstAttribute="top" secondItem="5aI-NN-BRQ" secondAttribute="top" constant="7" id="ufD-Sr-H0c"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="titleLabel" destination="jTk-cs-cpn" id="ysU-SK-thv"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <sections/>
+                        <connections>
+                            <outlet property="dataSource" destination="M45-Em-JMM" id="zIt-LL-u3B"/>
+                            <outlet property="delegate" destination="M45-Em-JMM" id="8oD-9d-gx0"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="W3K-lW-jpq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5531" y="656"/>
+        </scene>
+        <!--Add To ChannelVC-->
+        <scene sceneID="Qir-mq-wma">
+            <objects>
+                <tableViewController storyboardIdentifier="AddToChannelVC" id="sZD-zJ-IzQ" customClass="AddToChannelVC" customModule="GDproject" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="yj4-wM-mw1">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="xMi-Gz-AGg">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="xMi-Gz-AGg" id="Lj0-2E-Ai9">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="sZD-zJ-IzQ" id="RJA-hG-8Bd"/>
+                            <outlet property="delegate" destination="sZD-zJ-IzQ" id="zlr-yK-CDk"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kT3-kK-tSX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6287" y="653"/>
+        </scene>
         <!--Posts-->
         <scene sceneID="RSd-UJ-34B">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="POV-5T-jeQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController storyboardIdentifier="navChannels" automaticallyAdjustsScrollViewInsets="NO" id="NuV-ZG-ld2" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Posts" image="5" selectedImage="5" id="dH2-sL-YsR"/>
                     <toolbarItems/>
@@ -559,6 +635,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="POV-5T-jeQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1089" y="-306"/>
         </scene>

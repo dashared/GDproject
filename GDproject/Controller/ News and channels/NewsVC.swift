@@ -45,6 +45,8 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         }
     }
     
+    var currChannel : Model.Channels?
+    
     var dataSourse: [Model.Posts] = [] {
         didSet {
             cellDataSourse = dataSourse.map { PostCellData(attributedData: PostCellData.create(with: $0.body)) }
@@ -115,11 +117,20 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         // pagination
         if indexPath.row == cellDataSourse.count - 1 && prevLast != indexPath.row
         {
-            // check this!
-            Model.getLast(on: 10, from: dataSourse.last?.id )
-            { [weak self] in
-                self?.dataSourse.append(contentsOf: $0.posts)
-                $0.users.forEach { self?.dictionary[$0.key] = $0.value }
+            if let ch = currChannel, let id = ch.id, ch.id != -1{
+                // check this!
+                Model.getChannel(with: id, on: 10, from: dataSourse.last?.id )
+                { [weak self] in
+                    self?.dataSourse.append(contentsOf: $0.posts)
+                    $0.users.forEach { self?.dictionary[$0.key] = $0.value }
+                }
+            } else {
+                // check this!
+                Model.getLast(on: 10, from: dataSourse.last?.id )
+                { [weak self] in
+                    self?.dataSourse.append(contentsOf: $0.posts)
+                    $0.users.forEach { self?.dictionary[$0.key] = $0.value }
+                }
             }
 
             prevLast = indexPath.row

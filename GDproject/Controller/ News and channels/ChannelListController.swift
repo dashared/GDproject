@@ -84,7 +84,7 @@ class ChannelListController: UITableViewController {
         askForUpdates()
     }
     
-    private func askForUpdates(){
+    func askForUpdates(){
         Model.channelsList { [weak self] (channels) in
             self?.dataSource = [ChannelListController.generalChannel] + channels
             self?.toReload = true

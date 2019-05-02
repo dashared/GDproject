@@ -53,10 +53,9 @@ class NewsController: UIViewController, UISearchControllerDelegate, UpdateableWi
         
         news.viewController = self
         news.type = type == .NEWS ? .NEWS : type!
+        news.currChannel = channel
         
         setUpNavigationItemsforPosts()
-
-        //setUpBanner()
     }
     
     func setUpSearchContr(){

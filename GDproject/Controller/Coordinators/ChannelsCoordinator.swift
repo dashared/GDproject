@@ -32,6 +32,8 @@ class ChannelsCoordinator: BaseCoordinator{
             self.navigationController?.pushViewController(self.presentNewsController(with: channel), animated: true)
         }
         
+        channels.askForUpdates()
+        
         channels.onEditingModeBegins = { [unowned self] (channel, indexPath) in
             let vc = self.presentChannelController(with: channel)
             self.navigationController?.pushViewController(vc, animated: true)
@@ -45,8 +47,8 @@ class ChannelsCoordinator: BaseCoordinator{
     /// Function that presents channel controller
     ///
     /// - Parameter channel: channel that needs to be displayed
-    func presentChannelController(with channel: Model.Channels? = nil) -> ChannelController {
-        let mainContentVC = storyboard.instantiateViewController(withIdentifier: channelControllerId) as! ChannelController
+    func presentChannelController(with channel: Model.Channels? = nil) -> ChannelViewController {
+        let mainContentVC = storyboard.instantiateViewController(withIdentifier: channelViewControllerId) as! ChannelViewController
         
         // to show preview we need to instantiate newsController but with different functionality
         mainContentVC.onShowingPreview = { [weak mainContentVC, unowned self] ch in
@@ -57,7 +59,8 @@ class ChannelsCoordinator: BaseCoordinator{
         return mainContentVC
     }
     
-    func presentNewsController(with channel: Model.Channels? = nil, previewMode: Bool = false) -> NewsController {
+    func presentNewsController(with channel: Model.Channels? = nil, previewMode: Bool = false) -> NewsController
+    {
         let mainContentVC = storyboard.instantiateViewController(withIdentifier: newsController) as! NewsController
         mainContentVC.channel = channel
         
@@ -75,12 +78,12 @@ class ChannelsCoordinator: BaseCoordinator{
                 print("anon with \($0.0.count) users")
             }
             
-            mainContentVC.changedChannelName = {
-                [weak mainContentVC] (title) in mainContentVC?.navigationItem.title = title
-            }
-            
             mainContentVC.navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(writePost(_:)))
             ]
+        }
+        
+        mainContentVC.changedChannelName = {
+            [weak mainContentVC] (title) in mainContentVC?.navigationItem.title = title
         }
         
         return mainContentVC
