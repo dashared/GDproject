@@ -1,64 +1,50 @@
 //
-//  PeopleToWriteViewController.swift
+//  ChatInfoViewController.swift
 //  GDproject
 //
-//  Created by cstore on 01/05/2019.
+//  Created by cstore on 02/05/2019.
 //  Copyright © 2019 drHSE. All rights reserved.
 //
 
 import UIKit
 
-class PeopleToWriteViewController: UITableViewController {
+
+/// Class for displaying chat info
+/// 
+class ChatInfoViewController: UITableViewController {
     
-    // TODO: - edit button when it's used for selection 
-    
-    let searchC = UISearchController(searchResultsController: nil)
-    
-    let users = [(id: 9,name: "Anna Mikhaleva")]
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.navigationItem.title = "People"
-        self.navigationItem.largeTitleDisplayMode = .never
-        self.navigationItem.searchController = searchC
-        self.navigationItem.hidesSearchBarWhenScrolling = false
+
+        // Uncomment the following line to preserve selection between presentations
+        // self.clearsSelectionOnViewWillAppear = false
+
+        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+        // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 1
+        return 0
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return users.count
+        return 0
     }
 
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "peopleToWriteCell", for: indexPath)
-        
-        cell.textLabel?.text = users[indexPath.row].name
-        cell.detailTextLabel?.text = "\(users[indexPath.row].id)"
+    /*
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
+
+        // Configure the cell...
 
         return cell
     }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        navigationController?.popViewController(animated: true)
-        
-        guard let _ = self.navigationController?.viewControllers.lastIndex(of: self) else
-        {
-            (navigationController?.viewControllers.last as? MessagesViewController)?.currentActiveDialogs.append(users[indexPath.row])
-            (navigationController?.viewControllers.last as? MessagesViewController)?.onDialogDisplay?(users[indexPath.row])
-            return
-        }
-    }
- 
+    */
 
     /*
     // Override to support conditional editing of the table view.

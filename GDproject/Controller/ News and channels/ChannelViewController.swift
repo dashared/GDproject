@@ -129,7 +129,7 @@ class ChannelViewController: UITableViewController, UpdatableName, UpdatableChan
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         
         if section == 1 {
-            cell.textLabel?.text = Model.Channels.fullPeopleDict[channel?.people[row-1] ?? 0]?.fullName()
+            cell.textLabel?.text = "👤 \(Model.Channels.fullPeopleDict[channel?.people[row-1] ?? 0]!.fullName())"
         } else {
             cell.textLabel?.text = "# \(channel!.tags[row-1])"
         }

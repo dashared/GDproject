@@ -9,6 +9,8 @@
 import UIKit
 
 class DialogViewController: UITableViewController {
+    
+    var onInfoShow: (()->())?
 
     var currentDialog: (id: Int, name: String)?
     
