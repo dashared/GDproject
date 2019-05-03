@@ -16,7 +16,15 @@ protocol UpdatableChannel: class{
     func updateChannel(with channel: Model.Channels)
 }
 
-class ChannelViewController: UITableViewController, UpdatableName, UpdatableChannel {
+class ChannelViewController: UITableViewController, UpdatableName, UpdatableChannel, TagsReceiver
+{
+    var onChoosingHashTags: (([String]?)->())?
+    
+    var onChoosingPeople: ((Model.Channels?)->())?
+    
+    func receiveTags(tags: [String]) {
+        self.channel?.tags = tags
+    }
     
     func updateName(with name: String){
         channel?.name = name
@@ -34,7 +42,7 @@ class ChannelViewController: UITableViewController, UpdatableName, UpdatableChan
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
+        tableView.keyboardDismissMode = .onDrag
         navigationItem.rightBarButtonItems = [ UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(showPreview)), self.editButtonItem]
         navigationItem.largeTitleDisplayMode = .never
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -160,15 +168,13 @@ class ChannelViewController: UITableViewController, UpdatableName, UpdatableChan
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
-        if indexPath.row == 0 && indexPath.section != 0
+        if indexPath.row == 0 && indexPath.section == 1
         {
-            let vc = storyboard?.instantiateViewController(withIdentifier: addToChannelVCId) as! AddToChannelVC
-            
-            vc.dataSourse = indexPath.section == 1 ? .people : .tags
-            vc.channel = channel
-            vc.update = self
-            
-            navigationController?.pushViewController(vc, animated: true)
+            onChoosingPeople?(channel)
+        }
+        
+        if indexPath.row == 0 && indexPath.section == 2 {
+            onChoosingHashTags?(channel?.tags)
         }
     }
 }

@@ -59,5 +59,7 @@ let channelViewControllerId = "ChannelViewController"
 
 let addToChannelVCId = "AddToChannelVC"
 
+let taggsSelectionViewController = "TaggsSelectionViewController"
+
 let blueSystemColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 0.5)
 

@@ -41,6 +41,15 @@ class Model{
     static let channelsGetAnonURL = URL(string: "\(baseUrl)/channels/getAnonymous")!
     static let complexURL = URL(string: "\(baseUrl)/complex")!
     static let hashTagTreeURL = URL(string: "\(baseUrl)/tagCompletions")!
+    static let createGroupChatURL = URL(string: "\(baseUrl)/chats/createGroupChat")!
+    static let chatsGetAllURL = URL(string: "\(baseUrl)/chats/getAll")!
+    static let getGroupChatURL = URL(string: "\(baseUrl)/chats/getGroupChat")!
+    static let leaveGroupChatURL = URL(string: "\(baseUrl)/chats/leaveGroupChat")!
+    static let updateGroupChatURL = URL(string: "\(baseUrl)/chats/updateGroupChat")!
+    static let messagesGetGroupChatURL = URL(string: "\(baseUrl)/messages/get/groupChat")! //r
+    static let messagesSendURL = URL(string: "\(baseUrl)/messages/send")!
+    static let messagesUserChatURL = URL(string: "\(baseUrl)/messages/userChat")!
+    
     
     struct QueryPosts: Codable {
         var users: [Int: Users]
@@ -212,15 +221,25 @@ class Model{
         }
     }
     
-    struct PostsLastRequest<T: Codable>: Codable {
+    struct GeneralRequest<T: Codable>: Codable
+    {
+        var direction: String
         var limit: Int
         var exclusiveFrom: Int?
         var request: T
+        
+        init(direction: String = "backward", limit: Int, exclusiveFrom: Int?, request: T) {
+            self.direction = direction
+            self.limit = limit
+            self.exclusiveFrom = exclusiveFrom
+            self.request = request
+        }
         
         enum CodingKeys: String, CodingKey {
             case limit
             case exclusiveFrom
             case request
+            case direction
         }
         
         func encode(to encoder: Encoder) throws {
@@ -228,12 +247,13 @@ class Model{
             try container.encode(limit, forKey: .limit)
             try container.encode(exclusiveFrom, forKey: .exclusiveFrom)
             try container.encode(request, forKey: .request)
+            try container.encode(direction, forKey: .direction)
         }
     }
     
     static func getLast(on limit: Int = 10, from pointInTime: Int? = nil, completion: @escaping (((users:[Int: Users], posts:[Posts]))->()))
     {
-        let postRequest = PostsLastRequest<[Int]>(limit: limit, exclusiveFrom: pointInTime, request: [])
+        let postRequest = GeneralRequest<[Int]>(limit: limit, exclusiveFrom: pointInTime, request: [])
         
         var request = URLRequest(url: postsLastURL)
         request.httpBody = try? JSONEncoder().encode(postRequest)
@@ -275,14 +295,15 @@ class Model{
         }
     }
     
+//    static func requestForPosts(limit: Int = 10, ){
+//
+//    }
     
-    static func getPostsForUser(with id: Int, completion: @escaping (([Posts])->())){
-        let json = [
-            "request" : id,
-            "limit": 10
-        ]
+    static func getPostsForUser(for limit: Int = 10, from pointInTime: Int? = nil, with id: Int, completion: @escaping (([Posts])->()))
+    {
+        let postsRequest = GeneralRequest<Int>(limit: limit, exclusiveFrom: pointInTime, request: id)
         
-        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        let jsonData = try? JSONEncoder().encode(postsRequest)
         
         var request = URLRequest(url: postsForUserURL)
         request.httpMethod = "POST"
@@ -338,7 +359,7 @@ class Model{
     // get channel (with id): in responce -- PostQuery
     static func getChannel(with channelId: Int, on limit: Int = 10, from pointInTime: Int? = nil, completion: @escaping (((users:[Int: Users], posts:[Posts]))->()))
     {
-        let postRequest = PostsLastRequest<Int>(limit: limit, exclusiveFrom: pointInTime, request: channelId)
+        let postRequest = GeneralRequest<Int>(limit: limit, exclusiveFrom: pointInTime, request: channelId)
         let jsonData = try? JSONEncoder().encode(postRequest)
         
         var request = URLRequest(url: channelsGetURL)

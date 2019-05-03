@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1210A0BB223940310080686D /* SimplifiedChannelsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1210A0BA223940310080686D /* SimplifiedChannelsList.swift */; };
 		121A8972226B1EAC005EE599 /* AnonimousChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 121A8971226B1EAC005EE599 /* AnonimousChannelController.swift */; };
+		1220FF94227C41270092C6BC /* TaggsSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1220FF93227C41270092C6BC /* TaggsSelectionViewController.swift */; };
 		123E37A5221F1B3200F6E42A /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123E37A4221F1B3200F6E42A /* LogInViewController.swift */; };
 		123E37A7221F1DD700F6E42A /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123E37A6221F1DD700F6E42A /* MainController.swift */; };
 		124CC7032221C00C009DF531 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124CC7022221C00C009DF531 /* Model.swift */; };
@@ -102,6 +103,7 @@
 /* Begin PBXFileReference section */
 		1210A0BA223940310080686D /* SimplifiedChannelsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplifiedChannelsList.swift; sourceTree = "<group>"; };
 		121A8971226B1EAC005EE599 /* AnonimousChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnonimousChannelController.swift; sourceTree = "<group>"; };
+		1220FF93227C41270092C6BC /* TaggsSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggsSelectionViewController.swift; sourceTree = "<group>"; };
 		123E37A4221F1B3200F6E42A /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		123E37A6221F1DD700F6E42A /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		124CC7022221C00C009DF531 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
@@ -311,6 +313,7 @@
 			isa = PBXGroup;
 			children = (
 				1261BB92227B364C003898CF /* ChannelViewController.swift */,
+				1220FF93227C41270092C6BC /* TaggsSelectionViewController.swift */,
 				1261BB94227B3991003898CF /* AddToChannelVC.swift */,
 				12D7D134221C42B700B35452 /* ChannelController.swift */,
 				121A8971226B1EAC005EE599 /* AnonimousChannelController.swift */,
@@ -411,6 +414,7 @@
 			files = (
 				129320072279B5690035C7B3 /* MessagesCoordinator.swift in Sources */,
 				124CC7032221C00C009DF531 /* Model.swift in Sources */,
+				1220FF94227C41270092C6BC /* TaggsSelectionViewController.swift in Sources */,
 				12F3D6B0224106F700A69214 /* TabbarController.swift in Sources */,
 				12E36DD522156559006FCDD7 /* MyStackView.swift in Sources */,
 				12D7D137221D78E800B35452 /* Channel.swift in Sources */,

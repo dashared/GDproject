@@ -55,6 +55,26 @@ class ChannelsCoordinator: BaseCoordinator{
             let vc = self.presentNewsController(with: ch, previewMode: true)
             mainContentVC?.navigationController?.pushViewController(vc, animated: true)
         }
+        
+        // to go for choosing hashtags
+        mainContentVC.onChoosingHashTags = { [weak mainContentVC, unowned self] ch in
+            let vc = self.storyboard.instantiateViewController(withIdentifier: taggsSelectionViewController) as! TaggsSelectionViewController
+            
+            vc.currentTags = ch
+            vc.receiver = mainContentVC
+            
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        
+        mainContentVC.onChoosingPeople = { [weak mainContentVC, unowned self] channel in
+            let vc = self.storyboard.instantiateViewController(withIdentifier: addToChannelVCId) as! AddToChannelVC
+            
+            vc.channel = channel
+            vc.update = mainContentVC
+            
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        
         mainContentVC.channel = channel
         return mainContentVC
     }

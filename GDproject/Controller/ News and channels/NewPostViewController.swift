@@ -10,20 +10,38 @@ import UIKit
 import Cartography
 import Marklight
 import TinyConstraints
+import TaggerKit
 // import WSTagsField
 
-class NewPostViewController: UIViewController, UITextViewDelegate {
+class NewPostViewController: UIViewController, UITextViewDelegate, TagsReceiver
+{
+    func receiveTags(tags: [String]) {
+        currentTags = tags
+    }
     
     @IBOutlet weak var view1: UIView!
     
-    @IBOutlet weak var viewForTags: UIView!
+    var currentTags: [String] = []
+    
+    // We want the whole experience, let's create two TKCollectionViews
+    let productTags = TKCollectionView()
+    
+    @IBAction func chooseTags(_ sender: UIButton) {
+        let vc = storyboard?.instantiateViewController(withIdentifier: taggsSelectionViewController) as! TaggsSelectionViewController
+        
+        NewPostViewController.draft = textView.text
+        vc.receiver = self
+        vc.currentTags = currentTags
+        
+        navigationController?.pushViewController(vc, animated: true)
+    }
     
     // fileprivate let tagsField = WSTagsField()
     // Keep strong instance of the `NSTextStorage` subclass
     let textStorage = MarklightTextStorage()
     
     static var draft: String = ""
-    static var hashTagsDraft: [String] = []
+    static var hashTagsDraft: [String] = ["tt"]
     
     var textView: UITextView!
     
@@ -213,7 +231,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
     var indexOfPost = 0
     // MARK:- new post
     @objc func newPost(){
-        Model.createAndPublish(body: [Model.Attachments(markdown: textView!.text)], tags: /*tagsField.tags.map { $0.text }*/ [])
+        Model.createAndPublish(body: [Model.Attachments(markdown: textView!.text)], tags: currentTags)
         // adding row to uiTableView after adding new post
         // myProtocol?.addPost(post: p)
         moveBackToParentVC?()
