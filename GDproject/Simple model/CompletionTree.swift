@@ -27,7 +27,8 @@ struct CompletionTree: Codable {
         }
     }
     
-    static func getValues(tree: CompletionTree) -> [String] {
+    static func getValues(tree: CompletionTree) -> [String]
+    {
         var out = [String]()
         
         if let treeVal = tree.value {

@@ -11,11 +11,15 @@ import UIKit
 class MessagesViewController: UITableViewController {
 
     // curreent Active which can be displayed
-    var currentActiveDialogs: [(id: Int, name: String)] = [(id: Int, name: String)]()
+    var currentActiveDialogs: [Model.Dialog] = [] {
+        didSet{
+            tableView.reloadData()
+        }
+    }
     
     var onUserDisplayList: (()->())?
     
-    var onDialogDisplay: (((id: Int, name: String))->())?
+    var onDialogDisplay: ((Model.Dialog)->())?
     
     let searchC = UISearchController(searchResultsController: nil)
     
@@ -39,10 +43,12 @@ class MessagesViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        tableView.reloadData()
+        Model.getChatAll { [weak self]  in
+            self?.currentActiveDialogs = $0
+        }
     }
+    
     // MARK: - Table view data source
-
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -56,8 +62,14 @@ class MessagesViewController: UITableViewController {
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MessagesCell", for: indexPath)
         
-        cell.textLabel?.text = currentActiveDialogs[indexPath.row].name
-        cell.detailTextLabel?.text = "from \(currentActiveDialogs[indexPath.row].name) some message is displayed here..."
+        switch currentActiveDialogs[indexPath.row].self {
+        case .groupChat(let group):
+            cell.textLabel?.text = group.group.name
+            cell.detailTextLabel?.text = group.lastMessage.body.markdown
+        case .userChat(let userChat):
+            cell.textLabel?.text = "\(userChat.user)"
+            cell.detailTextLabel?.text = userChat.lastMessage.body.markdown
+        }
 
         return cell
     }
@@ -65,49 +77,4 @@ class MessagesViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         onDialogDisplay?(currentActiveDialogs[indexPath.row])
     }
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

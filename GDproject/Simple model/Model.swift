@@ -51,9 +51,9 @@ class Model{
     static let messagesUserChatURL = URL(string: "\(baseUrl)/messages/userChat")!
     
     
-    struct QueryPosts: Codable {
+    struct QueryPosts<T: Codable>: Codable {
         var users: [Int: Users]
-        var response: [Posts]
+        var response: [T]
     }
     
     struct Posts: Codable {
@@ -269,7 +269,7 @@ class Model{
             
             guard let json = response.data else { return }
             
-            guard let newQueery = try? decoder.decode(QueryPosts.self, from: json) else { print("no")
+            guard let newQueery = try? decoder.decode(QueryPosts<Posts>.self, from: json) else { print("no")
                 return }
             
             idUser = newQueery.users
@@ -319,7 +319,7 @@ class Model{
             
             guard let json = response.data else { return }
             
-            guard let newPost = try? decoder.decode(QueryPosts.self, from: json) else {  return }
+            guard let newPost = try? decoder.decode(QueryPosts<Posts>.self, from: json) else {  return }
             
             completion(newPost.response)
         }
@@ -377,7 +377,7 @@ class Model{
             
             guard let json = response.data else { return }
             
-            guard let newQueery = try? decoder.decode(QueryPosts.self, from: json) else {  return }
+            guard let newQueery = try? decoder.decode(QueryPosts<Posts>.self, from: json) else {  return }
             
             idUser = newQueery.users
             completion((newQueery.users, newQueery.response))
@@ -539,7 +539,7 @@ class Model{
             
             guard let json = response.data else { return }
             
-            guard let newQueery = try? decoder.decode(QueryPosts.self, from: json) else {  return }
+            guard let newQueery = try? decoder.decode(QueryPosts<Posts>.self, from: json) else {  return }
             
             // idUser = newQueery.users
             completion((newQueery.users, newQueery.response))
@@ -550,11 +550,205 @@ class Model{
         
         AF.request(URLRequest(url: hashTagTreeURL)).responseJSON {
             (response) in
-            
+            isValidTocken?(response.response?.statusCode ?? 498)
             guard let json = response.data else { return }
             guard let tree = try? decoder.decode(CompletionTree.self, from: json) else {  return }
             completion(tree)
         }
     }
     
+    static func getChatAll(limit: Int = 10, exclusiveFrom: Int? = nil, request: [Int] = [], completion: @escaping (([Dialog])->()))
+    {
+        let req = GeneralRequest<[Int]>(limit: limit, exclusiveFrom: exclusiveFrom, request: request)
+        var request = URLRequest(url: chatsGetAllURL)
+        request.httpMethod = "POST"
+        request.httpBody = try? JSONEncoder().encode(req)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).responseJSON { response in
+            isValidTocken?(response.response?.statusCode ?? 498)
+            
+            guard let json = response.data else { return }
+            let dialogs = try! decoder.decode(QueryPosts<Dialog>.self, from: json)
+            
+            print(dialogs.response)
+            completion(dialogs.response)
+        }
+    }
+    
+    enum Dialog: Codable
+    {
+        case groupChat(GroupChat)
+        case userChat(UserChat)
+        
+        private enum DialogKeys: CodingKey{
+            case groupChat
+            case userChat
+        }
+        
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: DialogKeys.self)
+            if container.contains(.groupChat){
+                self = .groupChat(try GroupChat(from: container.superDecoder(forKey: .groupChat)))
+            } else if container.contains(.userChat){
+                self = .userChat(try UserChat(from: container.superDecoder(forKey: .userChat)))
+            } else {
+                throw DecodingError.keyNotFound(DialogKeys.groupChat, DecodingError.Context(codingPath: container.codingPath, debugDescription: "hz"))
+            }
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: DialogKeys.self)
+            switch self{
+            case .groupChat(let chat):
+                try chat.encode(to: container.superEncoder(forKey: .groupChat))
+            case .userChat(let chat):
+                try chat.encode(to: container.superEncoder(forKey: .userChat))
+            }
+        }
+    }
+    
+    struct GroupChat: Codable {
+        var group: Group
+        var lastMessage: LastMessage
+    }
+    
+    struct UserChat: Codable {
+        var user: Int
+        var lastMessage: LastMessage
+    }
+    
+    struct Group: Codable {
+        var users: [Int: UserPermission]
+        var name: String
+        var id: Int
+    }
+    
+    struct UserPermission: Codable {
+        var isAdmin: Bool
+    }
+    
+    struct LastMessage: Codable {
+        var body: Attachments
+        var destination: MessageDestination
+        var time: String
+        var author: Int
+        var id: Int
+        
+        private enum MessageCodingKeys: CodingKey{
+            case user
+            case group
+            case body
+            case time
+            case author
+            case id
+        }
+        
+        init(from decoder: Decoder) throws
+        {
+            let container = try decoder.container(keyedBy: MessageCodingKeys.self)
+            time = try container.decode(String.self, forKey: .time)
+            body = try container.decode(Attachments.self, forKey: .body)
+            author = try container.decode(Int.self, forKey: .author)
+            id = try container.decode(Int.self, forKey: .id)
+            
+            if container.contains(.user){
+                destination = MessageDestination.userChatDestination(try Int(from: container.superDecoder(forKey: .user)))
+            } else if container.contains(.group){
+                destination = MessageDestination.groupChatDestination(try Int(from: container.superDecoder(forKey: .group)))
+            } else {
+                throw DecodingError.keyNotFound(MessageCodingKeys.group, DecodingError.Context(codingPath: container.codingPath, debugDescription: "hz gr"))
+            }
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: MessageCodingKeys.self)
+            
+            try container.encode(time, forKey: .time)
+            try container.encode(id, forKey: .id)
+            try container.encode(author, forKey: .author)
+            try container.encode(body, forKey: .body)
+            
+            switch destination {
+            case .userChatDestination(let uId):
+                try uId.encode(to: container.superEncoder(forKey: .user))
+            case .groupChatDestination(let gId):
+                try gId.encode(to: container.superEncoder(forKey: .group))
+            }
+        }
+    }
+    
+    enum MessageDestination: Codable
+    {
+        func encode(to encoder: Encoder) throws
+        {
+            var container = encoder.container(keyedBy: MessCodingKeys.self)
+            switch self {
+            case .userChatDestination(let uId):
+                try uId.encode(to: container.superEncoder(forKey: .user))
+            case .groupChatDestination(let gId):
+                try gId.encode(to: container.superEncoder(forKey: .group))
+            }
+        }
+        
+        init(from decoder: Decoder) throws
+        {
+            let container = try decoder.container(keyedBy: MessCodingKeys.self)
+            if container.contains(.user){
+                self = .userChatDestination(try Int(from: container.superDecoder(forKey: .user)))
+            } else if container.contains(.group){
+                self = .groupChatDestination(try Int(from: container.superDecoder(forKey: .group)))
+            } else {
+                throw DecodingError.keyNotFound(MessCodingKeys.group, DecodingError.Context(codingPath: container.codingPath, debugDescription: "hz gr"))
+            }
+        }
+        
+        enum MessCodingKeys: CodingKey{
+            case user
+            case group
+        }
+        
+        case userChatDestination(Int)
+        case groupChatDestination(Int)
+        
+    }
+    
+    static func createGroupChat(from group: Group, completion: @escaping ((Int)->())) {
+        let req = group
+        var request = URLRequest(url: createGroupChatURL)
+        request.httpMethod = "POST"
+        request.httpBody = try? JSONEncoder().encode(req)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).response { (response) in
+            
+            isValidTocken?(response.response?.statusCode ?? 498)
+            
+            guard let json = response.data else { return }
+            let stringInt = String.init(data: json, encoding: String.Encoding.utf8)
+            let intId = Int.init(stringInt!)
+            
+            completion(intId!)
+        }
+    }
+    
+    static func getMessagesForGroupChat(chat id: Int, exclusiveFrom: Int? = nil, limit l: Int = 10, direction: String = "backward", completion: @escaping (([LastMessage])->()))
+    {
+        let req = GeneralRequest<Int>(direction: direction, limit: l, exclusiveFrom: exclusiveFrom, request: id)
+        
+        var request = URLRequest(url: messagesGetGroupChatURL)
+        request.httpMethod = "POST"
+        request.httpBody = try? JSONEncoder().encode(req)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).response { (response) in
+            
+            isValidTocken?(response.response?.statusCode ?? 498)
+            
+            guard let json = response.data else { return }
+            guard let messages = try? decoder.decode([LastMessage].self, from: json) else {  return }
+            
+            completion(messages)
+        }
+    }
 }
