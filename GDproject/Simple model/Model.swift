@@ -525,11 +525,13 @@ class Model{
          }
      }
      */
-    static func getAnonymousChannel(by anonymousChannel: Model.AnonymousChannel, completion: @escaping (((users:[Int: Users], posts:[Posts]))->())){
+    static func getAnonymousChannel(by anonymousChannel: Model.Channels, exclusiveFrom: Int? = nil, completion: @escaping (((users:[Int: Users], posts:[Posts]))->())){
        
+        let req = GeneralRequest<Model.Channels>(limit: 10, exclusiveFrom: exclusiveFrom, request: anonymousChannel)
+        
         var request = URLRequest(url: channelsGetAnonURL)
         request.httpMethod = "POST"
-        request.httpBody = try? JSONEncoder().encode(anonymousChannel)
+        request.httpBody = try? JSONEncoder().encode(req)
         
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         AF.request(request).response {

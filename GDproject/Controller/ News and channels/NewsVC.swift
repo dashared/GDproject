@@ -91,12 +91,12 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
             }
         }
         
-        cell.onAnonymousChannelDisplay = {
-            [weak self] (tag) in
-            Model.getAnonymousChannel(by: Model.AnonymousChannel(people: [], tags: [tag]),
-                                      completion: { (tuple) in self?.onChannelDidChange?(tuple) }
-            )
-        }
+//        cell.onAnonymousChannelDisplay = {
+//            [weak self] (tag) in
+//            Model.getAnonymousChannel(by: Model.AnonymousChannel(people: [], tags: [tag]),
+//                                      completion: { (tuple) in self?.onChannelDidChange?(tuple) }
+//            )
+//        }
         
         cell.selectionStyle = .none
         return cell
@@ -117,13 +117,13 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         // pagination
         if indexPath.row == cellDataSourse.count - 1 && prevLast != indexPath.row
         {
-            if let ch = currChannel, let id = ch.id, ch.id != -1{
+            if let ch = currChannel, let id = ch.id, id != -1 {
                 // check this!
-                Model.getChannel(with: id, on: 10, from: dataSourse.last?.id )
-                { [weak self] in
+                Model.getAnonymousChannel(by: ch, exclusiveFrom: dataSourse.last?.id) { [weak self] in
                     self?.dataSourse.append(contentsOf: $0.posts)
                     $0.users.forEach { self?.dictionary[$0.key] = $0.value }
                 }
+                
             } else {
                 // check this!
                 Model.getLast(on: 10, from: dataSourse.last?.id )

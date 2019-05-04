@@ -63,5 +63,7 @@ let taggsSelectionViewController = "TaggsSelectionViewController"
 
 let dialogViewController = "DialogViewController"
 
+let tagsSuggestionController = "TagsSuggestionController"
+
 let blueSystemColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 0.5)
 

@@ -12,6 +12,7 @@ import Cartography
 
 protocol UpdateableWithChannel: class {
     var channel: Model.Channels? { get set }
+    func updateChannel(on channel: Model.Channels)
 }
 
 protocol UpdateableWithUser: class {
@@ -19,8 +20,14 @@ protocol UpdateableWithUser: class {
 }
 // MARK:- Controller with posts and channels availiable.
 // Search is availiable within every table (posts and channels). Has button-functionality for boths post and chnnels
-class NewsController: UIViewController, UISearchControllerDelegate, UpdateableWithChannel
+class NewsController: UIViewController, UISearchControllerDelegate, UpdateableWithChannel, UISearchResultsUpdating
 {
+    func updateChannel(on channel: Model.Channels) {
+        self.channel = channel
+        news.currChannel = channel
+        decideWhatChannelDisplay()
+    }
+    
     var changedChannelName: ((String)->())?
     
     @IBOutlet weak var tableView: UITableView!
@@ -31,7 +38,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, UpdateableWi
     // MARK: - Output -
     var onSelectChannel: (() -> Void)?
     
-    var searchController = UISearchController(searchResultsController: nil)
+    var searchController: UISearchController?
 
     var news = NewsVC()
     var type: HeaderType? = .NEWS
@@ -41,6 +48,11 @@ class NewsController: UIViewController, UISearchControllerDelegate, UpdateableWi
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        
+        let updater = TagsSuggestionController()
+        updater.delegate = self
+        searchController = UISearchController(searchResultsController: updater)
+        
         navigationItem.title = "Loading ..."
         tableView.refreshControl = refreshContr
         // Configure Refresh Control
@@ -49,8 +61,9 @@ class NewsController: UIViewController, UISearchControllerDelegate, UpdateableWi
         tableView.register(PostViewCell.self, forCellReuseIdentifier: postCellId)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
-        // setUpSearchContr()
+        setUpSearchContr()
         
+        // navigationItem.
         news.viewController = self
         news.type = type == .NEWS ? .NEWS : type!
         news.currChannel = channel
@@ -59,11 +72,12 @@ class NewsController: UIViewController, UISearchControllerDelegate, UpdateableWi
     }
     
     func setUpSearchContr(){
-        searchController.delegate = self
-        searchController.obscuresBackgroundDuringPresentation = false
+        searchController?.delegate = self
+        searchController?.obscuresBackgroundDuringPresentation = false
         navigationItem.searchController = searchController
         definesPresentationContext = true
-        searchController.searchBar.placeholder  = "Search anything"
+        searchController?.searchResultsUpdater = self
+        searchController?.searchBar.placeholder  = "Search tags"
     }
     
     @objc func refreshPostsData( _ ff: UIRefreshControl){
@@ -76,7 +90,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, UpdateableWi
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        searchController.isActive = false
+        searchController?.isActive = false
         // TODO:- display something if no posts are availiable
         
         decideWhatChannelDisplay()
@@ -85,16 +99,18 @@ class NewsController: UIViewController, UISearchControllerDelegate, UpdateableWi
     }
     
     func decideWhatChannelDisplay(){
+        
         switch type! {
         case .NEWS, .NONE:
             if let channel = channel, let id = channel.id, id != -1 {
                 
-                Model.getChannel(with: id) { [weak self] in
+                Model.getAnonymousChannel(by: channel) { [weak self] in
                     self?.news.dataSourse = $0.posts
                     self?.news.dictionary = $0.users
                     self?.refreshContr.endRefreshing()
                     self?.changedChannelName?(channel.name)
                 }
+                
             } else {
                 Model.getLast { [weak self] in
                     self?.news.dataSourse = $0.posts
@@ -110,11 +126,35 @@ class NewsController: UIViewController, UISearchControllerDelegate, UpdateableWi
                 changedChannelName?("Anonymous")
             }
         }
+        
     }
     
     func setUpNavigationItemsforPosts(){
         tableView.delegate = news
         tableView.dataSource = news
         tableView.reloadData()
+    }
+    
+    func updateSearchResults(for searchController: UISearchController)
+    {
+        let filteredData = CompletionTree.getCompletion(tree: Model.hashTagTree!, word: searchController.searchBar.text?.lowercased() ?? "")
+
+        // Apply the filtered results to the search results table.
+        if let resultsController = searchController.searchResultsController as? TagsSuggestionController {
+            resultsController.suggestions = filteredData
+            resultsController.tableView.reloadData()
+        }
+    }
+    
+    func willPresentSearchController(_ searchController: UISearchController) {
+        searchController.searchResultsController?.view.isHidden = false;
+    }
+    
+    func didPresentSearchController(_ searchController: UISearchController) {
+        searchController.searchResultsController?.view.isHidden = false;
+    }
+    
+    func didDismissSearchController(_ searchController: UISearchController) {
+        searchController.searchBar.text = ""
     }
 }

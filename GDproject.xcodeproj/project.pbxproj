@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1210A0BB223940310080686D /* SimplifiedChannelsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1210A0BA223940310080686D /* SimplifiedChannelsList.swift */; };
-		121A8972226B1EAC005EE599 /* AnonimousChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 121A8971226B1EAC005EE599 /* AnonimousChannelController.swift */; };
+		121A8972226B1EAC005EE599 /* TagsSuggestionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 121A8971226B1EAC005EE599 /* TagsSuggestionController.swift */; };
 		1220FF94227C41270092C6BC /* TaggsSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1220FF93227C41270092C6BC /* TaggsSelectionViewController.swift */; };
 		123E37A5221F1B3200F6E42A /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123E37A4221F1B3200F6E42A /* LogInViewController.swift */; };
 		123E37A7221F1DD700F6E42A /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123E37A6221F1DD700F6E42A /* MainController.swift */; };
@@ -102,7 +102,7 @@
 
 /* Begin PBXFileReference section */
 		1210A0BA223940310080686D /* SimplifiedChannelsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplifiedChannelsList.swift; sourceTree = "<group>"; };
-		121A8971226B1EAC005EE599 /* AnonimousChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnonimousChannelController.swift; sourceTree = "<group>"; };
+		121A8971226B1EAC005EE599 /* TagsSuggestionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsSuggestionController.swift; sourceTree = "<group>"; };
 		1220FF93227C41270092C6BC /* TaggsSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggsSelectionViewController.swift; sourceTree = "<group>"; };
 		123E37A4221F1B3200F6E42A /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		123E37A6221F1DD700F6E42A /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
@@ -316,7 +316,7 @@
 				1220FF93227C41270092C6BC /* TaggsSelectionViewController.swift */,
 				1261BB94227B3991003898CF /* AddToChannelVC.swift */,
 				12D7D134221C42B700B35452 /* ChannelController.swift */,
-				121A8971226B1EAC005EE599 /* AnonimousChannelController.swift */,
+				121A8971226B1EAC005EE599 /* TagsSuggestionController.swift */,
 				12D7D132221C321600B35452 /* ChannelListController.swift */,
 				1210A0BA223940310080686D /* SimplifiedChannelsList.swift */,
 				12E36DC922144635006FCDD7 /* NewPostViewController.swift */,
@@ -423,7 +423,7 @@
 				125BD5812217314A008A3575 /* NewsVC.swift in Sources */,
 				12E36DB72214400A006FCDD7 /* Post.swift in Sources */,
 				12DB7FDF221877160096878E /* InviteViewController.swift in Sources */,
-				121A8972226B1EAC005EE599 /* AnonimousChannelController.swift in Sources */,
+				121A8972226B1EAC005EE599 /* TagsSuggestionController.swift in Sources */,
 				1293200D2279D7310035C7B3 /* CompletionTree.swift in Sources */,
 				1293200B2279D02D0035C7B3 /* DialogViewController.swift in Sources */,
 				12E36DCA22144635006FCDD7 /* NewPostViewController.swift in Sources */,
