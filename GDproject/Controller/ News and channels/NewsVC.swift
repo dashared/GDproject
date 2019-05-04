@@ -85,18 +85,16 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
                 vc.idProfile = id
                 self?.viewController!.navigationController!.pushViewController(vc, animated: true)
             }
+            
+            cell.onAnonymousChannelDisplay = {
+                [weak self] in
+                (self?.viewController as? UpdateableWithChannel)?.updateChannel(on: Model.Channels(people: [], name: $0, id: 0, tags: [$0]))
+            }
         default:
             cell.onUserDisplay = { (id) in
                 print("tapped when profile is opened already \(id)")
             }
         }
-        
-//        cell.onAnonymousChannelDisplay = {
-//            [weak self] (tag) in
-//            Model.getAnonymousChannel(by: Model.AnonymousChannel(people: [], tags: [tag]),
-//                                      completion: { (tuple) in self?.onChannelDidChange?(tuple) }
-//            )
-//        }
         
         cell.selectionStyle = .none
         return cell

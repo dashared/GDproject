@@ -13,6 +13,7 @@ import TinyConstraints
 
 class PostViewCell: UITableViewCell
 {
+    
     var onUserDisplay: ((Int)->())?
     
     var onAnonymousChannelDisplay: ((String)->())?
@@ -123,6 +124,7 @@ class PostViewCell: UITableViewCell
             let button = UIButton()
             button.setTitle("#" + hash, for: .normal)
             button.addTarget(self, action: #selector(setAnonymousChannel(on:)), for: .touchUpInside)
+            // button.addGestureRecognizer(longPressRecognizer)
             button.titleLabel?.font = UIFont.monospacedDigitSystemFont(ofSize: 15, weight: .semibold)
             button.setTitleColor(#colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1), for: .normal)
             buttons.append(button)
