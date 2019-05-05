@@ -12,14 +12,17 @@ class MessagesViewController: UITableViewController {
 
     // curreent Active which can be displayed
     var currentActiveDialogs: [Model.Dialog] = [] {
-        didSet{
+        didSet {
             tableView.reloadData()
         }
     }
     
+    // curreent users
+    var users: [Int: Model.Users] = [:]
+    
     var onUserDisplayList: (()->())?
     
-    var onDialogDisplay: ((Model.Dialog)->())?
+    var onDialogDisplay: (((dialog: Model.Dialog, users: [Int:Model.Users]))->())?
     
     let searchC = UISearchController(searchResultsController: nil)
     
@@ -42,9 +45,10 @@ class MessagesViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        tabBarController?.tabBar.isHidden = false
         Model.getChatAll { [weak self]  in
-            self?.currentActiveDialogs = $0
+            self?.currentActiveDialogs = $0.0
+            self?.users = $0.1
         }
     }
     
@@ -67,7 +71,7 @@ class MessagesViewController: UITableViewController {
             cell.textLabel?.text = group.group.name
             cell.detailTextLabel?.text = group.lastMessage.body.markdown
         case .userChat(let userChat):
-            cell.textLabel?.text = "\(userChat.user)"
+            cell.textLabel?.text = "\(users[userChat.user]!)"
             cell.detailTextLabel?.text = userChat.lastMessage.body.markdown
         }
 
@@ -75,6 +79,7 @@ class MessagesViewController: UITableViewController {
     }
  
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        onDialogDisplay?(currentActiveDialogs[indexPath.row])
+        let tuple = (currentActiveDialogs[indexPath.row],users)
+        onDialogDisplay?(tuple)
     }
 }

@@ -40,7 +40,7 @@ class Model{
     static let channelsDeleteURL = URL(string: "\(baseUrl)/channels/delete")!
     static let channelsGetAnonURL = URL(string: "\(baseUrl)/channels/getAnonymous")!
     static let complexURL = URL(string: "\(baseUrl)/complex")!
-    static let hashTagTreeURL = URL(string: "\(baseUrl)/tagCompletions")!
+    static let hashTagTreeURL = URL(string: "\(baseUrl)/tags/completions")!
     static let createGroupChatURL = URL(string: "\(baseUrl)/chats/createGroupChat")!
     static let chatsGetAllURL = URL(string: "\(baseUrl)/chats/getAll")!
     static let getGroupChatURL = URL(string: "\(baseUrl)/chats/getGroupChat")!
@@ -48,7 +48,7 @@ class Model{
     static let updateGroupChatURL = URL(string: "\(baseUrl)/chats/updateGroupChat")!
     static let messagesGetGroupChatURL = URL(string: "\(baseUrl)/messages/get/groupChat")! //r
     static let messagesSendURL = URL(string: "\(baseUrl)/messages/send")!
-    static let messagesUserChatURL = URL(string: "\(baseUrl)/messages/userChat")!
+    static let messagesGetUserChatURL = URL(string: "\(baseUrl)/messages/get/userChat")!
     
     
     struct QueryPosts<T: Codable>: Codable {
@@ -559,7 +559,7 @@ class Model{
         }
     }
     
-    static func getChatAll(limit: Int = 10, exclusiveFrom: Int? = nil, request: [Int] = [], completion: @escaping (([Dialog])->()))
+    static func getChatAll(limit: Int = 10, exclusiveFrom: Int? = nil, request: [Int] = [], completion: @escaping ((([Dialog],[Int:Model.Users]))->()))
     {
         let req = GeneralRequest<[Int]>(limit: limit, exclusiveFrom: exclusiveFrom, request: request)
         var request = URLRequest(url: chatsGetAllURL)
@@ -573,8 +573,7 @@ class Model{
             guard let json = response.data else { return }
             let dialogs = try! decoder.decode(QueryPosts<Dialog>.self, from: json)
             
-            print(dialogs.response)
-            completion(dialogs.response)
+            completion((dialogs.response,dialogs.users))
         }
     }
     
@@ -624,6 +623,12 @@ class Model{
         var users: [Int: UserPermission]
         var name: String
         var id: Int
+        
+        init(users: [Int: UserPermission] = [:], name: String = "", id: Int) {
+            self.id = id
+            self.users = users
+            self.name = name
+        }
     }
     
     struct UserPermission: Codable {
@@ -734,16 +739,23 @@ class Model{
         }
     }
     
-    static func getMessagesForGroupChat(chat id: Int, exclusiveFrom: Int? = nil, limit l: Int = 10, direction: String = "backward", completion: @escaping (([LastMessage])->()))
+    static func getMessagesFor(typeOfChat: Model.Dialog, chat id: Int, exclusiveFrom: Int? = nil, limit l: Int = 10, direction: String = "backward", completion: @escaping (([LastMessage])->()))
     {
         let req = GeneralRequest<Int>(direction: direction, limit: l, exclusiveFrom: exclusiveFrom, request: id)
+        var request: URLRequest?
         
-        var request = URLRequest(url: messagesGetGroupChatURL)
-        request.httpMethod = "POST"
-        request.httpBody = try? JSONEncoder().encode(req)
-        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        switch typeOfChat {
+        case .groupChat:
+            request = URLRequest(url: messagesGetGroupChatURL)
+        case .userChat:
+            request = URLRequest(url: messagesGetUserChatURL)
+        }
         
-        AF.request(request).response { (response) in
+        request!.httpMethod = "POST"
+        request!.httpBody = try? JSONEncoder().encode(req)
+        request!.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request!).response { (response) in
             
             isValidTocken?(response.response?.statusCode ?? 498)
             
@@ -752,5 +764,33 @@ class Model{
             
             completion(messages)
         }
+    }
+    
+    static func leaveGroupChat(id: Int, completion: @escaping (()->()))
+    {
+        var request = URLRequest(url: leaveGroupChatURL)
+        request.httpMethod = "POST"
+        request.httpBody = "\(id)".data(using: .utf8)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).response { (response) in
+            isValidTocken?(response.response?.statusCode ?? 498)
+        }
+        
+        completion()
+    }
+    
+    static func updateGroupChat(with group: Model.Group)
+    {
+        var request = URLRequest(url: updateGroupChatURL)
+        request.httpMethod = "POST"
+        request.httpBody = try? JSONEncoder().encode(group)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).response { (response) in
+            isValidTocken?(response.response?.statusCode ?? 498)
+        }
+        
+        // completion()
     }
 }

@@ -53,7 +53,7 @@ class ChannelViewController: UITableViewController, UpdatableName, UpdatableChan
         super.viewWillAppear(animated)
         tableView.reloadData()
     }
-    // TODO: update channel
+    
     override func viewWillDisappear(_ animated: Bool) {
         
         defer {
@@ -147,7 +147,8 @@ class ChannelViewController: UITableViewController, UpdatableName, UpdatableChan
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath)
     {
-        if editingStyle == UITableViewCell.EditingStyle.delete {
+        if editingStyle == UITableViewCell.EditingStyle.delete
+        {
             if indexPath.section == 1 {
                 channel?.people.remove(at: indexPath.row-1)
             } else {

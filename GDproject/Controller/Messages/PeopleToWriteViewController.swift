@@ -10,7 +10,8 @@ import UIKit
 
 class PeopleToWriteViewController: UITableViewController {
     
-    // TODO: - edit button when it's used for selection 
+    // TODO: - edit button when it's used for selection
+    var whatToDoWithSelection: (([Int: Model.UserPermission])->())?
     
     let searchC = UISearchController(searchResultsController: nil)
     
@@ -23,7 +24,9 @@ class PeopleToWriteViewController: UITableViewController {
         
         tableView.isEditing = true
         self.navigationItem.title = "People"
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(newMessage))
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(newMessage))
+        
         self.navigationItem.largeTitleDisplayMode = .never
         self.navigationItem.searchController = searchC
         self.navigationItem.hidesSearchBarWhenScrolling = false
@@ -32,15 +35,12 @@ class PeopleToWriteViewController: UITableViewController {
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(true, animated: animated)
     }
-    // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return users.count
     }
 
@@ -62,15 +62,7 @@ class PeopleToWriteViewController: UITableViewController {
     {
         if chosenUsers.count != 0
         {
-            navigationController?.popViewController(animated: false)
-            var group = Model.Group(users: chosenUsers, name: "Untitled", id: 0)
-            
-            Model.createGroupChat(from: group) { [unowned self] (id) in
-                let vc = self.storyboard?.instantiateViewController(withIdentifier: dialogViewController) as! DialogViewController
-                group.id = id
-                vc.group = group
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
+            whatToDoWithSelection?(chosenUsers)
         }
     }
 }

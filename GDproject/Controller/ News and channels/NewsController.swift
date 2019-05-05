@@ -53,6 +53,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, UpdateableWi
         updater.delegate = self
         searchController = UISearchController(searchResultsController: updater)
         
+        navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = "Loading ..."
         tableView.refreshControl = refreshContr
         // Configure Refresh Control

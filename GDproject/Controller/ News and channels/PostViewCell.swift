@@ -8,7 +8,6 @@
 
 import UIKit
 import Cartography
-import MarkdownKit
 import TinyConstraints
 
 class PostViewCell: UITableViewCell
@@ -182,7 +181,9 @@ class PostViewCell: UITableViewCell
     }
     
     @objc func displayProfile(){
-        onUserDisplay?(post!.authorId)
+        if let id = post?.authorId {
+            onUserDisplay?(id)
+        }
     }
     
     @objc func setAnonymousChannel(on button: UIButton){

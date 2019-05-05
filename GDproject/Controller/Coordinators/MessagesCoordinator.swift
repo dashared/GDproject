@@ -32,14 +32,23 @@ class MessagesCoordinator: BaseCoordinator {
         vc.onUserDisplayList = { [weak vc, unowned self] in
             
             let newVC = self.storyboard.instantiateViewController(withIdentifier: peopleToWriteVC) as! PeopleToWriteViewController
+            
+//            newVC.whatToDoWithSelection = {
+//
+//            }
+            
             vc?.navigationController?.pushViewController(newVC, animated: true)
         }
         
-        vc.onDialogDisplay = { [weak vc, unowned self] _ in
+        vc.onDialogDisplay = { [weak vc, unowned self]  in
             let newVC = self.storyboard.instantiateViewController(withIdentifier: dialogVC) as! DialogViewController
-            //newVC.currentDialog = $0
+            newVC.dialog = $0.dialog
+            newVC.users = $0.users
             vc?.navigationController?.pushViewController(newVC, animated: true)
         }
+        
+        
+        
         navigationController?.viewControllers = [vc]
     }
 }

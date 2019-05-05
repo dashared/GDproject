@@ -8,87 +8,233 @@
 
 import UIKit
 
-
 /// Class for displaying chat info
 /// 
 class ChatInfoViewController: UITableViewController {
+    
+    enum PersonStatus{
+        case admin
+        case ordinary
+    }
+    
+    weak var delegate: UpdatableGroup?
+    
+    var groupChat: Model.Group? {
+        didSet{
+            if let groupChat = groupChat {
+                usersArray = groupChat.users.map { $0.key }
+            }
+        }
+    }
+    
+    var usersArray: [Int] = [] {
+        didSet {
+            tableView.reloadData()
+        }
+    }
+    
+    var users: [Int: Model.Users] = [:]
+    
+    func canIEditThisChat() -> PersonStatus
+    {
+        let myId = UserDefaults.standard.integer(forKey: UserDefaultsKeys.id.rawValue)
+        
+        if let groupChatUserPermission = groupChat?.users[myId]?.isAdmin {
+           return groupChatUserPermission ?  .admin :  .ordinary
+        }
+        
+        return .ordinary
+    }
+    
+    var myPermissions: PersonStatus = .ordinary
+    
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        myPermissions = canIEditThisChat()
+        tableView.reloadData()
+        
+        switch myPermissions {
+        case .admin:
+            navigationItem.rightBarButtonItem = self.editButtonItem
+        default:
+            return
+        }
     }
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 3
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+        switch section {
+        case 0:
+            return 1
+        case 1:
+            return 1
+        default:
+            return usersArray.count + (myPermissions == .ordinary ? 0 : 1)
+        }
     }
 
-    /*
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
 
-        // Configure the cell...
+        if indexPath.row == 0 {
+            switch indexPath.section {
+            case 0:
+                cell.textLabel?.text = groupChat!.name
+                return cell
+            case 1:
+                cell.textLabel?.text = "Leave chat"
+                cell.textLabel?.textColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+                return cell
+            default:
+                switch myPermissions{
+                case .admin:
+                    cell.textLabel?.text = "Add participants"
+                    cell.accessoryType = .disclosureIndicator
+                case .ordinary:
+                    cell.textLabel?.text = name(for: users[usersArray[indexPath.row]])
+                }
+                return cell
+            }
+        }
+        
+        switch myPermissions{
+        case .admin:
+            cell.textLabel?.text = name(for: users[usersArray[indexPath.row-1]])
+        case .ordinary:
+            cell.textLabel?.text = name(for: users[usersArray[indexPath.row]])
+        }
 
         return cell
     }
-    */
+    
+    private func name(for user: Model.Users?) -> String {
+        return "👤 \(user!.fullName())"
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String?
+    {
+        switch section {
+        case 0:
+            return "Title"
+        case 1:
+            return "Opportunities"
+        default:
+            return "Participants"
+        }
+    }
+ 
 
-    /*
-    // Override to support conditional editing of the table view.
+    func editName(for cell: UITableViewCell){
+        let alert = UIAlertController(title: "Вы уверены?", message: "Название:", preferredStyle: .alert)
+        
+        let action1 = UIAlertAction(title: "Oтмена", style: .cancel, handler: nil)
+        
+        alert.addTextField { [weak self] (tf) in
+            tf.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+            tf.text = self?.groupChat?.name
+        }
+        
+        let action2 = UIAlertAction(title: "OK", style: .default) { [unowned self] _ in
+            let name = alert.textFields?.first?.text
+            cell.textLabel?.text = name
+            self.groupChat?.name = name!
+            Model.updateGroupChat(with: self.groupChat!)
+            self.delegate?.updateGroup(with: self.groupChat!)
+        }
+        
+        alert.addAction(action1)
+        alert.addAction(action2)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        guard let groupChat = groupChat else {
+            return
+        }
+        
+        guard let cell = tableView.cellForRow(at: indexPath) else {
+            return
+        }
+        
+        if indexPath.row == 0 {
+            switch indexPath.section{
+            case 0:
+                switch myPermissions{
+                case .admin:
+                    editName(for: cell)
+                default:
+                    break
+                }
+            case 1:
+                Model.leaveGroupChat(id: groupChat.id) {
+                    [weak self] in
+                    self?.navigationController?.popViewController(animated: true)
+                }
+            default:
+                showUserChoiceVC()
+            }
+        }
+    }
+    
+    func showUserChoiceVC()
+    {
+        let vc = storyboard?.instantiateViewController(withIdentifier: peopleToWriteVC) as! PeopleToWriteViewController
+        
+        vc.whatToDoWithSelection = { [weak self, weak vc] mapa in
+            
+            mapa.forEach { self?.users[$0.key] = Model.Channels.fullPeopleDict[$0.key] }
+            mapa.forEach { self?.groupChat?.users[$0.key] = $0.value }
+            vc?.navigationController?.popViewController(animated: true)
+        }
+        
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath)
+    {
+        if editingStyle == UITableViewCell.EditingStyle.delete {
+            groupChat?.users[usersArray[indexPath.row-1]] = nil
+        }
+        
+        tableView.reloadData()
+    }
+    
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
+        if indexPath.row == 0 {
+            return false
+        }
+        
         return true
     }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+    
+    /// update chatInfo
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        defer {
+            super.viewWillDisappear(animated)
+        }
+        
+        guard let _ = self.navigationController?.viewControllers.lastIndex(of: self) else {
+            switch myPermissions {
+            case .ordinary:
+                return
+            case .admin:
+                Model.updateGroupChat(with: groupChat!)
+                delegate?.updateGroup(with: groupChat!)
+            }
+            return
+        }
     }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

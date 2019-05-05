@@ -19,6 +19,7 @@
 		1261BB93227B364C003898CF /* ChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1261BB92227B364C003898CF /* ChannelViewController.swift */; };
 		1261BB95227B3991003898CF /* AddToChannelVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1261BB94227B3991003898CF /* AddToChannelVC.swift */; };
 		1261BB9E227B793D003898CF /* ChatInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1261BB9D227B793D003898CF /* ChatInfoViewController.swift */; };
+		12758257227F1401001F291F /* DialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12758256227F1401001F291F /* DialogViewController.swift */; };
 		1288B5CE221F1158002BE6B1 /* DataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1288B5CD221F1158002BE6B1 /* DataStorage.swift */; };
 		1291BE2D2221312D009D3F23 /* ChannelsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE2C2221312C009D3F23 /* ChannelsCoordinator.swift */; };
 		1291BE342221569B009D3F23 /* TabbarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE332221569B009D3F23 /* TabbarCoordinator.swift */; };
@@ -26,8 +27,8 @@
 		129320042279B4270035C7B3 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129320032279B4270035C7B3 /* MessagesViewController.swift */; };
 		129320072279B5690035C7B3 /* MessagesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129320062279B5690035C7B3 /* MessagesCoordinator.swift */; };
 		129320092279C3B50035C7B3 /* PeopleToWriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129320082279C3B50035C7B3 /* PeopleToWriteViewController.swift */; };
-		1293200B2279D02D0035C7B3 /* DialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1293200A2279D02D0035C7B3 /* DialogViewController.swift */; };
 		1293200D2279D7310035C7B3 /* CompletionTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1293200C2279D7310035C7B3 /* CompletionTree.swift */; };
+		1298810B227F13840032ACA3 /* DialogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1298810A227F13840032ACA3 /* DialogCell.swift */; };
 		12BA4B9B224101A400DF93D7 /* ApplicationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12BA4B9A224101A400DF93D7 /* ApplicationCoordinator.swift */; };
 		12BA4B9D224101E700DF93D7 /* BaseCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12BA4B9C224101E700DF93D7 /* BaseCoordinator.swift */; };
 		12BA4B9F224102B700DF93D7 /* LogInCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12BA4B9E224102B700DF93D7 /* LogInCoordinator.swift */; };
@@ -113,6 +114,7 @@
 		1261BB92227B364C003898CF /* ChannelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelViewController.swift; sourceTree = "<group>"; };
 		1261BB94227B3991003898CF /* AddToChannelVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToChannelVC.swift; sourceTree = "<group>"; };
 		1261BB9D227B793D003898CF /* ChatInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInfoViewController.swift; sourceTree = "<group>"; };
+		12758256227F1401001F291F /* DialogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogViewController.swift; sourceTree = "<group>"; };
 		1288B5CD221F1158002BE6B1 /* DataStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStorage.swift; sourceTree = "<group>"; };
 		1291BE2C2221312C009D3F23 /* ChannelsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsCoordinator.swift; sourceTree = "<group>"; };
 		1291BE332221569B009D3F23 /* TabbarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbarCoordinator.swift; sourceTree = "<group>"; };
@@ -120,8 +122,8 @@
 		129320032279B4270035C7B3 /* MessagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
 		129320062279B5690035C7B3 /* MessagesCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesCoordinator.swift; sourceTree = "<group>"; };
 		129320082279C3B50035C7B3 /* PeopleToWriteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PeopleToWriteViewController.swift; path = GDproject/Controller/Messages/PeopleToWriteViewController.swift; sourceTree = SOURCE_ROOT; };
-		1293200A2279D02D0035C7B3 /* DialogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DialogViewController.swift; path = GDproject/Controller/Messages/DialogViewController.swift; sourceTree = SOURCE_ROOT; };
 		1293200C2279D7310035C7B3 /* CompletionTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionTree.swift; sourceTree = "<group>"; };
+		1298810A227F13840032ACA3 /* DialogCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogCell.swift; sourceTree = "<group>"; };
 		12BA4B9A224101A400DF93D7 /* ApplicationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationCoordinator.swift; sourceTree = "<group>"; };
 		12BA4B9C224101E700DF93D7 /* BaseCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCoordinator.swift; sourceTree = "<group>"; };
 		12BA4B9E224102B700DF93D7 /* LogInCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInCoordinator.swift; sourceTree = "<group>"; };
@@ -225,10 +227,19 @@
 			children = (
 				1261BB9D227B793D003898CF /* ChatInfoViewController.swift */,
 				129320082279C3B50035C7B3 /* PeopleToWriteViewController.swift */,
-				1293200A2279D02D0035C7B3 /* DialogViewController.swift */,
+				1298810C227F138C0032ACA3 /* Dialog */,
 				129320032279B4270035C7B3 /* MessagesViewController.swift */,
 			);
 			path = Messages;
+			sourceTree = "<group>";
+		};
+		1298810C227F138C0032ACA3 /* Dialog */ = {
+			isa = PBXGroup;
+			children = (
+				12758256227F1401001F291F /* DialogViewController.swift */,
+				1298810A227F13840032ACA3 /* DialogCell.swift */,
+			);
+			path = Dialog;
 			sourceTree = "<group>";
 		};
 		12E36D8F221424EA006FCDD7 = {
@@ -425,10 +436,10 @@
 				12DB7FDF221877160096878E /* InviteViewController.swift in Sources */,
 				121A8972226B1EAC005EE599 /* TagsSuggestionController.swift in Sources */,
 				1293200D2279D7310035C7B3 /* CompletionTree.swift in Sources */,
-				1293200B2279D02D0035C7B3 /* DialogViewController.swift in Sources */,
 				12E36DCA22144635006FCDD7 /* NewPostViewController.swift in Sources */,
 				1261BB9E227B793D003898CF /* ChatInfoViewController.swift in Sources */,
 				12E36D9E221424EA006FCDD7 /* NewsController.swift in Sources */,
+				1298810B227F13840032ACA3 /* DialogCell.swift in Sources */,
 				12E36DCC22144725006FCDD7 /* PostViewCell.swift in Sources */,
 				123E37A5221F1B3200F6E42A /* LogInViewController.swift in Sources */,
 				125BD57F22171D73008A3575 /* Extentions.swift in Sources */,
@@ -439,6 +450,7 @@
 				1291BE2D2221312D009D3F23 /* ChannelsCoordinator.swift in Sources */,
 				12E36DD122148122006FCDD7 /* FullPostController.swift in Sources */,
 				129320042279B4270035C7B3 /* MessagesViewController.swift in Sources */,
+				12758257227F1401001F291F /* DialogViewController.swift in Sources */,
 				1288B5CE221F1158002BE6B1 /* DataStorage.swift in Sources */,
 				12BA4B9F224102B700DF93D7 /* LogInCoordinator.swift in Sources */,
 				12F3D6B22241097B00A69214 /* ProfileCoordinator.swift in Sources */,
