@@ -40,14 +40,12 @@ class MessagesCoordinator: BaseCoordinator {
             vc?.navigationController?.pushViewController(newVC, animated: true)
         }
         
-        vc.onDialogDisplay = { [weak vc, unowned self]  in
-            let newVC = self.storyboard.instantiateViewController(withIdentifier: dialogVC) as! DialogViewController
+        vc.onDialogDisplay = { [weak vc]  in
+            let newVC = DialogViewController()
             newVC.dialog = $0.dialog
             newVC.users = $0.users
             vc?.navigationController?.pushViewController(newVC, animated: true)
         }
-        
-        
         
         navigationController?.viewControllers = [vc]
     }

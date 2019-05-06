@@ -90,7 +90,7 @@ class ProfileViewController: UIViewController
         tableView.register(PostViewCell.self, forCellReuseIdentifier: postCellId)
         
         tableView.register(BasicInfoCell.self, forCellReuseIdentifier: basicInfoCellId)
-        
+    
         tableView.register(InfoCell.self, forCellReuseIdentifier: infoCellId)
         
         posts.viewController = self

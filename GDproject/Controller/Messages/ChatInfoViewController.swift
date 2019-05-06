@@ -119,7 +119,14 @@ class ChatInfoViewController: UITableViewController {
     }
     
     private func name(for user: Model.Users?) -> String {
-        return "👤 \(user!.fullName())"
+        if let user = user, let perm = groupChat?.users[user.id]?.isAdmin {
+            if perm {
+                return "🤴🏻 \(user.fullName())"
+            }
+            return "👤 \(user.fullName())"
+        }
+        
+        return "left"
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String?
@@ -217,6 +224,41 @@ class ChatInfoViewController: UITableViewController {
         }
         
         return true
+    }
+    
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]?
+    {
+        let editButton = UITableViewRowAction(style: .normal, title: "Promote") { [unowned self] (rowAction, indexPath) in
+            
+            self.tableView.beginUpdates()
+            self.groupChat?.users[self.usersArray[indexPath.row-1]]?.isAdmin = true
+            self.tableView.reloadRows(at: [indexPath], with: .none)
+            self.tableView.endUpdates()
+        }
+        
+        editButton.backgroundColor = #colorLiteral(red: 0.476841867, green: 0.5048075914, blue: 1, alpha: 1)
+        
+        let restrictButton = UITableViewRowAction(style: .normal, title: "Restrict") { [unowned self] (rowAction, indexPath) in
+            
+            self.tableView.beginUpdates()
+            self.groupChat?.users[self.usersArray[indexPath.row-1]]?.isAdmin = false
+            self.tableView.reloadRows(at: [indexPath], with: .none)
+            self.tableView.endUpdates()
+        }
+        
+        restrictButton.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        
+        let deleteButton = UITableViewRowAction(style: .normal, title: "Delete") { [unowned self] (action, indexPath) in
+            
+            self.tableView.beginUpdates()
+            self.groupChat?.users[self.usersArray[indexPath.row-1]] = nil
+            self.tableView.deleteRows(at: [indexPath], with: .none)
+            self.tableView.endUpdates()
+        }
+        
+        deleteButton.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+        
+        return [editButton, restrictButton, deleteButton]
     }
     
     /// update chatInfo

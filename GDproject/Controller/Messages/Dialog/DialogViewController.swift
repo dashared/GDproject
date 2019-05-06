@@ -7,12 +7,16 @@
 //
 
 import UIKit
+import TinyConstraints
 
 protocol UpdatableGroup:class  {
     func updateGroup(with group: Model.Group)
 }
 
-class DialogViewController: UITableViewController, UpdatableGroup {
+class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegate, UITableViewDataSource
+{
+    
+    var tableView: UITableView = UITableView()
     
     func updateGroup(with group: Model.Group){
         self.groupChat?.group = group
@@ -49,6 +53,12 @@ class DialogViewController: UITableViewController, UpdatableGroup {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setConstraints()
+        magicForKeyboardChanges()
+        
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
 
         tabBarController?.tabBar.isHidden = true
         navigationItem.largeTitleDisplayMode = .never
@@ -65,6 +75,97 @@ class DialogViewController: UITableViewController, UpdatableGroup {
         }
     }
     
+    var messageSendView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .red
+        return view
+    }()
+    
+    var messageTextView: UITextView = {
+        let textView = UITextView()
+        textView.isEditable = true
+        textView.isScrollEnabled = true
+        textView.backgroundColor = .green
+        return textView
+    }()
+    
+    var sendButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Send", for: .normal)
+        button.setTitleColor(.blue, for: .normal)
+        button.addTarget(self, action: #selector(sendMessage), for: .touchUpInside)
+        return button
+    }()
+    
+    @objc func sendMessage()
+    {
+        var destination: Model.MessageDestination?
+        
+        if let group = groupChat{
+            destination = Model.MessageDestination.groupChatDestination(group.group.id)
+        } else if let user = userChat {
+            destination = Model.MessageDestination.userChatDestination(user.user)
+        }
+        
+        if let destination = destination
+        {
+            Model.sendMessage(message: Model.SendMessage(body: Model.Attachments(markdown: messageTextView.text), destination: destination)) { [unowned self] in
+                self.getMessages(for: self.dialog!)
+            }
+        }
+    }
+    
+    var bottomConstraint: NSLayoutConstraint!
+    
+    func setConstraints(){
+        self.view.addSubview(tableView)
+        self.view.addSubview(messageSendView)
+        
+        messageSendView.addSubview(messageTextView)
+        messageSendView.addSubview(sendButton)
+        
+        messageSendView.edgesToSuperview(excluding: [.top,.bottom])
+        
+        bottomConstraint = NSLayoutConstraint(item: messageSendView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
+        view.addConstraint(bottomConstraint)
+        
+        messageSendView.height(40)
+        
+        sendButton.edgesToSuperview(excluding: .left)
+        sendButton.width(60)
+        
+        messageTextView.edgesToSuperview(excluding: .right)
+        messageTextView.rightToLeft(of: sendButton)
+        
+        tableView.edgesToSuperview(excluding: .bottom)
+        tableView.bottomToTop(of: messageSendView)
+        
+        self.view.layoutSubviews()
+    }
+    
+    func magicForKeyboardChanges()
+    {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotifications), name: UIResponder.keyboardWillShowNotification, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotifications), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc func handleKeyboardNotifications(notification: NSNotification){
+        if let userInfo = notification.userInfo{
+            // UIKeyboardFrameEndUserInfoKey
+            
+            let keyBoardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+            
+            bottomConstraint.constant = notification.name == UIResponder.keyboardWillShowNotification ? -(keyBoardFrame.height) : 0
+            
+            UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
+                self.view.layoutIfNeeded()
+            }) { (completed) in
+                
+            }
+        }
+    }
+    
     func setTitleForChat(userChat: Model.UserChat){
         navigationItem.title = "🌌 \(users![userChat.user]!.fullName())"
     }
@@ -75,7 +176,7 @@ class DialogViewController: UITableViewController, UpdatableGroup {
     }
     
     @objc func moveToInfoVC(){
-        let vc = storyboard?.instantiateViewController(withIdentifier: chatInfoViewController) as! ChatInfoViewController
+        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: chatInfoViewController) as! ChatInfoViewController
         
         vc.delegate = self
         vc.users = users!
@@ -97,11 +198,11 @@ class DialogViewController: UITableViewController, UpdatableGroup {
 
     // MARK: - Table view data source
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cellData.count
     }
 
@@ -128,7 +229,7 @@ class DialogViewController: UITableViewController, UpdatableGroup {
         }
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! DialogCell
         
@@ -143,3 +244,6 @@ class DialogViewController: UITableViewController, UpdatableGroup {
         return cell
     }
 }
+
+
+

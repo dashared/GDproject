@@ -642,7 +642,7 @@ class Model{
         var author: Int
         var id: Int
         
-        private enum MessageCodingKeys: CodingKey{
+        enum MessageCodingKeys: CodingKey{
             case user
             case group
             case body
@@ -792,5 +792,56 @@ class Model{
         }
         
         // completion()
+    }
+    
+    struct SendMessage: Codable {
+        var body: Attachments
+        var destination: MessageDestination
+        
+        init(from decoder: Decoder) throws
+        {
+            let container = try decoder.container(keyedBy: LastMessage.MessageCodingKeys.self)
+            body = try container.decode(Attachments.self, forKey: .body)
+            
+            if container.contains(.user){
+                destination = MessageDestination.userChatDestination(try Int(from: container.superDecoder(forKey: .user)))
+            } else if container.contains(.group){
+                destination = MessageDestination.groupChatDestination(try Int(from: container.superDecoder(forKey: .group)))
+            } else {
+                throw DecodingError.keyNotFound(LastMessage.MessageCodingKeys.group, DecodingError.Context(codingPath: container.codingPath, debugDescription: "hz gr1"))
+            }
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: LastMessage.MessageCodingKeys.self)
+            try container.encode(body, forKey: .body)
+            
+            switch destination {
+            case .userChatDestination(let uId):
+                try uId.encode(to: container.superEncoder(forKey: .user))
+            case .groupChatDestination(let gId):
+                try gId.encode(to: container.superEncoder(forKey: .group))
+            }
+        }
+        
+        init(body: Attachments, destination: MessageDestination)
+        {
+            self.body = body
+            self.destination = destination
+        }
+    }
+    
+    static func sendMessage(message: SendMessage, completion: @escaping (()->())){
+
+        var request = URLRequest(url: messagesSendURL)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        request.httpBody = try? JSONEncoder().encode(message)
+        
+        AF.request(request).response { (response) in
+            isValidTocken?(response.response?.statusCode ?? 498)
+            
+            completion()
+        }
     }
 }

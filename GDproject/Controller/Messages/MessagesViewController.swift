@@ -67,11 +67,12 @@ class MessagesViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MessagesCell", for: indexPath)
         
         switch currentActiveDialogs[indexPath.row].self {
+            
         case .groupChat(let group):
             cell.textLabel?.text = group.group.name
             cell.detailTextLabel?.text = group.lastMessage.body.markdown
         case .userChat(let userChat):
-            cell.textLabel?.text = "\(users[userChat.user]!)"
+            cell.textLabel?.text = "👤 \(users[userChat.user]!.fullName())"
             cell.detailTextLabel?.text = userChat.lastMessage.body.markdown
         }
 
