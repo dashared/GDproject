@@ -611,7 +611,13 @@ class Model{
     
     struct GroupChat: Codable {
         var group: Group
-        var lastMessage: LastMessage
+        var lastMessage: LastMessage?
+        
+        
+        init(group: Group, lastMessage: LastMessage? = nil) {
+            self.group = group
+            self.lastMessage = lastMessage
+        }
     }
     
     struct UserChat: Codable {

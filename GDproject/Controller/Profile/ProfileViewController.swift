@@ -38,7 +38,8 @@ class ProfileViewController: UIViewController
     
     var protoDictionary: [Int: UIImage] = [9: #imageLiteral(resourceName: "9"), 5051: #imageLiteral(resourceName: "5051"), 69: #imageLiteral(resourceName: "69"), 42: #imageLiteral(resourceName: "42")]
     
-    func fill(with user: Model.Users){
+    func fill(with user: Model.Users)
+    {
         self.facultyLabel.text = "Студент: Факультет Компьютерных Наук"
         self.nameLabel.text = "\(user.firstName) \(user.middleName)"
         self.surnameLabel.text = "\(user.lastName)"
@@ -54,36 +55,38 @@ class ProfileViewController: UIViewController
     var user: Model.Users? {
         didSet {
             self.fill(with: user!)
-            Model.getPostsForUser(with: user!.id) { [weak self] (posts) in
-                self?.dataSourse = posts
-            }
             navigationItem.title = "\(user!.firstName) \(user!.lastName)"
+        }
+    }
+    
+    var channel: Model.Channels? {
+        didSet {
+            self.update()
+        }
+    }
+    
+    func update()
+    {
+        Model.getAnonymousChannel(by: channel!) { [unowned self] in
+            self.posts.dataSourse = $0.posts
+            self.posts.dictionary = $0.users
+            self.user = $0.users[self.idProfile!]
         }
     }
     
     var basicInfo = BasicInfoController()
     var posts = NewsVC()
     
-    var dataSourse: [Model.Posts]?{
-        didSet{
-            
-            var newPosts: [Model.Posts] = []
-            
-            dataSourse?.forEach({ (post) in
-                newPosts.append(Model.Posts(body: post.body, authorId: post.authorId, id: post.id, user: user!, date: post.updated, tags: post.tags))
-            })
-            
-            self.posts.dataSourse = newPosts
-            tableView.reloadData()
-        }
-    }
-    
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        print("hell")
+        if idProfile == nil {
+            idProfile = DataStorage.standard.getUserId()
+        }
+
         posts.viewController = self
         posts.type = .NONE
+        posts.currChannel = channel
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
@@ -100,23 +103,20 @@ class ProfileViewController: UIViewController
         tableView.reloadData()
     }
     
-    var idProfile: Int?
+    var idProfile: Int? {
+        didSet {
+            channel = Model.Channels(people: [idProfile!], name: "", id: 0, tags: [])
+        }
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         
         if idProfile == nil {
             idProfile = DataStorage.standard.getUserId()
         }
+        user = Model.Channels.fullPeopleDict[idProfile!]
         
-        if let id = idProfile {
-            if let user = Model.idUser[id] {
-                self.user = user
-            } else {
-                Model.getUsers(for: [id]) { [weak self] (dic) in
-                    self?.user = dic[id]
-                }
-            }
-        }
+        update()
         
         setUpNavigarionBar()
     }

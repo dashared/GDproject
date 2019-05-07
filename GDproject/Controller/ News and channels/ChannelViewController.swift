@@ -72,7 +72,8 @@ class ChannelViewController: UITableViewController, UpdatableName, UpdatableChan
         // nou
     }
     
-    @objc func showPreview(){
+    @objc func showPreview()
+    {
         if let channel = channel {
             onShowingPreview?(channel)
         }

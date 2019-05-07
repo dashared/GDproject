@@ -33,9 +33,19 @@ class MessagesCoordinator: BaseCoordinator {
             
             let newVC = self.storyboard.instantiateViewController(withIdentifier: peopleToWriteVC) as! PeopleToWriteViewController
             
-//            newVC.whatToDoWithSelection = {
-//
-//            }
+            newVC.whatToDoWithSelection = { [weak newVC, weak self] in
+                newVC?.navigationController?.popViewController(animated: true)
+                
+                var group = Model.Group(users: $0, name: "Untitled", id: 0)
+                Model.createGroupChat(from: group, completion:
+                    { [weak self] id in
+                        
+                    let newVC1 = DialogViewController()
+                    group.id = id
+                    newVC1.dialog = Model.Dialog.groupChat(Model.GroupChat(group: group))
+                    self?.navigationController?.pushViewController(newVC1, animated: true)
+                })
+            }
             
             vc?.navigationController?.pushViewController(newVC, animated: true)
         }

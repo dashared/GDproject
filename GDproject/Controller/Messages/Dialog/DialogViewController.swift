@@ -8,6 +8,7 @@
 
 import UIKit
 import TinyConstraints
+import Marklight
 
 protocol UpdatableGroup:class  {
     func updateGroup(with group: Model.Group)
@@ -46,7 +47,6 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
     
     var cellData: [PostCellData] = [] {
         didSet {
-            print(cellData)
             tableView.reloadData()
         }
     }
@@ -63,10 +63,12 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         tabBarController?.tabBar.isHidden = true
         navigationItem.largeTitleDisplayMode = .never
         
+        tableView.keyboardDismissMode = .onDrag
+        tableView.separatorStyle = .none
         tableView.register(DialogCell.self, forCellReuseIdentifier: cellId)
         tableView.transform = CGAffineTransform(scaleX: 1, y: -1)
         tableView.contentInsetAdjustmentBehavior = .never
-        tableView.contentOffset = CGPoint(x: 0, y: -30)
+        tableView.contentOffset = CGPoint(x: 0, y: 30)
         
         if let groupChat = groupChat {
             setTitleForGroup(groupChat: groupChat)
@@ -77,15 +79,33 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
     
     var messageSendView: UIView = {
         let view = UIView()
-        view.backgroundColor = .red
+        view.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         return view
     }()
     
-    var messageTextView: UITextView = {
-        let textView = UITextView()
+    var messageTextView: UITextView =
+    {
+        let textStorage = MarklightTextStorage()
+        textStorage.marklightTextProcessor.codeColor = UIColor.orange
+        textStorage.marklightTextProcessor.quoteColor = UIColor.darkGray
+        textStorage.marklightTextProcessor.syntaxColor = UIColor.blue
+        textStorage.marklightTextProcessor.codeFontName = "Courier"
+        textStorage.marklightTextProcessor.fontTextStyle = UIFont.TextStyle.subheadline.rawValue
+        textStorage.marklightTextProcessor.hideSyntax = false
+        
+        let layoutManager = NSLayoutManager()
+        
+        // Assign the `UITextView`'s `NSLayoutManager` to the `NSTextStorage` subclass
+        //textStorage.addLayoutManager(textView.layoutManager)
+        textStorage.addLayoutManager(layoutManager)
+        
+        let textContainer = NSTextContainer()
+        layoutManager.addTextContainer(textContainer)
+        
+        let textView = UITextView(frame: CGRect.zero, textContainer: textContainer)
         textView.isEditable = true
         textView.isScrollEnabled = true
-        textView.backgroundColor = .green
+        textView.backgroundColor = .white
         return textView
     }()
     
@@ -101,7 +121,7 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
     {
         var destination: Model.MessageDestination?
         
-        if let group = groupChat{
+        if let group = groupChat {
             destination = Model.MessageDestination.groupChatDestination(group.group.id)
         } else if let user = userChat {
             destination = Model.MessageDestination.userChatDestination(user.user)
@@ -111,9 +131,16 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         {
             Model.sendMessage(message: Model.SendMessage(body: Model.Attachments(markdown: messageTextView.text), destination: destination)) { [unowned self] in
                 self.getMessages(for: self.dialog!)
+                self.messageTextView.text = ""
             }
         }
     }
+    
+    var lineView: UIView = {
+        let view = UIView()
+        view.backgroundColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+        return view
+    }()
     
     var bottomConstraint: NSLayoutConstraint!
     
@@ -123,16 +150,20 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         
         messageSendView.addSubview(messageTextView)
         messageSendView.addSubview(sendButton)
+        messageSendView.addSubview(lineView)
         
         messageSendView.edgesToSuperview(excluding: [.top,.bottom])
         
         bottomConstraint = NSLayoutConstraint(item: messageSendView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
         view.addConstraint(bottomConstraint)
         
-        messageSendView.height(40)
+        messageSendView.height(60)
         
         sendButton.edgesToSuperview(excluding: .left)
         sendButton.width(60)
+        
+        lineView.edgesToSuperview(excluding: .bottom)
+        lineView.height(0.5)
         
         messageTextView.edgesToSuperview(excluding: .right)
         messageTextView.rightToLeft(of: sendButton)
@@ -167,11 +198,11 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
     }
     
     func setTitleForChat(userChat: Model.UserChat){
-        navigationItem.title = "🌌 \(users![userChat.user]!.fullName())"
+        navigationItem.title = "👤 \(users![userChat.user]!.fullName())"
     }
     
     func setTitleForGroup(groupChat: Model.GroupChat){
-        navigationItem.title = "🌌 \(groupChat.group.id) \(groupChat.group.name)"
+        navigationItem.title = "\(groupChat.group.name)"
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Info", style: .plain, target: self, action: #selector(moveToInfoVC))
     }
     
@@ -215,6 +246,7 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
     }
     
     func getMessages(for dialog: Model.Dialog){
+        print("Here")
         switch dialog {
         case .groupChat(let groupChat):
             Model.getMessagesFor(typeOfChat: Model.Dialog.groupChat(groupChat), chat: groupChat.group.id)
@@ -235,10 +267,12 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         
         //In cellForRowAtIndexPath
         cell.transform = CGAffineTransform(scaleX: 1, y: -1)
+        cell.selectionStyle = .none
+    
         
         if let author = currentMessagesInChat?[indexPath.row].author, let user = users?[author]
         {
-            cell.fill(with: cellData[indexPath.row].attributedData, byUser: user)
+            cell.fill(with: cellData[indexPath.row].attributedData, byUser: user, when: (currentMessagesInChat?[indexPath.row].time)!)
         }
         
         return cell

@@ -60,3 +60,20 @@ extension UIStoryboard {
         return UIStoryboard.userEdit.instantiateViewController(withIdentifier: logInController) as! LogInViewController
     }
 }
+
+
+extension String {
+    func getDate() -> String
+    {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"//this your string date format
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        let date = dateFormatter.date(from: self)
+        
+        dateFormatter.dateFormat = "MMM d, yyyy HH:mm" ///this is what you want to convert format
+        dateFormatter.timeZone = NSTimeZone.local
+        let timeStamp = dateFormatter.string(from: date!)
+        
+        return timeStamp
+    }
+}

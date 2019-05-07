@@ -42,6 +42,7 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
             }
             
             (viewController as? NewsController)?.tableView.reloadData()
+            (viewController as? ProfileViewController)?.tableView.reloadData()
         }
     }
     
