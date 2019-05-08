@@ -102,6 +102,7 @@ class FullPostController: UITableViewController {
             cell.onUserDisplay = { [weak self] (id) in
                 let vc = self?.storyboard!.instantiateViewController(withIdentifier: profileViewController) as! ProfileViewController
                 vc.idProfile = id
+                
                 self?.navigationController?.pushViewController(vc, animated: true)
             }
         default:

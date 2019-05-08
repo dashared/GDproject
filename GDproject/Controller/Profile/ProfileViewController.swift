@@ -34,6 +34,18 @@ class ProfileViewController: UIViewController
     
     var onSettings: (()->())?
     
+    @IBAction func sendMessage(_ sender: UIButton)
+    {
+        if let userId = idProfile
+        {
+            let createdDialog = Model.Dialog.userChat(Model.UserChat(user: userId))
+            let vc = DialogViewController()
+            vc.users = Model.Channels.fullPeopleDict
+            vc.dialog = createdDialog
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+    
     var onChannelsListToAddAPerson: ((Model.Users)->())?
     
     var protoDictionary: [Int: UIImage] = [9: #imageLiteral(resourceName: "9"), 5051: #imageLiteral(resourceName: "5051"), 69: #imageLiteral(resourceName: "69"), 42: #imageLiteral(resourceName: "42")]
@@ -110,6 +122,7 @@ class ProfileViewController: UIViewController
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        tabBarController?.tabBar.isHidden = false
         
         if idProfile == nil {
             idProfile = DataStorage.standard.getUserId()

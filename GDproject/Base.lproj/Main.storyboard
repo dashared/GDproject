@@ -90,6 +90,9 @@
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yir-N6-Q6f">
                                                     <rect key="frame" x="246" y="0.0" width="97" height="30"/>
                                                     <state key="normal" title="New message"/>
+                                                    <connections>
+                                                        <action selector="sendMessage:" destination="R4D-Ao-uvG" eventType="touchUpInside" id="tQc-5f-SU3"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                         </stackView>

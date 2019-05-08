@@ -16,6 +16,7 @@ protocol UpdatableGroup:class  {
 
 class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegate, UITableViewDataSource
 {
+    var onUserDisplay: ((Int)->())?
     
     var tableView: UITableView = UITableView()
     
@@ -47,6 +48,7 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
     
     var cellData: [PostCellData] = [] {
         didSet {
+            prevLast = cellData.count - 1
             tableView.reloadData()
         }
     }
@@ -198,7 +200,14 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
     }
     
     func setTitleForChat(userChat: Model.UserChat){
-        navigationItem.title = "👤 \(users![userChat.user]!.fullName())"
+        navigationItem.title = "\(users![userChat.user]!.fullName())"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "👤", style: .plain, target: self, action: #selector(showPersonPage))
+    }
+    
+    @objc func showPersonPage(){
+        if let id = userChat?.user{
+            onUserDisplay?(id)
+        }
     }
     
     func setTitleForGroup(groupChat: Model.GroupChat){
@@ -206,6 +215,7 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Info", style: .plain, target: self, action: #selector(moveToInfoVC))
     }
     
+    // onInfoShow
     @objc func moveToInfoVC(){
         let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: chatInfoViewController) as! ChatInfoViewController
         
@@ -219,11 +229,10 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    var currentMessagesInChat: [Model.LastMessage]? {
-        didSet {
-            if let currentMessagesInChat = currentMessagesInChat {
-                cellData = currentMessagesInChat.map { PostCellData(attributedData: PostCellData.create(with: [$0.body])) }
-            }
+    var currentMessagesInChat: [Model.LastMessage] = [] {
+        didSet
+        {
+            cellData = currentMessagesInChat.map { PostCellData(attributedData: PostCellData.create(with: [$0.body])) }
         }
     }
 
@@ -245,18 +254,18 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         }
     }
     
-    func getMessages(for dialog: Model.Dialog){
-        print("Here")
+    func getMessages(for dialog: Model.Dialog, starting from: Int? = nil)
+    {
         switch dialog {
         case .groupChat(let groupChat):
-            Model.getMessagesFor(typeOfChat: Model.Dialog.groupChat(groupChat), chat: groupChat.group.id)
-            { [unowned self]  in
-                self.currentMessagesInChat = $0
+            Model.getMessagesFor(typeOfChat: Model.Dialog.groupChat(groupChat), chat: groupChat.group.id, exclusiveFrom: from)
+            { [weak self] in
+                self?.currentMessagesInChat =  $0
             }
         case .userChat(let userChat):
-            Model.getMessagesFor(typeOfChat: Model.Dialog.userChat(userChat), chat: userChat.user)
-            { [unowned self]  in
-                self.currentMessagesInChat = $0
+            Model.getMessagesFor(typeOfChat: Model.Dialog.userChat(userChat), chat: userChat.user, exclusiveFrom: from)
+            { [weak self] in
+                self?.currentMessagesInChat = $0
             }
         }
     }
@@ -270,12 +279,29 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         cell.selectionStyle = .none
     
         
-        if let author = currentMessagesInChat?[indexPath.row].author, let user = users?[author]
+        if let user = users?[currentMessagesInChat[indexPath.row].author]
         {
-            cell.fill(with: cellData[indexPath.row].attributedData, byUser: user, when: (currentMessagesInChat?[indexPath.row].time)!)
+            cell.fill(with: cellData[indexPath.row].attributedData, byUser: user, when: currentMessagesInChat[indexPath.row].time)
+            
+            cell.onUserDisplay = onUserDisplay
         }
         
         return cell
+    }
+    
+    var prevLast = -1
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
+    {
+        // pagination
+//        if indexPath.row == cellData.count - 1 && prevLast != indexPath.row
+//        {
+//            if let dialog = dialog
+//            {
+//                getMessages(for: dialog, starting: prevLast)
+//            }
+//
+//            prevLast = indexPath.row
+//        }
     }
 }
 

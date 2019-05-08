@@ -36,24 +36,46 @@ class MessagesCoordinator: BaseCoordinator {
             newVC.whatToDoWithSelection = { [weak newVC, weak self] in
                 newVC?.navigationController?.popViewController(animated: true)
                 
-                var group = Model.Group(users: $0, name: "Untitled", id: 0)
-                Model.createGroupChat(from: group, completion:
-                    { [weak self] id in
-                        
-                    let newVC1 = DialogViewController()
-                    group.id = id
-                    newVC1.dialog = Model.Dialog.groupChat(Model.GroupChat(group: group))
-                    self?.navigationController?.pushViewController(newVC1, animated: true)
-                })
+                // detect is it a user or group dialog
+                let count = $0.count
+                if count == 1 {
+                    
+                    let user = $0.first!.key
+                    let createdDialog = Model.Dialog.userChat(Model.UserChat(user: user))
+                    
+                    let vc = DialogViewController()
+                    vc.users = Model.Channels.fullPeopleDict
+                    vc.dialog = createdDialog
+                    self?.navigationController?.pushViewController(vc, animated: true)
+                    
+                } else {
+                    var group = Model.Group(users: $0, name: "Untitled", id: 0)
+                    Model.createGroupChat(from: group, completion: { [weak self] id in
+                            
+                            let newVC1 = DialogViewController()
+                            group.id = id
+                            newVC1.dialog = Model.Dialog.groupChat(Model.GroupChat(group: group))
+                            self?.navigationController?.pushViewController(newVC1, animated: true)
+                    })
+                }
             }
             
             vc?.navigationController?.pushViewController(newVC, animated: true)
         }
         
         vc.onDialogDisplay = { [weak vc]  in
+            
             let newVC = DialogViewController()
             newVC.dialog = $0.dialog
             newVC.users = $0.users
+            newVC.onUserDisplay = { [weak self] id in
+                
+                let vc = self?.storyboard.instantiateViewController(withIdentifier: profileViewController) as! ProfileViewController
+                vc.idProfile = id
+                self?.navigationController!.pushViewController(vc, animated: true)
+                
+            }
+            
             vc?.navigationController?.pushViewController(newVC, animated: true)
         }
         

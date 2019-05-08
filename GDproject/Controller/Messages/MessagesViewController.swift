@@ -73,7 +73,7 @@ class MessagesViewController: UITableViewController {
             cell.detailTextLabel?.text = group.lastMessage!.body.markdown
         case .userChat(let userChat):
             cell.textLabel?.text = "👤 \(users[userChat.user]!.fullName())"
-            cell.detailTextLabel?.text = userChat.lastMessage.body.markdown
+            cell.detailTextLabel?.text = userChat.lastMessage!.body.markdown
         }
 
         return cell

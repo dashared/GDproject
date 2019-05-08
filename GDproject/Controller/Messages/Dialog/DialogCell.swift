@@ -16,14 +16,14 @@ class DialogCell: UITableViewCell {
         let button = UIButton()
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        button.addTarget(self, action: #selector(displayProfile), for: .touchUpInside)
         button.contentHorizontalAlignment = UIControl.ContentHorizontalAlignment.left
         return button
     }()
     
     @objc func displayProfile()
     {
-        if let id = self.user?.id{
+        if let id = self.user?.id {
+            print("diplay")
             onUserDisplay?(id)
         }
     }
@@ -80,6 +80,8 @@ class DialogCell: UITableViewCell {
         // important
         contentView.subviews.forEach({ $0.removeFromSuperview() })
         
+        nameLabel.addTarget(self, action: #selector(displayProfile), for: .touchUpInside)
+        
         self.user = byUser
         textView = createTextView(with: markdownText, true)
         textView.layer.cornerRadius = 10
@@ -110,7 +112,7 @@ class DialogCell: UITableViewCell {
         
         textView.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         textView.textColor = .white
-        timeLabel.edgesToSuperview(excluding: .top, insets: .right(70) + .left(4))
+        timeLabel.edgesToSuperview(excluding: .top, insets: .right(70) + .left(8))
         timeLabel.topToBottom(of: textView, offset: 4)
         timeLabel.textAlignment = .left
     }
@@ -120,8 +122,9 @@ class DialogCell: UITableViewCell {
         textView.edgesToSuperview(excluding: .left, insets: .right(8) + .bottom(20) + .top(4))
         textView.backgroundColor = UIColor(red:0.08, green:0.49, blue:0.98, alpha:1.0)
         textView.textColor = .white
-        timeLabel.edgesToSuperview(excluding: .top, insets: .left(70) + .right(4))
+        timeLabel.edgesToSuperview(excluding: .top, insets: .left(70) + .right(8))
         timeLabel.topToBottom(of: textView, offset: 4)
+        timeLabel.textAlignment = .right
     }
 }
 

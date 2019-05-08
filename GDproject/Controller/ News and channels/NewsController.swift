@@ -121,11 +121,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, UpdateableWi
                 }
             }
         default:
-            if let anonChannel = anonymousChannel {
-                news.dataSourse = anonChannel.posts
-                news.dictionary = anonChannel.users
-                changedChannelName?("Anonymous")
-            }
+            break
         }
         
     }

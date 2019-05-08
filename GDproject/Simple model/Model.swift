@@ -622,7 +622,12 @@ class Model{
     
     struct UserChat: Codable {
         var user: Int
-        var lastMessage: LastMessage
+        var lastMessage: LastMessage?
+        
+        init(user: Int, lastMessage: LastMessage? = nil) {
+            self.user = user
+            self.lastMessage = lastMessage
+        }
     }
     
     struct Group: Codable {

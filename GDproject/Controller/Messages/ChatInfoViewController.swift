@@ -190,7 +190,12 @@ class ChatInfoViewController: UITableViewController {
                     self?.navigationController?.popViewController(animated: true)
                 }
             default:
-                showUserChoiceVC()
+                switch myPermissions{
+                case .admin:
+                    showUserChoiceVC()
+                default:
+                    break
+                }
             }
         }
     }
