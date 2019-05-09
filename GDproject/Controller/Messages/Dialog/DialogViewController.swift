@@ -48,8 +48,8 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
     
     var cellData: [PostCellData] = [] {
         didSet {
-            prevLast = cellData.count - 1
             tableView.reloadData()
+            canBePaginated = true
         }
     }
     
@@ -62,7 +62,6 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         self.tableView.delegate = self
         self.tableView.dataSource = self
 
-        tabBarController?.tabBar.isHidden = true
         navigationItem.largeTitleDisplayMode = .never
         
         tableView.keyboardDismissMode = .onDrag
@@ -132,9 +131,12 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         if let destination = destination
         {
             Model.sendMessage(message: Model.SendMessage(body: Model.Attachments(markdown: messageTextView.text), destination: destination)) { [unowned self] in
-                self.getMessages(for: self.dialog!)
+                
+                self.getMessagesNew(for: self.dialog!)
                 self.messageTextView.text = ""
             }
+            
+            prevLast = -1
         }
     }
     
@@ -248,6 +250,7 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = true
         
         if let dialog = dialog {
             getMessages(for: dialog)
@@ -255,6 +258,23 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
     }
     
     func getMessages(for dialog: Model.Dialog, starting from: Int? = nil)
+    {
+        switch dialog {
+        case .groupChat(let groupChat):
+            Model.getMessagesFor(typeOfChat: Model.Dialog.groupChat(groupChat), chat: groupChat.group.id, exclusiveFrom: from)
+            { [weak self] in
+                self?.currentMessagesInChat.append(contentsOf: $0)
+            }
+        case .userChat(let userChat):
+            Model.getMessagesFor(typeOfChat: Model.Dialog.userChat(userChat), chat: userChat.user, exclusiveFrom: from)
+            { [weak self] in
+                self?.currentMessagesInChat.append(contentsOf: $0)
+            }
+        }
+    }
+    
+    
+    func getMessagesNew(for dialog: Model.Dialog, starting from: Int? = nil)
     {
         switch dialog {
         case .groupChat(let groupChat):
@@ -290,18 +310,19 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
     }
     
     var prevLast = -1
+    var canBePaginated = false
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
     {
-        // pagination
-//        if indexPath.row == cellData.count - 1 && prevLast != indexPath.row
-//        {
-//            if let dialog = dialog
-//            {
-//                getMessages(for: dialog, starting: prevLast)
-//            }
-//
-//            prevLast = indexPath.row
-//        }
+        if indexPath.row == cellData.count - 1 && prevLast != indexPath.row && canBePaginated
+        {
+            print("exclusiveFrom \(currentMessagesInChat.last?.id ?? 0)")
+            if let dialog = dialog
+            {
+                getMessages(for: dialog, starting: currentMessagesInChat.last?.id)
+            }
+
+            prevLast = indexPath.row
+        }
     }
 }
 
