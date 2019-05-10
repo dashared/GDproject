@@ -10,6 +10,8 @@ import UIKit
 
 class LogInCoordinator: BaseCoordinator {
     
+    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+    
     var didEndFlow: (()->())?
     var window: UIWindow!
     var navigationController: UINavigationController?
@@ -22,20 +24,46 @@ class LogInCoordinator: BaseCoordinator {
     
     override func start(){
         let logInVC = LogInViewController()
-        logInVC.authenticate = { [weak self] (id) in
+        logInVC.authenticate = { [weak self, weak logInVC] (email) in
             
-            Model.authenticate(with: id) {
-                (res) in
+            Model.authenticate(with: email) { [weak self]
+                (authStatus) in
                 
-                if (res) {
-                    DataStorage.standard.setUserKey(with: id)
-                    self?.didEndFlow?()
+                print(authStatus.userStatus)
+                
+                if (authStatus.userStatus == "invalid") {
+                    logInVC?.mailTextField.text = "invalid"
                 }
-                else {
-                    DataStorage.standard.setUserKey(with: 0)
+                else if (authStatus.userStatus == "canRegister") { // register form
+                    self?.presentRegisterVC()
+                } else { // validation code
+                    self?.presentViewControllerForCodeInput()
                 }
             }
         }
+        
         navigationController?.pushViewController(logInVC, animated: false)
     }
+    
+    func presentViewControllerForCodeInput()
+    {
+        let vc = storyboard.instantiateViewController(withIdentifier: "CodeViewController") as! CodeViewController
+        self.navigationController?.pushViewController(vc, animated: true)
+        vc.onSuccessLogIn = {
+            [weak self] in self?.didEndFlow?()
+        }
+    }
+    
+    func presentRegisterVC(){
+        
+        let vc1 = storyboard.instantiateViewController(withIdentifier: "RegisterTableViewController") as! RegisterTableViewController
+        
+        vc1.onRegistration = { [weak self] in
+            self?.presentViewControllerForCodeInput()
+        }
+        
+        self.navigationController?.pushViewController(vc1, animated: true)
+    }
+    
+    
 }

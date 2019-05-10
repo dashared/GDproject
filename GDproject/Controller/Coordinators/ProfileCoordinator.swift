@@ -27,9 +27,13 @@ class ProfileCoordinator: BaseCoordinator {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let profile = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
         
-        profile.logOut = { [weak self] in
-            DataStorage.standard.setIsLoggedIn(value: false, with: 0)
-            self?.didEndSession?()
+        profile.logOut  = {
+            Model.logout() {
+                [weak self] in
+                
+                DataStorage.standard.setIsLoggedIn(value: false, with: 0)
+                self?.didEndSession?()
+            }
         }
         
         profile.onSettings = { [weak self, weak storyboard] in

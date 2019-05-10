@@ -14,20 +14,27 @@ class Model{
     
     static let invalidTocken = 498
     
-    static var hashTagTree: CompletionTree? 
+    static var hashTagTree: CompletionTree?
     
     private static var isValidTocken: ((Int)->())? = { responce in
         print(responce)
         if responce == invalidTocken {
-            DataStorage.standard.setIsLoggedIn(value: false, with: 0)
-            (UIApplication.shared.delegate as! AppDelegate).relaunch()
+            Model.logout {
+                print("Logout Is Successful")
+                DataStorage.standard.setIsLoggedIn(value: false, with: 0)
+                (UIApplication.shared.delegate as! AppDelegate).relaunch()
+            }
         }
     }
     
     private static let baseUrl = "https://valera-denis.herokuapp.com"
     static let decoder = JSONDecoder()
-    
+
+    static let authMeURL = URL(string: "\(baseUrl)/authentication/me")!
+    static let registerMeURL = URL(string: "\(baseUrl)/authentication/register")!
+    static let authVerifyURL = URL(string: "\(baseUrl)/authentication/verify")!
     static let authenticationURL = URL(string:"\(baseUrl)/authentication/login")!
+    static let logOutURL = URL(string:"\(baseUrl)/authentication/logout")!
     static let postsLastURL = URL(string:"\(baseUrl)/posts/last")!
     static let postsForUserURL = URL(string:"\(baseUrl)/posts/forUser")!
     static let postsPublishURL = URL(string:"\(baseUrl)/posts/publish")!
@@ -49,6 +56,7 @@ class Model{
     static let messagesGetGroupChatURL = URL(string: "\(baseUrl)/messages/get/groupChat")! //r
     static let messagesSendURL = URL(string: "\(baseUrl)/messages/send")!
     static let messagesGetUserChatURL = URL(string: "\(baseUrl)/messages/get/userChat")!
+    static let facultySearchURL = URL(string: "\(baseUrl)/faculty/search")!
     
     
     struct QueryPosts<T: Codable>: Codable {
@@ -183,9 +191,117 @@ class Model{
         }
     }
     
-    static func authenticate(with id: Int, completion: @escaping ((Bool)->())) {
+    struct AuthStatus: Codable {
+        var userStatus: String
         
-        let json: [String:Any] = ["authenticationId" : id]
+        init(){
+            userStatus = "invalid"
+        }
+    }
+    
+    static func logout(completion: @escaping (()->())){
+        var request = URLRequest(url: logOutURL)
+        request.httpMethod = "POST"
+        
+        AF.request(request).response { (responce) in
+            isValidTocken?(responce.response?.statusCode ?? 498)
+            
+            completion()
+        }
+    }
+    
+    /*
+     "email": "vchernyshev@hse.ru",
+     "middleName": "Algebrovich",
+     "lastName": "Leonidov",
+     "faculty": "cs.hse.ru/dse",
+     "firstName": "Seva"
+     */
+    
+    struct NewRegistration: Codable{
+        var email: String
+        var firstName: String?
+        var middleName: String?
+        var lastName: String?
+        var faculty: String?
+    }
+    
+    static func register(object: NewRegistration, completion: @escaping (()->())) {
+        var request = URLRequest(url: registerMeURL)
+        request.httpBody = try? JSONEncoder().encode(object)
+        
+        request.httpMethod = "POST"
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).response { (responce) in
+            
+            guard let code = responce.response?.statusCode else { return }
+            isValidTocken?(code)
+            
+            if code == 204 {
+                let fields = responce.response?.allHeaderFields as? [String :String]
+                
+                let cookies = HTTPCookie.cookies(withResponseHeaderFields: fields!, for: responce.response!.url!)
+                
+                HTTPCookieStorage.shared.setCookie(cookies[0])
+                
+                completion()
+            }
+        }
+    }
+    
+    // true only if everything is good
+    static func verify(with code: Int, completion: @escaping ((Bool)->())){
+        var request = URLRequest(url: authVerifyURL)
+        request.httpMethod = "POST"
+        request.httpBody = "\(code)".data(using: .utf8)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).response { (responce) in
+            
+            guard let statusCode = responce.response?.statusCode else { completion(false); return }
+            isValidTocken?(statusCode)
+            
+            if  statusCode == 204 {
+                // at this point cookies are set
+                let fields = responce.response?.allHeaderFields as? [String :String]
+                
+                let cookies = HTTPCookie.cookies(withResponseHeaderFields: fields!, for: responce.response!.url!)
+                
+                HTTPCookieStorage.shared.setCookie(cookies[0])
+                
+                completion(true)
+            }
+            
+            completion(false)
+        }
+    }
+    
+    // yes or no
+    static func authenticateMe(completion: @escaping ((Bool)->())){
+        var  request = URLRequest(url: authMeURL)
+        request.httpMethod = "POST"
+        
+        AF.request(request).response { (responce) in
+            
+            guard let statusCode = responce.response?.statusCode else { completion(false); return }
+            isValidTocken?(statusCode)
+            
+            guard let json = responce.data else { return }
+            guard let personId = Int(String(data: json, encoding: String.Encoding.utf8)!) else {
+                completion(false)
+                return
+            }
+            
+            DataStorage.standard.setIsLoggedIn(value: true, with: personId)
+            completion(true)
+        }
+    }
+    
+    // register, ok or invalid
+    static func authenticate(with email: String, completion: @escaping ((AuthStatus)->())) {
+        
+        let json: [String:Any] = ["authenticationEmail" : email]
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         
         var request = URLRequest(url: authenticationURL)
@@ -195,29 +311,27 @@ class Model{
         request.httpBody = jsonData
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         
-        AF.request(request).response { (responce) in
+        AF.request(request).response { (response) in
             
-            guard let realResponse = responce.response, realResponse.statusCode == 200 else
+            guard let realResponse = response.response, realResponse.statusCode == 200 else
             {
                 print("Not a 200 response")
-                completion(false)
+                completion(AuthStatus())
                 return
             }
+        
+            guard let json = response.data else { return }
+            guard let res = try? decoder.decode(AuthStatus.self, from: json) else { return }
             
-            guard let json = responce.data else { return }
-            guard let personId = Int(String(data: json, encoding: String.Encoding.utf8)!) else {
-                completion(false)
-                return
+            if  realResponse.statusCode == 200 && res.userStatus == "registered"
+            {
+                // at this point cookies are set
+                let fields = realResponse.allHeaderFields as? [String :String]
+                let cookies = HTTPCookie.cookies(withResponseHeaderFields: fields!, for: realResponse.url!)
+                HTTPCookieStorage.shared.setCookie(cookies[0])
             }
             
-            let fields = realResponse.allHeaderFields as? [String :String]
-            
-            let cookies = HTTPCookie.cookies(withResponseHeaderFields: fields!, for: realResponse.url!)
-            
-            HTTPCookieStorage.shared.setCookie(cookies[0])
-            
-            DataStorage.standard.setIsLoggedIn(value: true, with: personId)
-            completion(true)
+            completion(res)
         }
     }
     
@@ -853,6 +967,35 @@ class Model{
             isValidTocken?(response.response?.statusCode ?? 498)
             
             completion()
+        }
+    }
+    
+    struct Faculty: Codable
+    {
+        
+        var path: String
+        var url: String
+        var campusName: String
+        var campusCode: String
+        var name: String
+        var tags: [String]
+        
+    }
+    
+    static func searchFaculty(string: String, completion: @escaping (([Model.Faculty])->()))
+    {
+        var request = URLRequest(url: facultySearchURL)
+        request.httpMethod = "POST"
+        request.httpBody = string.data(using: .utf8)
+        request.setValue("text/plain;charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).response { (response) in
+            isValidTocken?(response.response?.statusCode ?? 498)
+            
+            guard let json = response.data else { return }
+            guard let faculties = try? decoder.decode([Faculty].self, from: json) else {  return }
+    
+            completion(faculties)
         }
     }
 }

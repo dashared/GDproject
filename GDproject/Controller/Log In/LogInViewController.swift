@@ -14,7 +14,7 @@ import Result
 
 class LogInViewController: UIViewController {
     
-    var authenticate: ((Int)->())?
+    var authenticate: ((String)->())?
     
     let logInLabel: UILabel = {
         let label = UILabel()
@@ -45,7 +45,7 @@ class LogInViewController: UIViewController {
     }()
     
     @objc func handleTap(){
-        authenticate?(Int(mailTextField.text!)!)
+        authenticate?(mailTextField.text!)
     }
     
     private lazy var keyboardBar = UIView()
@@ -72,14 +72,14 @@ class LogInViewController: UIViewController {
         // configure keyboardBar components
         keyboardBar.addSubview(logInButton)
         logInButton.height(50)
-        logInButton.leftToSuperview(view.leftAnchor, offset: 16, relation: .equal, isActive: true)
+        logInButton.rightToSuperview(view.rightAnchor, offset: 16, relation: .equal, isActive: true)
         
     }
     
     func logicOfLogInInputValidation() -> ((String?)->()) {
         
         let logic: ((String?)->()) = { [weak self] (someText) in
-            if let text = someText, !text.isEmpty, let _ = Int(text) {
+            if let text = someText, !text.isEmpty {
                 self?.logInButton.isEnabled = true
             } else {
                 self?.logInButton.isEnabled = false

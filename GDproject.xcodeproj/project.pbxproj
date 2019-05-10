@@ -13,6 +13,10 @@
 		123E37A5221F1B3200F6E42A /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123E37A4221F1B3200F6E42A /* LogInViewController.swift */; };
 		123E37A7221F1DD700F6E42A /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123E37A6221F1DD700F6E42A /* MainController.swift */; };
 		124CC7032221C00C009DF531 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124CC7022221C00C009DF531 /* Model.swift */; };
+		125A9A8A2285C3DA00513E2A /* CodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125A9A892285C3DA00513E2A /* CodeViewController.swift */; };
+		125A9A8E2286068A00513E2A /* RegisterTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125A9A8D2286068A00513E2A /* RegisterTableViewController.swift */; };
+		125A9A90228609C500513E2A /* InititalsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125A9A8F228609C500513E2A /* InititalsViewCell.swift */; };
+		125A9A922286100800513E2A /* FacultyTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125A9A912286100800513E2A /* FacultyTableViewController.swift */; };
 		125BD57D22171D2A008A3575 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD57C22171D2A008A3575 /* ProfileViewController.swift */; };
 		125BD57F22171D73008A3575 /* Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD57E22171D73008A3575 /* Extentions.swift */; };
 		125BD5812217314A008A3575 /* NewsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125BD5802217314A008A3575 /* NewsVC.swift */; };
@@ -23,7 +27,6 @@
 		1288B5CE221F1158002BE6B1 /* DataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1288B5CD221F1158002BE6B1 /* DataStorage.swift */; };
 		1291BE2D2221312D009D3F23 /* ChannelsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE2C2221312C009D3F23 /* ChannelsCoordinator.swift */; };
 		1291BE342221569B009D3F23 /* TabbarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE332221569B009D3F23 /* TabbarCoordinator.swift */; };
-		1291BE3622218DBF009D3F23 /* LogInCoordinator1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1291BE3522218DBF009D3F23 /* LogInCoordinator1.swift */; };
 		129320042279B4270035C7B3 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129320032279B4270035C7B3 /* MessagesViewController.swift */; };
 		129320072279B5690035C7B3 /* MessagesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129320062279B5690035C7B3 /* MessagesCoordinator.swift */; };
 		129320092279C3B50035C7B3 /* PeopleToWriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129320082279C3B50035C7B3 /* PeopleToWriteViewController.swift */; };
@@ -108,6 +111,10 @@
 		123E37A4221F1B3200F6E42A /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		123E37A6221F1DD700F6E42A /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		124CC7022221C00C009DF531 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		125A9A892285C3DA00513E2A /* CodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeViewController.swift; sourceTree = "<group>"; };
+		125A9A8D2286068A00513E2A /* RegisterTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTableViewController.swift; sourceTree = "<group>"; };
+		125A9A8F228609C500513E2A /* InititalsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InititalsViewCell.swift; sourceTree = "<group>"; };
+		125A9A912286100800513E2A /* FacultyTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacultyTableViewController.swift; sourceTree = "<group>"; };
 		125BD57C22171D2A008A3575 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		125BD57E22171D73008A3575 /* Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extentions.swift; sourceTree = "<group>"; };
 		125BD5802217314A008A3575 /* NewsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsVC.swift; sourceTree = "<group>"; };
@@ -118,7 +125,6 @@
 		1288B5CD221F1158002BE6B1 /* DataStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStorage.swift; sourceTree = "<group>"; };
 		1291BE2C2221312C009D3F23 /* ChannelsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsCoordinator.swift; sourceTree = "<group>"; };
 		1291BE332221569B009D3F23 /* TabbarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbarCoordinator.swift; sourceTree = "<group>"; };
-		1291BE3522218DBF009D3F23 /* LogInCoordinator1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInCoordinator1.swift; sourceTree = "<group>"; };
 		129320032279B4270035C7B3 /* MessagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
 		129320062279B5690035C7B3 /* MessagesCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesCoordinator.swift; sourceTree = "<group>"; };
 		129320082279C3B50035C7B3 /* PeopleToWriteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PeopleToWriteViewController.swift; path = GDproject/Controller/Messages/PeopleToWriteViewController.swift; sourceTree = SOURCE_ROOT; };
@@ -216,8 +222,11 @@
 		1291BE3722218DC4009D3F23 /* Log In */ = {
 			isa = PBXGroup;
 			children = (
+				125A9A912286100800513E2A /* FacultyTableViewController.swift */,
+				125A9A8F228609C500513E2A /* InititalsViewCell.swift */,
+				125A9A8D2286068A00513E2A /* RegisterTableViewController.swift */,
+				125A9A892285C3DA00513E2A /* CodeViewController.swift */,
 				123E37A4221F1B3200F6E42A /* LogInViewController.swift */,
-				1291BE3522218DBF009D3F23 /* LogInCoordinator1.swift */,
 			);
 			path = "Log In";
 			sourceTree = "<group>";
@@ -425,11 +434,11 @@
 			files = (
 				129320072279B5690035C7B3 /* MessagesCoordinator.swift in Sources */,
 				124CC7032221C00C009DF531 /* Model.swift in Sources */,
+				125A9A90228609C500513E2A /* InititalsViewCell.swift in Sources */,
 				1220FF94227C41270092C6BC /* TaggsSelectionViewController.swift in Sources */,
 				12F3D6B0224106F700A69214 /* TabbarController.swift in Sources */,
 				12E36DD522156559006FCDD7 /* MyStackView.swift in Sources */,
 				12D7D137221D78E800B35452 /* Channel.swift in Sources */,
-				1291BE3622218DBF009D3F23 /* LogInCoordinator1.swift in Sources */,
 				1210A0BB223940310080686D /* SimplifiedChannelsList.swift in Sources */,
 				125BD5812217314A008A3575 /* NewsVC.swift in Sources */,
 				12E36DB72214400A006FCDD7 /* Post.swift in Sources */,
@@ -440,10 +449,13 @@
 				1261BB9E227B793D003898CF /* ChatInfoViewController.swift in Sources */,
 				12E36D9E221424EA006FCDD7 /* NewsController.swift in Sources */,
 				1298810B227F13840032ACA3 /* DialogCell.swift in Sources */,
+				125A9A922286100800513E2A /* FacultyTableViewController.swift in Sources */,
+				125A9A8E2286068A00513E2A /* RegisterTableViewController.swift in Sources */,
 				12E36DCC22144725006FCDD7 /* PostViewCell.swift in Sources */,
 				123E37A5221F1B3200F6E42A /* LogInViewController.swift in Sources */,
 				125BD57F22171D73008A3575 /* Extentions.swift in Sources */,
 				12D7D133221C321600B35452 /* ChannelListController.swift in Sources */,
+				125A9A8A2285C3DA00513E2A /* CodeViewController.swift in Sources */,
 				1291BE342221569B009D3F23 /* TabbarCoordinator.swift in Sources */,
 				129320092279C3B50035C7B3 /* PeopleToWriteViewController.swift in Sources */,
 				12BA4B9B224101A400DF93D7 /* ApplicationCoordinator.swift in Sources */,
