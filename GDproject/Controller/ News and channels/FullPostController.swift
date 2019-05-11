@@ -25,7 +25,7 @@ class FullPostController: UITableViewController {
 
     func setUpNavigationBar(){
         navigationItem.largeTitleDisplayMode = .never
-        navigationItem.title = "\(post?.authorId ?? 0)"
+        navigationItem.title = "Post"
         navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(self.options))]
     }
     

@@ -33,14 +33,14 @@ class MessagesCoordinator: BaseCoordinator {
             
             let newVC = self.storyboard.instantiateViewController(withIdentifier: peopleToWriteVC) as! PeopleToWriteViewController
             
-            newVC.whatToDoWithSelection = { [weak newVC, weak self] in
+            newVC.whatToDoWithSelection = { [weak newVC, weak self] people in
                 newVC?.navigationController?.popViewController(animated: true)
                 
                 // detect is it a user or group dialog
-                let count = $0.count
+                let count = people.count
                 if count == 1 {
                     
-                    let user = $0.first!.key
+                    let user = people.first!.key
                     let createdDialog = Model.Dialog.userChat(Model.UserChat(user: user))
                     
                     let vc = DialogViewController()
@@ -49,11 +49,14 @@ class MessagesCoordinator: BaseCoordinator {
                     self?.navigationController?.pushViewController(vc, animated: true)
                     
                 } else {
-                    var group = Model.Group(users: $0, name: "Untitled", id: 0)
+                    var group = Model.Group(users: people, name: "Untitled", id: 0)
+                    group.users[DataStorage.standard.getUserId()] = Model.UserPermission(isAdmin: true)
+                    
                     Model.createGroupChat(from: group, completion: { [weak self] id in
                             
                             let newVC1 = DialogViewController()
                             group.id = id
+                            newVC1.users = Model.Channels.fullPeopleDict
                             newVC1.dialog = Model.Dialog.groupChat(Model.GroupChat(group: group))
                             self?.navigationController?.pushViewController(newVC1, animated: true)
                     })

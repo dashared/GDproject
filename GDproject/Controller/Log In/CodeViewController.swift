@@ -23,12 +23,12 @@ class CodeViewController: UIViewController {
         super.viewDidLoad()
         setUpConstraint()
         
-        f1.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .touchUpInside)
-        f2.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .touchUpInside)
-        f3.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .touchUpInside)
-        f4.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .touchUpInside)
-        f5.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .touchUpInside)
-        f6.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .touchUpInside)
+        f1.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .editingChanged)
+        f2.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .editingChanged)
+        f3.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .editingChanged)
+        f4.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .editingChanged)
+        f5.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .editingChanged)
+        f6.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .editingChanged)
     }
     
     override func viewWillAppear(_ animated: Bool) {

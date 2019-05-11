@@ -253,7 +253,7 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         tabBarController?.tabBar.isHidden = true
         
         if let dialog = dialog {
-            getMessages(for: dialog)
+            getMessagesNew(for: dialog)
         }
     }
     

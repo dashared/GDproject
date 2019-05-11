@@ -48,15 +48,15 @@ class ProfileViewController: UIViewController
     
     var onChannelsListToAddAPerson: ((Model.Users)->())?
     
-    var protoDictionary: [Int: UIImage] = [9: #imageLiteral(resourceName: "9"), 5051: #imageLiteral(resourceName: "5051"), 69: #imageLiteral(resourceName: "69"), 42: #imageLiteral(resourceName: "42")]
+    var protoDictionary: [String: UIImage] = ["135213": #imageLiteral(resourceName: "9"), "135288": #imageLiteral(resourceName: "5051"), "22723" : #imageLiteral(resourceName: "69"), "135083": #imageLiteral(resourceName: "42")]
     
     func fill(with user: Model.Users)
     {
-        self.facultyLabel.text = "Студент: Факультет Компьютерных Наук"
+        self.facultyLabel.text =  user.faculty.name
         self.nameLabel.text = "\(user.firstName) \(user.middleName)"
         self.surnameLabel.text = "\(user.lastName)"
-        self.profileImageView.image = protoDictionary[user.id]?.roundedImage
-        self.placeLabel.text = "📍Москва, Кочновский пр.3"
+        self.profileImageView.image = protoDictionary[user.faculty.campusCode]?.roundedImage
+        self.placeLabel.text = "📍\(user.faculty.campusName)"
         if user.id == DataStorage.standard.getUserId() {
             newMessageButton.isHidden  = true
         } else {
@@ -66,8 +66,14 @@ class ProfileViewController: UIViewController
     
     var user: Model.Users? {
         didSet {
-            self.fill(with: user!)
-            navigationItem.title = "\(user!.firstName) \(user!.lastName)"
+            if let user = user {
+                self.fill(with: user)
+                navigationItem.title = "\(user.firstName) \(user.lastName)"
+            } else if let id = idProfile {
+                Model.getUsers(for: [id]) { [unowned self ] in
+                    self.user = $0[id]
+                }
+            }
         }
     }
     

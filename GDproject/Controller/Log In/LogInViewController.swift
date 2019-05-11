@@ -72,7 +72,7 @@ class LogInViewController: UIViewController {
         // configure keyboardBar components
         keyboardBar.addSubview(logInButton)
         logInButton.height(50)
-        logInButton.rightToSuperview(view.rightAnchor, offset: 16, relation: .equal, isActive: true)
+        logInButton.rightToSuperview(view.rightAnchor, offset: -16, relation: .equal, isActive: true)
         
     }
     

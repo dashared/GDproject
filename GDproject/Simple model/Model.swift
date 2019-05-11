@@ -128,6 +128,8 @@ class Model{
         var lastName: String
         var firstName: String
         var id: Int
+        var faculty: Faculty
+        var email: String
         
         func fullName() -> String {
             return "\(firstName) \(lastName)"
@@ -264,12 +266,6 @@ class Model{
             
             if  statusCode == 204 {
                 // at this point cookies are set
-                let fields = responce.response?.allHeaderFields as? [String :String]
-                
-                let cookies = HTTPCookie.cookies(withResponseHeaderFields: fields!, for: responce.response!.url!)
-                
-                HTTPCookieStorage.shared.setCookie(cookies[0])
-                
                 completion(true)
             }
             
@@ -462,6 +458,7 @@ class Model{
             guard let users = try? decoder.decode([Users].self, from: json) else {  return }
             
             var dict: [Int:Users] = [:]
+            
             users.forEach({ (user) in
                 dict[user.id] = user
             })
@@ -657,7 +654,7 @@ class Model{
             
             guard let newQueery = try? decoder.decode(QueryPosts<Posts>.self, from: json) else {  return }
             
-            // idUser = newQueery.users
+            print("\(anonymousChannel) \(newQueery)")
             completion((newQueery.users, newQueery.response))
         }
     }

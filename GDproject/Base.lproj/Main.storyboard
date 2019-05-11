@@ -286,6 +286,7 @@
                                     </textField>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstAttribute="height" constant="58" id="5tl-bI-7tm"/>
                                     <constraint firstItem="YKO-0M-KD8" firstAttribute="width" secondItem="744-t1-YNn" secondAttribute="width" id="E7r-rk-4Mb"/>
                                     <constraint firstItem="SmG-Ae-oOs" firstAttribute="width" secondItem="744-t1-YNn" secondAttribute="width" id="Hkd-L6-qkf"/>
                                     <constraint firstItem="qDh-32-HSn" firstAttribute="width" secondItem="744-t1-YNn" secondAttribute="width" id="Koj-e5-Dof"/>
