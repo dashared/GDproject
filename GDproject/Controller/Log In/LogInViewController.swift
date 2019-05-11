@@ -47,6 +47,8 @@ class LogInViewController: UIViewController {
         textField.placeholder = "Mail"
         textField.borderStyle = .roundedRect
         textField.textColor = .black
+        textField.autocorrectionType = UITextAutocorrectionType.no
+        textField.autocapitalizationType = UITextAutocapitalizationType.none
         textField.clearButtonMode = .always
         return textField
     }()

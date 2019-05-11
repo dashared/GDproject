@@ -17,12 +17,14 @@ class Model{
     static var hashTagTree: CompletionTree?
     
     private static var isValidTocken: ((Int)->())? = { responce in
-        print(responce)
+
         if responce == invalidTocken {
+
+            DataStorage.standard.setIsLoggedIn(value: false, with: 0)
+            (UIApplication.shared.delegate as! AppDelegate).relaunch()
+            
             Model.logout {
                 print("Logout Is Successful")
-                DataStorage.standard.setIsLoggedIn(value: false, with: 0)
-                (UIApplication.shared.delegate as! AppDelegate).relaunch()
             }
         }
     }
@@ -208,6 +210,10 @@ class Model{
         AF.request(request).response { (responce) in
             isValidTocken?(responce.response?.statusCode ?? 498)
             
+            if let code = responce.response?.statusCode, code == 498 {
+                return
+            }
+            
             completion()
         }
     }
@@ -240,6 +246,10 @@ class Model{
             guard let code = responce.response?.statusCode else { return }
             isValidTocken?(code)
             
+            if let code = responce.response?.statusCode, code == 498 {
+                return
+            }
+            
             if code == 204 {
                 let fields = responce.response?.allHeaderFields as? [String :String]
                 
@@ -249,6 +259,7 @@ class Model{
                 
                 completion()
             }
+            
         }
     }
     
@@ -263,6 +274,10 @@ class Model{
             
             guard let statusCode = responce.response?.statusCode else { completion(false); return }
             isValidTocken?(statusCode)
+            
+            if let code = responce.response?.statusCode, code == 498 {
+                return
+            }
             
             if  statusCode == 204 {
                 // at this point cookies are set
@@ -282,6 +297,10 @@ class Model{
             
             guard let statusCode = responce.response?.statusCode else { completion(false); return }
             isValidTocken?(statusCode)
+            
+            if let code = responce.response?.statusCode, code == 498 {
+                return
+            }
             
             guard let json = responce.data else { return }
             guard let personId = Int(String(data: json, encoding: String.Encoding.utf8)!) else {
@@ -377,6 +396,10 @@ class Model{
             
             isValidTocken?(response.response?.statusCode ?? 498)
             
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+            
             guard let json = response.data else { return }
             
             guard let newQueery = try? decoder.decode(QueryPosts<Posts>.self, from: json) else { print("no")
@@ -402,6 +425,10 @@ class Model{
             (response) in
             
             isValidTocken?(response.response?.statusCode ?? 498)
+            
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
         }
     }
     
@@ -426,6 +453,10 @@ class Model{
             (response) in
             
             isValidTocken?(response.response?.statusCode ?? 498)
+            
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
             
             guard let json = response.data else { return }
             
@@ -452,6 +483,10 @@ class Model{
             (response) in
             
             isValidTocken?(response.response?.statusCode ?? 498)
+            
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
             
             guard let json = response.data else { return }
             
@@ -485,6 +520,9 @@ class Model{
             
             isValidTocken?(response.response?.statusCode ?? 498)
             
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
             
             guard let json = response.data else { return }
             
@@ -507,6 +545,9 @@ class Model{
             (response) in
             
             isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
         }
         
     }
@@ -519,6 +560,9 @@ class Model{
         AF.request(request).responseJSON { (response) in
             
             isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
             
             guard let json = response.data else { return }
             
@@ -537,6 +581,9 @@ class Model{
         
         AF.request(request).response { (response) in
             isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
         }
         completion()
     }
@@ -552,6 +599,9 @@ class Model{
             (response) in
             
             isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
         }
     }
     
@@ -574,6 +624,9 @@ class Model{
             }
             
             isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
         }
     }
     
@@ -649,6 +702,9 @@ class Model{
             (response) in
             
             isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
             
             guard let json = response.data else { return }
             
@@ -664,6 +720,9 @@ class Model{
         AF.request(URLRequest(url: hashTagTreeURL)).responseJSON {
             (response) in
             isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
             guard let json = response.data else { return }
             guard let tree = try? decoder.decode(CompletionTree.self, from: json) else {  return }
             completion(tree)
@@ -680,6 +739,10 @@ class Model{
         
         AF.request(request).responseJSON { response in
             isValidTocken?(response.response?.statusCode ?? 498)
+            
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
             
             guard let json = response.data else { return }
             let dialogs = try! decoder.decode(QueryPosts<Dialog>.self, from: json)
@@ -852,6 +915,9 @@ class Model{
         AF.request(request).response { (response) in
             
             isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
             
             guard let json = response.data else { return }
             let stringInt = String.init(data: json, encoding: String.Encoding.utf8)
@@ -880,6 +946,9 @@ class Model{
         AF.request(request!).response { (response) in
             
             isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
             
             guard let json = response.data else { return }
             guard let messages = try? decoder.decode([LastMessage].self, from: json) else {  return }
@@ -897,6 +966,10 @@ class Model{
         
         AF.request(request).response { (response) in
             isValidTocken?(response.response?.statusCode ?? 498)
+            
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
         }
         
         completion()
@@ -911,6 +984,10 @@ class Model{
         
         AF.request(request).response { (response) in
             isValidTocken?(response.response?.statusCode ?? 498)
+            
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
         }
         
         // completion()
@@ -963,6 +1040,10 @@ class Model{
         AF.request(request).response { (response) in
             isValidTocken?(response.response?.statusCode ?? 498)
             
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+            
             completion()
         }
     }
@@ -989,6 +1070,10 @@ class Model{
         
         AF.request(request).response { (response) in
             isValidTocken?(response.response?.statusCode ?? 498)
+            
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
             
             guard let json = response.data else { return }
             guard let faculties = try? decoder.decode([Faculty].self, from: json) else {  return }

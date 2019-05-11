@@ -81,6 +81,7 @@ class FacultyTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         delegate?.onChooseFaculty(faculty: currentFaculties[indexPath.row])
+        searchController.dismiss(animated: true, completion: nil)
         self.navigationController?.popViewController(animated: true)
     }
     
