@@ -37,6 +37,13 @@ class DataStorage{
         return UserDefaults.standard.integer(forKey: UserDefaultsKeys.id.rawValue)
     }
     
+    func setEmail(email: String) {
+        UserDefaults.standard.set(email, forKey: UserDefaultsKeys.email.rawValue)
+    }
+    
+    func getEmail() -> String? {
+        return UserDefaults.standard.string(forKey: UserDefaultsKeys.email.rawValue)
+    }
     /**
      Function to determine is user logged in already or not
     */
@@ -49,4 +56,5 @@ class DataStorage{
 enum UserDefaultsKeys: String{
     case loggedIn
     case id
+    case email
 }

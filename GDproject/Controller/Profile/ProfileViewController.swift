@@ -56,7 +56,7 @@ class ProfileViewController: UIViewController
         self.nameLabel.text = "\(user.firstName) \(user.middleName)"
         self.surnameLabel.text = "\(user.lastName)"
         self.profileImageView.image = protoDictionary[user.faculty.campusCode]?.roundedImage
-        self.placeLabel.text = "📍\(user.faculty.campusName)"
+        self.placeLabel.text = "📍\(user.faculty.address)"
         if user.id == DataStorage.standard.getUserId() {
             newMessageButton.isHidden  = true
         } else {

@@ -267,9 +267,9 @@ class Model{
             if  statusCode == 204 {
                 // at this point cookies are set
                 completion(true)
+            } else {
+                completion(false)
             }
-            
-            completion(false)
         }
     }
     
@@ -976,6 +976,7 @@ class Model{
         var campusCode: String
         var name: String
         var tags: [String]
+        var address: String
         
     }
     

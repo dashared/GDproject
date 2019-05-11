@@ -42,6 +42,7 @@ class PostViewCell: UITableViewCell
     
     let shareButton: UIButton = {
         let button = UIButton(type: UIButton.ButtonType.detailDisclosure)
+        button.isHidden = true
         return button
     }()
     

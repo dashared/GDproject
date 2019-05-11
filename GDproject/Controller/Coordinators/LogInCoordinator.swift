@@ -26,13 +26,14 @@ class LogInCoordinator: BaseCoordinator {
         let logInVC = LogInViewController()
         logInVC.authenticate = { [weak self, weak logInVC] (email) in
             
+            DataStorage.standard.setEmail(email: email)
             Model.authenticate(with: email) { [weak self]
                 (authStatus) in
                 
                 print(authStatus.userStatus)
                 
                 if (authStatus.userStatus == "invalid") {
-                    logInVC?.mailTextField.text = "invalid"
+                    logInVC?.presentAlertInvalidCode()
                 }
                 else if (authStatus.userStatus == "canRegister") { // register form
                     self?.presentRegisterVC()

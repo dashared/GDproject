@@ -14,7 +14,24 @@ import Result
 
 class LogInViewController: UIViewController {
     
+    var loading = UIActivityIndicatorView(style: .gray)
+    
     var authenticate: ((String)->())?
+    
+    func presentAlertInvalidCode()
+    {
+        let alert = UIAlertController(title: "Invalid email", message: "Try again. Use @hse.ru mail.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+        mailTextField.text = ""
+        loading.stopAnimating()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        loading.stopAnimating()
+    }
     
     let logInLabel: UILabel = {
         let label = UILabel()
@@ -45,6 +62,7 @@ class LogInViewController: UIViewController {
     }()
     
     @objc func handleTap(){
+        loading.startAnimating()
         authenticate?(mailTextField.text!)
     }
     
@@ -55,6 +73,10 @@ class LogInViewController: UIViewController {
     func setUpView(){
         // logIn stack with textField and label
         view.addSubview(contentView)
+        view.addSubview(loading)
+        
+        loading.centerInSuperview()
+        
         contentView.edgesToSuperview(excluding: .bottom, insets: .left(16) + .right(16) + .top(80), usingSafeArea: true)
         let views = [logInLabel, mailTextField]
         contentView.stack(views, axis: .vertical, spacing: 10)
@@ -62,6 +84,7 @@ class LogInViewController: UIViewController {
     
     func configureKeyboard(){
         
+        mailTextField.keyboardType = .emailAddress
         // configure keyboardBar setUp
         view.addSubview(keyboardBar)
         keyboardBar.height(50)
@@ -79,7 +102,7 @@ class LogInViewController: UIViewController {
     func logicOfLogInInputValidation() -> ((String?)->()) {
         
         let logic: ((String?)->()) = { [weak self] (someText) in
-            if let text = someText, !text.isEmpty {
+            if let text = someText, !text.isEmpty, text.contains("@") {
                 self?.logInButton.isEnabled = true
             } else {
                 self?.logInButton.isEnabled = false

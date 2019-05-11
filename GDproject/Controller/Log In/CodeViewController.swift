@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import TinyConstraints
 
 class CodeViewController: UIViewController {
 
@@ -17,11 +18,15 @@ class CodeViewController: UIViewController {
     @IBOutlet weak var f5: UITextField!
     @IBOutlet weak var f6: UITextField!
     
+    var loading = UIActivityIndicatorView(style: .gray)
+    
     var onSuccessLogIn: (()->())?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpConstraint()
+        
+        navigationItem.title = DataStorage.standard.getEmail()
         
         f1.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .editingChanged)
         f2.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .editingChanged)
@@ -29,6 +34,12 @@ class CodeViewController: UIViewController {
         f4.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .editingChanged)
         f5.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .editingChanged)
         f6.addTarget(self, action: #selector(textFiledDidChange(textField:)), for: .editingChanged)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        loading.stopAnimating()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -62,28 +73,56 @@ class CodeViewController: UIViewController {
     }
     
     
+    func presentAlertInvalidData(with text: String)
+    {
+        let alert = UIAlertController(title: "Invalid code", message: text, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+        
+        loading.stopAnimating()
+    }
+    
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
     @IBAction func whereToGoNext(_ sender: UIButton)
     {
+        guard let f1t = f1.text, let f2t = f2.text, let f3t = f3.text, let f4t = f4.text, let f5t = f5.text, let f6t = f6.text else {
+            presentAlertInvalidData(with: "Some fields are missing");
+            return
+        }
+        
+        if f1t.isEmpty || f2t.isEmpty || f3t.isEmpty || f4t.isEmpty || f5t.isEmpty || f6t.isEmpty {
+            presentAlertInvalidData(with: "Some fields are missing");
+            return
+        }
+        
         let code = "\(f1.text!)\(f2.text!)\(f3.text!)\(f4.text!)\(f5.text!)\(f6.text!)"
         if let codeToInt = Int(code)
         {
-            Model.verify(with: codeToInt) { _ in
+            loading.startAnimating()
+            Model.verify(with: codeToInt) { [weak self] in
                 // if everything is okay we can authemticicate
-                // Model.authemticiateMe
-                Model.authenticateMe { [weak self] (res) in
-                    if res {
-                        self?.onSuccessLogIn?()
-                    } else {
-                        print("sosi")
+                if !$0 {
+                    self?.presentAlertInvalidData(with: "Wrong code. Try again!")
+                    self?.loading.stopAnimating()
+                    return
+                } else {
+                    // Model.authemticiateMe
+                    Model.authenticateMe { [weak self] (res) in
+                        if res {
+                            self?.onSuccessLogIn?()
+                        }
                     }
+                    return
                 }
             }
         }
     }
     
-    func setUpConstraint(){
+    func setUpConstraint()
+    {
+        self.view.addSubview(loading)
+        loading.centerInSuperview()
         // for keyboard notifications
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotifications), name: UIResponder.keyboardWillShowNotification, object: nil)
         

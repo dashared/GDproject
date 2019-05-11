@@ -11,6 +11,13 @@ import UIKit
 class RegisterTableViewController: UITableViewController, ChosenFactulty
 {
     
+    func presentAlertInvalidData()
+    {
+        let alert = UIAlertController(title: "Invalid data", message: "Some fields are missing. Add more information", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     func onChooseFaculty(faculty: Model.Faculty) {
         self.faculty = faculty
         tableView.reloadData()
@@ -20,7 +27,7 @@ class RegisterTableViewController: UITableViewController, ChosenFactulty
     var onRegistration: (()->())?
     
     var faculty: Model.Faculty?
-    var user: Model.NewRegistration = Model.NewRegistration(email: "dyurednikina@edu.hse.ru", firstName: nil, middleName: nil, lastName: nil, faculty: nil)
+    var user: Model.NewRegistration = Model.NewRegistration(email: DataStorage.standard.getEmail()!, firstName: nil, middleName: nil, lastName: nil, faculty: nil)
     
     override func viewDidLoad()
     {
@@ -34,9 +41,13 @@ class RegisterTableViewController: UITableViewController, ChosenFactulty
     @objc func endRegistration()
     {
         updateUser()
-        guard let faculty = faculty else { return }
+        guard let faculty = faculty else { presentAlertInvalidData(); return }
         
         user.faculty = faculty.url
+        
+        guard let _ = user.firstName else { presentAlertInvalidData(); return  }
+        guard let _ = user.middleName else { presentAlertInvalidData(); return  }
+        guard let _ = user.lastName else { presentAlertInvalidData(); return  }
         
         Model.register(object: user)
         { [weak self] in
