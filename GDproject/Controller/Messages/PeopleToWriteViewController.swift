@@ -53,7 +53,6 @@ class PeopleToWriteViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "peopleToWriteCell", for: indexPath)
         
         cell.textLabel?.text = users[indexPath.row].fullName()
-        cell.detailTextLabel?.text = "\(users[indexPath.row].id)"
 
         return cell
     }

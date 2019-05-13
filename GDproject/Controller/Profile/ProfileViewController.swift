@@ -175,20 +175,43 @@ class ProfileViewController: UIViewController, UpdateUser
         
         if idProfile == DataStorage.standard.getUserId() {
             let logoutAction = UIAlertAction(title: "Log out", style: .destructive)
-            { [weak self]
-                (_) in
-                self?.logOut?()
+            { [weak self] (_) in
+                
+                if let logOut = self?.logOut {
+                    logOut()
+                } else {
+                    Model.logout() {
+                        DataStorage.standard.setIsLoggedIn(value: false, with: 0)
+                        (UIApplication.shared.delegate as! AppDelegate).relaunch()
+                    }
+                }
             }
             
             let deleetAllSessionsAction = UIAlertAction(title: "Delete all sessions", style: .destructive)
-            { [weak self]
-                (_) in
-                self?.deleteAllSessions?()
+            { [weak self] _ in
+                
+                if let delete = self?.deleteAllSessions {
+                    delete()
+                } else {
+                    Model.deactivateAll() {
+                        DataStorage.standard.setIsLoggedIn(value: false, with: 0)
+                        (UIApplication.shared.delegate as! AppDelegate).relaunch()
+                    }
+                }
             }
             
             let settingsAction = UIAlertAction(title: "Edit profile", style: .default)
             { [weak self] (_) in
-                self?.onSettings?()
+                
+                if let settings = self?.onSettings{
+                    settings()
+                } else {
+                    let vc = self?.storyboard?.instantiateViewController(withIdentifier: "RegisterTableViewController") as! RegisterTableViewController
+                    vc.delegate = self
+                    vc.userActive = self?.user
+                    
+                    self?.navigationController?.pushViewController(vc, animated: true)
+                }
             }
             
             optionMenu.addAction(settingsAction)

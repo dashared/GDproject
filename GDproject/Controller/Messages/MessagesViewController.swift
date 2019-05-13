@@ -64,18 +64,15 @@ class MessagesViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MessagesCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MessageViewCell", for: indexPath) as! MessageViewCell
         
         switch currentActiveDialogs[indexPath.row].self {
-            
-        case .groupChat(let group):
-            cell.textLabel?.text = group.group.name
-            cell.detailTextLabel?.text = group.lastMessage?.body.markdown
+        case .groupChat:
+            cell.fill(with: currentActiveDialogs[indexPath.row])
         case .userChat(let userChat):
-            cell.textLabel?.text = "👤 \(users[userChat.user]!.fullName())"
-            cell.detailTextLabel?.text = userChat.lastMessage?.body.markdown
+            cell.fill(with: currentActiveDialogs[indexPath.row], user: users[userChat.user])
         }
-
+        
         return cell
     }
  

@@ -91,10 +91,12 @@ class ChatInfoViewController: UITableViewController {
             switch indexPath.section {
             case 0:
                 cell.textLabel?.text = groupChat!.name
+                cell.selectionStyle = .none
                 return cell
             case 1:
                 cell.textLabel?.text = "Leave chat"
                 cell.textLabel?.textColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+                cell.selectionStyle = .none
                 return cell
             default:
                 switch myPermissions{
@@ -104,6 +106,7 @@ class ChatInfoViewController: UITableViewController {
                 case .ordinary:
                     cell.textLabel?.text = name(for: users[usersArray[indexPath.row]])
                 }
+                cell.selectionStyle = .none
                 return cell
             }
         }
@@ -114,7 +117,7 @@ class ChatInfoViewController: UITableViewController {
         case .ordinary:
             cell.textLabel?.text = name(for: users[usersArray[indexPath.row]])
         }
-
+        cell.selectionStyle = .none
         return cell
     }
     
@@ -143,9 +146,9 @@ class ChatInfoViewController: UITableViewController {
  
 
     func editName(for cell: UITableViewCell){
-        let alert = UIAlertController(title: "Вы уверены?", message: "Название:", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Are you sure?", message: "Title:", preferredStyle: .alert)
         
-        let action1 = UIAlertAction(title: "Oтмена", style: .cancel, handler: nil)
+        let action1 = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         
         alert.addTextField { [weak self] (tf) in
             tf.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
@@ -194,9 +197,27 @@ class ChatInfoViewController: UITableViewController {
                 case .admin:
                     showUserChoiceVC()
                 default:
-                    break
+                    showParticipantPage(with: usersArray[indexPath.row])
                 }
             }
+        }
+        
+        
+        if indexPath.section == 2 && indexPath.row != 0  {
+            switch myPermissions{
+            case .admin:
+                showParticipantPage(with: usersArray[indexPath.row-1])
+            default:
+                showParticipantPage(with: usersArray[indexPath.row])
+            }
+        }
+    }
+    
+    var onUserDiplay: ((Int)->())?
+    
+    func showParticipantPage(with user: Int?) {
+        if let user = user {
+            onUserDiplay?(user)
         }
     }
     

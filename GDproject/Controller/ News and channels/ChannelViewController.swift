@@ -60,8 +60,9 @@ class ChannelViewController: UITableViewController, UpdatableName, UpdatableChan
             super.viewWillDisappear(animated)
         }
         
-        guard let _ = self.navigationController?.viewControllers.lastIndex(of: self) else {
-            if let _ = channel?.id
+        guard let _ = self.navigationController?.viewControllers.lastIndex(of: self) else
+        {
+            if let id = channel?.id, id != 0
             {
                 Model.updateChannel(with: channel!)
             } else {

@@ -223,6 +223,7 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         
         vc.delegate = self
         vc.users = users!
+        vc.onUserDiplay = onUserDisplay
         
         if let groupChat = groupChat {
             vc.groupChat = groupChat.group
@@ -314,7 +315,7 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
     var canBePaginated = false
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
     {
-        if indexPath.row == cellData.count - 1 && prevLast != indexPath.row && canBePaginated
+        if indexPath.row == cellData.count - 1 && prevLast != indexPath.row && canBePaginated && cellData.count >= 9
         {
             print("exclusiveFrom \(currentMessagesInChat.last?.id ?? 0)")
             if let dialog = dialog

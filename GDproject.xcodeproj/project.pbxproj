@@ -10,6 +10,7 @@
 		1210A0BB223940310080686D /* SimplifiedChannelsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1210A0BA223940310080686D /* SimplifiedChannelsList.swift */; };
 		121A8972226B1EAC005EE599 /* TagsSuggestionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 121A8971226B1EAC005EE599 /* TagsSuggestionController.swift */; };
 		1220FF94227C41270092C6BC /* TaggsSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1220FF93227C41270092C6BC /* TaggsSelectionViewController.swift */; };
+		123589FD22899339002F8028 /* MessageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123589FC22899339002F8028 /* MessageViewCell.swift */; };
 		123E37A5221F1B3200F6E42A /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123E37A4221F1B3200F6E42A /* LogInViewController.swift */; };
 		123E37A7221F1DD700F6E42A /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123E37A6221F1DD700F6E42A /* MainController.swift */; };
 		124CC7032221C00C009DF531 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124CC7022221C00C009DF531 /* Model.swift */; };
@@ -108,6 +109,7 @@
 		1210A0BA223940310080686D /* SimplifiedChannelsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplifiedChannelsList.swift; sourceTree = "<group>"; };
 		121A8971226B1EAC005EE599 /* TagsSuggestionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsSuggestionController.swift; sourceTree = "<group>"; };
 		1220FF93227C41270092C6BC /* TaggsSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggsSelectionViewController.swift; sourceTree = "<group>"; };
+		123589FC22899339002F8028 /* MessageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageViewCell.swift; sourceTree = "<group>"; };
 		123E37A4221F1B3200F6E42A /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		123E37A6221F1DD700F6E42A /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		124CC7022221C00C009DF531 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 				129320082279C3B50035C7B3 /* PeopleToWriteViewController.swift */,
 				1298810C227F138C0032ACA3 /* Dialog */,
 				129320032279B4270035C7B3 /* MessagesViewController.swift */,
+				123589FC22899339002F8028 /* MessageViewCell.swift */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -451,6 +454,7 @@
 				1298810B227F13840032ACA3 /* DialogCell.swift in Sources */,
 				125A9A922286100800513E2A /* FacultyTableViewController.swift in Sources */,
 				125A9A8E2286068A00513E2A /* RegisterTableViewController.swift in Sources */,
+				123589FD22899339002F8028 /* MessageViewCell.swift in Sources */,
 				12E36DCC22144725006FCDD7 /* PostViewCell.swift in Sources */,
 				123E37A5221F1B3200F6E42A /* LogInViewController.swift in Sources */,
 				125BD57F22171D73008A3575 /* Extentions.swift in Sources */,

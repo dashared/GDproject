@@ -100,7 +100,7 @@ class ChannelListController: UITableViewController {
     @objc func addChannel()
     {
         // editing mode is on automatically
-        onEditingModeBegins?(Model.Channels(people: [], name: "Untitled", tags: []),IndexPath(row: 1, section: 0))
+        onEditingModeBegins?(Model.Channels(people: [], name: "Untitled", id: 0, tags: []),IndexPath(row: 1, section: 0))
     }
     
     static let generalChannel = Model.Channels(people: [], name: "General", id: -1, tags: [])
