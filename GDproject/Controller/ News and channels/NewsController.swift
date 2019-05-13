@@ -82,7 +82,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, UpdateableWi
         searchController?.searchBar.placeholder  = "Search tags"
     }
     
-    @objc func refreshPostsData( _ ff: UIRefreshControl){
+    @objc func refreshPostsData( _ ff: UIRefreshControl) {
         decideWhatChannelDisplay()
     }
     
@@ -122,6 +122,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, UpdateableWi
                 }
             }
         default:
+            refreshContr.endRefreshing()
             break
         }
         

@@ -158,7 +158,7 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         
         messageSendView.edgesToSuperview(excluding: [.top,.bottom])
         
-        bottomConstraint = NSLayoutConstraint(item: messageSendView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
+        bottomConstraint = NSLayoutConstraint(item: messageSendView, attribute: .bottom, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .bottom, multiplier: 1, constant: 0)
         view.addConstraint(bottomConstraint)
         
         messageSendView.height(60)
@@ -172,7 +172,7 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         messageTextView.edgesToSuperview(excluding: .right)
         messageTextView.rightToLeft(of: sendButton)
         
-        tableView.edgesToSuperview(excluding: .bottom)
+        tableView.edgesToSuperview(excluding: .bottom, insets: .top(self.navigationController?.navigationBar.frame.size.height ?? 0))
         tableView.bottomToTop(of: messageSendView)
         
         self.view.layoutSubviews()
@@ -191,7 +191,7 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
             
             let keyBoardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
             
-            bottomConstraint.constant = notification.name == UIResponder.keyboardWillShowNotification ? -(keyBoardFrame.height) : 0
+            bottomConstraint.constant = notification.name == UIResponder.keyboardWillShowNotification ? -(keyBoardFrame.height) + self.view.safeAreaInsets.bottom : 0
             
             UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
                 self.view.layoutIfNeeded()
