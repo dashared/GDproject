@@ -73,7 +73,7 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
             if let _ = channel?.id {        print("update")
                 Model.updateChannel(with: channel!)
             } else {                        print("create")
-                Model.createChannel(with: channel!)
+               //Model.createChannel(with: channel!)
             }
             return
         }

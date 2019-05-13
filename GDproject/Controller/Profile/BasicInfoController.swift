@@ -16,17 +16,20 @@ struct CellData{
 
 class BasicInfoController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var dataSourse: [CellData] = [
-        CellData(opened: false, title: "Phone", sectionData: ["+7 901 733 01 79"]),
-        CellData(opened: false, title: "Mail", sectionData: ["vbogomazova@edu.hse.ru"]),
-        CellData(opened: false, title: "Research ID", sectionData: ["4567834336789456737"]),
-        CellData(opened: false, title: "Published", sectionData: ["Это будет очень длинное название книги 1, чтобы сделать проверку", "Книга 2", "Книга 3"]),
-        CellData(opened: false, title: "Courses", sectionData: ["Курс 1", "Курс 2"]),
-        CellData(opened: false, title: "Link", sectionData: ["https://wwww.hse.ru"])
-    ]
+    var userInfo: Model.Users? {
+        didSet {
+            if let userInfo = userInfo {
+                dataSourse = [CellData(opened: false, title: "Contacts", sectionData: [userInfo.email, userInfo.faculty.address]),
+                CellData(opened: false, title: "Faculty", sectionData: [userInfo.faculty.campusName, userInfo.faculty.name, userInfo.faculty.address, userInfo.faculty.path]),
+                CellData(opened: false, title: "Interests", sectionData: userInfo.faculty.tags)]
+            }
+        }
+    }
+    
+    var dataSourse: [CellData] = [ ]
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if (dataSourse[section].opened){
+        if (dataSourse[section].opened) {
             return dataSourse[section].sectionData.count + 1
         } else {
             return 1
@@ -45,8 +48,10 @@ class BasicInfoController: UIViewController, UITableViewDelegate, UITableViewDat
             cell.selectionStyle = .none
             return cell
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-            cell.textLabel?.text = dataSourse[indexPath.section].sectionData[indexPath.row - 1]
+            let cell = tableView.dequeueReusableCell(withIdentifier: infoCellId, for: indexPath) as! InfoCell
+            cell.fill(title: dataSourse[indexPath.section].sectionData[indexPath.row - 1])
+            cell.accessoryType = .none
+            cell.selectionStyle = .none
             return cell
         }
     }

@@ -109,7 +109,8 @@ class NewPostViewController: UIViewController, UITextViewDelegate, TagsReceiver
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        navigationController?.navigationBar.prefersLargeTitles = false
+        //navigationController?.navigationBar.prefersLargeTitles = false
+        navigationItem.largeTitleDisplayMode = .never
         navigationItem.title = "New post"
         textView.text = NewPostViewController.draft
         // tagsField.addTags(NewPostViewController.hashTagsDraft)

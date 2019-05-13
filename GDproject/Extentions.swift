@@ -77,3 +77,33 @@ extension String {
         return timeStamp
     }
 }
+
+extension UIViewController {
+    func showAlertOn(result: ResultR) {
+        
+        let message: String
+        
+        switch result {
+        case .impossibleContent:
+            message = "Impossible content"
+        case .exceededContent:
+            message = "The content exceeded"
+        case .longContent:
+            message = "The content is too long"
+        case .badAccess:
+            message = "Try reloading the page again"
+        case .alreadyRegistered:
+            message = "User is already registered"
+        case .tooMuchToAdd:
+            message = "Limit of channels exceeded"
+        case .success, .success1:
+            return
+        default:
+            message = "Something went wrong"
+        }
+        
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+}

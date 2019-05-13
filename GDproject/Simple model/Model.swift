@@ -10,6 +10,22 @@ import Foundation
 import UIKit
 import Alamofire
 
+enum ResultR: Int {
+    case internalServerError = 500
+    case exceededContent = 470
+    case longContent = 471
+    case incorrectContent = 472
+    case impossibleContent = 473
+    case invalidTocken = 498
+    case alreadyRegistered = 409
+    case invalidCode = 403
+    case badAccess = 400
+    case tooMuchToAdd = 406
+    case notFound = 404
+    case success1 = 204
+    case success = 200
+}
+
 class Model{
     
     static let invalidTocken = 498
@@ -17,7 +33,7 @@ class Model{
     static var hashTagTree: CompletionTree?
     
     private static var isValidTocken: ((Int)->())? = { responce in
-
+        print(responce)
         if responce == invalidTocken {
 
             DataStorage.standard.setIsLoggedIn(value: false, with: 0)
@@ -33,6 +49,7 @@ class Model{
     static let decoder = JSONDecoder()
 
     static let authMeURL = URL(string: "\(baseUrl)/authentication/me")!
+    static let deactivateURL = URL(string: "\(baseUrl)/deactivateAll")!
     static let registerMeURL = URL(string: "\(baseUrl)/authentication/register")!
     static let authVerifyURL = URL(string: "\(baseUrl)/authentication/verify")!
     static let authenticationURL = URL(string:"\(baseUrl)/authentication/login")!
@@ -42,6 +59,7 @@ class Model{
     static let postsPublishURL = URL(string:"\(baseUrl)/posts/publish")!
     static let usersURL = URL(string:"\(baseUrl)/users")!
     static let usersAllURL = URL(string:"\(baseUrl)/users/all")!
+    static let usersUpdateURL = URL(string:"\(baseUrl)/users/update")!
     static let channelsGetURL = URL(string: "\(baseUrl)/channels/get")!
     static let channelsUpdateURL = URL(string: "\(baseUrl)/channels/update")!
     static let channelsListURL = URL(string: "\(baseUrl)/channels")!
@@ -251,15 +269,13 @@ class Model{
             }
             
             if code == 204 {
+                
                 let fields = responce.response?.allHeaderFields as? [String :String]
-                
                 let cookies = HTTPCookie.cookies(withResponseHeaderFields: fields!, for: responce.response!.url!)
-                
                 HTTPCookieStorage.shared.setCookie(cookies[0])
                 
                 completion()
             }
-            
         }
     }
     
@@ -470,7 +486,7 @@ class Model{
     
     static func getUsers(for ids: [Int], completion: @escaping (([Int:Users])->())){
         let json = "\(Set(ids))"
-        print(json)
+
         var request = URLRequest(url: usersURL)
         
         request.httpMethod = "POST"
@@ -534,7 +550,7 @@ class Model{
     }
     
     
-    static func createChannel(with channel: Channels) {
+    static func createChannel(with channel: Channels, completion: @escaping ((ResultR)->())) {
         
         var request = URLRequest(url: channelsCreateURL)
         request.httpMethod = "POST"
@@ -545,9 +561,13 @@ class Model{
             (response) in
             
             isValidTocken?(response.response?.statusCode ?? 498)
-            if let code = response.response?.statusCode, code == 498 {
+            
+            if let code = response.response?.statusCode, let result = ResultR(rawValue: code) {
+                completion(result)
                 return
             }
+            
+            completion(ResultR.internalServerError)
         }
         
     }
@@ -709,8 +729,6 @@ class Model{
             guard let json = response.data else { return }
             
             guard let newQueery = try? decoder.decode(QueryPosts<Posts>.self, from: json) else {  return }
-            
-            print("\(anonymousChannel) \(newQueery)")
             completion((newQueery.users, newQueery.response))
         }
     }
@@ -1079,6 +1097,42 @@ class Model{
             guard let faculties = try? decoder.decode([Faculty].self, from: json) else {  return }
     
             completion(faculties)
+        }
+    }
+    
+    static func userUpdate(with newUser: NewRegistration, completion: @escaping ((Bool)->())) {
+        var request = URLRequest(url: usersUpdateURL)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        request.httpBody = try? JSONEncoder().encode(newUser)
+        
+        AF.request(request).response { (response) in
+            isValidTocken?(response.response?.statusCode ?? 498)
+            
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+            
+            if let code = response.response?.statusCode, code != 204{
+                completion (false)
+            } else {
+                completion(true)
+            }
+        }
+    }
+    
+    static func deactivateAll(completion: @escaping (()->())){
+        var request = URLRequest(url: deactivateURL)
+        request.httpMethod = "DELETE"
+        
+        AF.request(request).response { (responce) in
+            isValidTocken?(responce.response?.statusCode ?? 498)
+            
+            if let code = responce.response?.statusCode, code == 498 {
+                return
+            }
+            
+            completion()
         }
     }
 }

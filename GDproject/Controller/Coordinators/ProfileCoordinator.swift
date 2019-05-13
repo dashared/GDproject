@@ -36,23 +36,25 @@ class ProfileCoordinator: BaseCoordinator {
             }
         }
         
-        profile.onSettings = { [weak self, weak storyboard] in
-            let vc = storyboard?.instantiateViewController(withIdentifier: "SettingsViewController") as! SettingsViewController
+        profile.deleteAllSessions = {
+            Model.deactivateAll() {
+                [weak self] in
+                
+                DataStorage.standard.setIsLoggedIn(value: false, with: 0)
+                self?.didEndSession?()
+            }
+        }
+        
+        profile.onSettings = { [weak self, weak storyboard, weak profile] in
+            
+            let vc = storyboard?.instantiateViewController(withIdentifier: "RegisterTableViewController") as! RegisterTableViewController
+            vc.delegate = profile
+            vc.userActive = profile?.user
+            
             self?.navigationController?.pushViewController(vc, animated: true)
         }
         
-        profile.onChannelsListToAddAPerson = { [weak self, weak storyboard] (user) in
-            let vc = storyboard?.instantiateViewController(withIdentifier: simplifiedChannelsList) as! SimplifiedChannelsList
-            vc.user = user
-            
-            let transition = CATransition()
-            transition.duration = 0.5
-            transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-            transition.type = CATransitionType.moveIn
-            transition.subtype = CATransitionSubtype.fromTop
-            self?.navigationController?.view.layer.add(transition, forKey: nil)
-            self?.navigationController?.pushViewController(vc, animated: false)
-        }
+        
         navigationController?.setViewControllers([profile], animated: false)
     }
 }

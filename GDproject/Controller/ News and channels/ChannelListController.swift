@@ -30,7 +30,7 @@ class ChannelListController: UITableViewController {
     var displayingChannel: Model.Channels?
     
     var toReload: Bool = false {
-        didSet{
+        didSet {
             tableView.reloadData()
         }
     }

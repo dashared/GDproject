@@ -9,8 +9,17 @@
 import UIKit
 import TinyConstraints
 
-class ProfileViewController: UIViewController
+protocol UpdateUser: class {
+    func updateUserObj(with user: Model.Users)
+}
+
+class ProfileViewController: UIViewController, UpdateUser
 {
+    func updateUserObj(with user: Model.Users)
+    {
+        self.user = user
+        Model.Channels.fullPeopleDict[user.id] = user
+    }
     
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
@@ -32,6 +41,8 @@ class ProfileViewController: UIViewController
     
     var logOut: (()->())?
     
+    var deleteAllSessions: (()->())?
+    
     var onSettings: (()->())?
     
     @IBAction func sendMessage(_ sender: UIButton)
@@ -45,8 +56,6 @@ class ProfileViewController: UIViewController
             self.navigationController?.pushViewController(vc, animated: true)
         }
     }
-    
-    var onChannelsListToAddAPerson: ((Model.Users)->())?
     
     var protoDictionary: [String: UIImage] = ["135213": #imageLiteral(resourceName: "9"), "135288": #imageLiteral(resourceName: "5051"), "22723" : #imageLiteral(resourceName: "69"), "135083": #imageLiteral(resourceName: "42")]
     
@@ -106,6 +115,15 @@ class ProfileViewController: UIViewController
         posts.type = .NONE
         posts.currChannel = channel
         
+        posts.onFullPost = {
+            [weak self] (type,post) in
+            
+            let vc = self?.storyboard?.instantiateViewController(withIdentifier: fullPostControllerId) as! FullPostController
+            vc.type = type
+            vc.post = post
+            self?.navigationController!.pushViewController(vc, animated: true)
+        }
+        
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
         tableView.register(PostViewCell.self, forCellReuseIdentifier: postCellId)
@@ -151,29 +169,52 @@ class ProfileViewController: UIViewController
         
         let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        let channelAction = UIAlertAction(title: "Add to a channel", style: .default){
-            [weak self] (_) in
-            self?.onChannelsListToAddAPerson?(self!.user!)
-        }
-        
-        let settingsAction = UIAlertAction(title: "Setting", style: .default)
-        { [weak self] (_) in
-           self?.onSettings?()
-        }
-        
+       
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         
-        let logoutAction = UIAlertAction(title: "Log out", style: .destructive)
-        { [weak self]
-            (_) in
-            self?.logOut?()
+        
+        if idProfile == DataStorage.standard.getUserId() {
+            let logoutAction = UIAlertAction(title: "Log out", style: .destructive)
+            { [weak self]
+                (_) in
+                self?.logOut?()
+            }
+            
+            let deleetAllSessionsAction = UIAlertAction(title: "Delete all sessions", style: .destructive)
+            { [weak self]
+                (_) in
+                self?.deleteAllSessions?()
+            }
+            
+            let settingsAction = UIAlertAction(title: "Edit profile", style: .default)
+            { [weak self] (_) in
+                self?.onSettings?()
+            }
+            
+            optionMenu.addAction(settingsAction)
+            optionMenu.addAction(logoutAction)
+            optionMenu.addAction(deleetAllSessionsAction)
+        } else {
+            let channelAction = UIAlertAction(title: "Add to a channel", style: .default)
+            {
+                [weak self] (_) in
+    
+                let vc = self?.storyboard?.instantiateViewController(withIdentifier: simplifiedChannelsList) as! SimplifiedChannelsList
+                vc.user = self?.user
+                
+                let transition = CATransition()
+                transition.duration = 0.5
+                transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+                transition.type = CATransitionType.moveIn
+                transition.subtype = CATransitionSubtype.fromTop
+                self?.navigationController?.view.layer.add(transition, forKey: nil)
+                self?.navigationController?.pushViewController(vc, animated: false)
+            }
+            
+            optionMenu.addAction(channelAction)
         }
         
-        optionMenu.addAction(channelAction)
-        optionMenu.addAction(settingsAction)
-        optionMenu.addAction(logoutAction)
         optionMenu.addAction(cancelAction)
-        
         self.present(optionMenu, animated: true, completion: nil)
     }
     
@@ -203,6 +244,7 @@ class ProfileViewController: UIViewController
     func changeToBasicInfo(){
         tableView.delegate = basicInfo
         tableView.dataSource = basicInfo
+        basicInfo.userInfo = self.user
         tableView.reloadData()
     }
 }

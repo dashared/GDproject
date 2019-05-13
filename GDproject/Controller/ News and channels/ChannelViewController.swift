@@ -65,7 +65,11 @@ class ChannelViewController: UITableViewController, UpdatableName, UpdatableChan
             {
                 Model.updateChannel(with: channel!)
             } else {
-                Model.createChannel(with: channel!)
+                Model.createChannel(with: channel!) {
+                    [weak self] in
+                    self?.showAlertOn(result: $0)
+                    return
+                }
             }
             return
         }

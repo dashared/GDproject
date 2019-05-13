@@ -11,9 +11,9 @@ import UIKit
 class RegisterTableViewController: UITableViewController, ChosenFactulty
 {
     
-    func presentAlertInvalidData()
+    func presentAlertInvalidData(message: String)
     {
-        let alert = UIAlertController(title: "Invalid data", message: "Some fields are missing. Add more information", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Invalid data", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
@@ -23,11 +23,28 @@ class RegisterTableViewController: UITableViewController, ChosenFactulty
         tableView.reloadData()
     }
     
-
+    weak var delegate: UpdateUser?
+    
     var onRegistration: (()->())?
     
     var faculty: Model.Faculty?
     var user: Model.NewRegistration = Model.NewRegistration(email: DataStorage.standard.getEmail()!, firstName: nil, middleName: nil, lastName: nil, faculty: nil)
+    
+    var userActive: Model.Users? {
+        didSet {
+            if let userA = userActive {
+                user.firstName = userA.firstName
+                user.middleName = userA.middleName
+                user.lastName = userA.lastName
+                
+                faculty = userA.faculty
+                self.updateUserIfCan = true
+                tableView.reloadData()
+            }
+        }
+    }
+    
+    var updateUserIfCan: Bool = false
     
     override func viewDidLoad()
     {
@@ -38,22 +55,46 @@ class RegisterTableViewController: UITableViewController, ChosenFactulty
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(endRegistration))
     }
 
+    
     @objc func endRegistration()
     {
+        let fieldsMissing = "Some fields are missing. Add more information"
         updateUser()
-        guard let faculty = faculty else { presentAlertInvalidData(); return }
+        guard let faculty = faculty else { presentAlertInvalidData(message: fieldsMissing); return }
         
         user.faculty = faculty.url
         
-        guard let _ = user.firstName else { presentAlertInvalidData(); return  }
-        guard let _ = user.middleName else { presentAlertInvalidData(); return  }
-        guard let _ = user.lastName else { presentAlertInvalidData(); return  }
+        guard let name = user.firstName else { presentAlertInvalidData(message: fieldsMissing); return  }
+        guard let middle = user.middleName else { presentAlertInvalidData(message: fieldsMissing); return  }
+        guard let last = user.lastName else { presentAlertInvalidData(message: fieldsMissing); return  }
         
-        Model.register(object: user)
-        { [weak self] in
-            self?.onRegistration?()
+        if updateUserIfCan {
+            guard let delegate = delegate else { return }
+            guard var userA = userActive else { return }
+            
+            // updating current
+            userA.firstName = name
+            userA.faculty = faculty
+            userA.middleName = middle
+            userA.lastName = last
+            
+            Model.userUpdate(with: user) { [weak self] in
+                
+                if $0 {
+                    delegate.updateUserObj(with: userA)
+                    self?.navigationController?.popViewController(animated: true)
+                } else {
+                    self?.presentAlertInvalidData(message: "Something went wrong! Try again")
+                }
+                
+            }
+        } else {
+            
+            Model.register(object: user)
+            { [weak self] in
+                self?.onRegistration?()
+            }
         }
-        
     }
     // MARK: - Table view data source
 

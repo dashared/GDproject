@@ -248,7 +248,8 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         return cellData.count
     }
 
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool)
+    {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = true
         

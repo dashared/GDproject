@@ -52,6 +52,7 @@ class NewsController: UIViewController, UISearchControllerDelegate, UpdateableWi
         let updater = TagsSuggestionController()
         updater.delegate = self
         searchController = UISearchController(searchResultsController: updater)
+        navigationItem.largeTitleDisplayMode = .always
         
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = "Loading ..."
