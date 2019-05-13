@@ -41,7 +41,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate, TagsReceiver
     let textStorage = MarklightTextStorage()
     
     static var draft: String = ""
-    static var hashTagsDraft: [String] = ["tt"]
+    static var hashTagsDraft: [String] = [ ]
     
     var textView: UITextView!
     
@@ -72,7 +72,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate, TagsReceiver
         
         setUpMD()
         setUpTextView()
-        setUpAccessoryView()
+        // setUpAccessoryView()
         //setUpTagsView()
     }
 
@@ -141,7 +141,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate, TagsReceiver
     func setUpTextView(){
         view.addConstraint(bottomTextViewConstraint)
         view1.addSubview(textView)
-        textView.edgesToSuperview(insets: .top(8) + .left(8) + .bottom(40+8) + .right(8))
+        textView.edgesToSuperview(insets: .top(8) + .left(8) + .bottom(8) + .right(8))
         
         if #available(iOS 11.0, *) {
             textView.smartDashesType = .no
@@ -210,7 +210,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate, TagsReceiver
     }
     
     func setUpMD(){
-        textStorage.marklightTextProcessor.codeColor = UIColor.orange
+        textStorage.marklightTextProcessor.codeColor = UIColor.gray
         textStorage.marklightTextProcessor.quoteColor = UIColor.darkGray
         textStorage.marklightTextProcessor.syntaxColor = UIColor.blue
         textStorage.marklightTextProcessor.codeFontName = "Courier"
@@ -233,6 +233,9 @@ class NewPostViewController: UIViewController, UITextViewDelegate, TagsReceiver
     // MARK:- new post
     @objc func newPost(){
         Model.createAndPublish(body: [Model.Attachments(markdown: textView!.text)], tags: currentTags)
+        
+        NewPostViewController.draft = ""
+        NewPostViewController.hashTagsDraft = []
         // adding row to uiTableView after adding new post
         // myProtocol?.addPost(post: p)
         moveBackToParentVC?()
@@ -247,7 +250,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate, TagsReceiver
             [weak self]
             _ in
             NewPostViewController.draft = self?.textView.text ?? ""
-            NewPostViewController.hashTagsDraft = /*self?.tagsField.tags.map { $0.text } ??*/ []
+            NewPostViewController.hashTagsDraft = self?.currentTags ?? []
             self?.moveBackToParentVC?()
         }
         

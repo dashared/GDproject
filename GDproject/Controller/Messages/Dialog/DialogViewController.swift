@@ -172,7 +172,7 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         messageTextView.edgesToSuperview(excluding: .right)
         messageTextView.rightToLeft(of: sendButton)
         
-        tableView.edgesToSuperview(excluding: .bottom, insets: .top(self.navigationController?.navigationBar.frame.size.height ?? 0))
+        tableView.edgesToSuperview(excluding: .bottom)
         tableView.bottomToTop(of: messageSendView)
         
         self.view.layoutSubviews()
