@@ -132,8 +132,13 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         {
             Model.sendMessage(message: Model.SendMessage(body: Model.Attachments(markdown: messageTextView.text), destination: destination)) { [unowned self] in
                 
-                self.getMessagesNew(for: self.dialog!)
-                self.messageTextView.text = ""
+                switch $0 {
+                case .success, .success1:
+                    self.getMessagesNew(for: self.dialog!)
+                    self.messageTextView.text = ""
+                default:
+                    self.showAlertOn(result: $0)
+                }
             }
             
             prevLast = -1

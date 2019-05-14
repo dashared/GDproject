@@ -232,13 +232,25 @@ class NewPostViewController: UIViewController, UITextViewDelegate, TagsReceiver
     var indexOfPost = 0
     // MARK:- new post
     @objc func newPost(){
-        Model.createAndPublish(body: [Model.Attachments(markdown: textView!.text)], tags: currentTags)
+        Model.createAndPublish(body: [Model.Attachments(markdown: textView!.text)], tags: currentTags) {
+            [weak self] in
+            
+            switch $0 {
+            case .success1, .success:
+                NewPostViewController.draft = ""
+                NewPostViewController.hashTagsDraft = []
+                self?.moveBackToParentVC?()
+            default:
+                // self?.actionSaveDraft()
+                self?.showAlertOn(result: $0)
+            }
+        }
         
-        NewPostViewController.draft = ""
-        NewPostViewController.hashTagsDraft = []
+        // NewPostViewController.draft = ""
+        // NewPostViewController.hashTagsDraft = []
         // adding row to uiTableView after adding new post
         // myProtocol?.addPost(post: p)
-        moveBackToParentVC?()
+        // moveBackToParentVC?()
         // somewhere here i will be sending server notifications about new post arrival
     }
     

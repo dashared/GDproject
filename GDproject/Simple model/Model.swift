@@ -427,7 +427,7 @@ class Model{
     }
     
     
-    static func createAndPublish(body: [Attachments], tags: [String]){
+    static func createAndPublish(body: [Attachments], tags: [String], completion: @escaping ((ResultR)->())){
         let jsonUpd = CreatedPost(body: body, tags: tags)
         var request = URLRequest(url: postsPublishURL)
         
@@ -444,6 +444,14 @@ class Model{
             
             if let code = response.response?.statusCode, code == 498 {
                 return
+            }
+            
+            if let code = response.response?.statusCode,
+                let result =  ResultR(rawValue: code)
+            {
+                completion(result)
+            } else {
+                completion(.internalServerError)
             }
         }
     }
@@ -1048,7 +1056,7 @@ class Model{
         }
     }
     
-    static func sendMessage(message: SendMessage, completion: @escaping (()->())){
+    static func sendMessage(message: SendMessage, completion: @escaping ((ResultR)->())){
 
         var request = URLRequest(url: messagesSendURL)
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
@@ -1062,7 +1070,11 @@ class Model{
                 return
             }
             
-            completion()
+            if let result = ResultR(rawValue: response.response!.statusCode){
+                completion(result)
+            } else {
+                completion(.internalServerError)
+            }
         }
     }
     
