@@ -19,7 +19,9 @@ struct PostCellData{
         
         let markdownParser = MarkdownParser(font: UIFont.systemFont(ofSize: 16))
         markdownParser.enabledElements = .disabledAutomaticLink
-        markdownParser.code.textBackgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        markdownParser.code.font = UIFont(name: "Menlo", size: 16)
+        markdownParser.code.textBackgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        markdownParser.code.color = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         
         return markdownParser.parse(markdown)
     }
