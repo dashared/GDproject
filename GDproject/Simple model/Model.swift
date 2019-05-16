@@ -953,7 +953,7 @@ class Model{
         }
     }
     
-    static func getMessagesFor(typeOfChat: Model.Dialog, chat id: Int, exclusiveFrom: Int? = nil, limit l: Int = 10, direction: String = "backward", completion: @escaping (([LastMessage])->()))
+    static func getMessagesFor(typeOfChat: Model.Dialog, chat id: Int, exclusiveFrom: Int? = nil, limit l: Int = 25, direction: String = "backward", completion: @escaping (([LastMessage])->()))
     {
         let req = GeneralRequest<Int>(direction: direction, limit: l, exclusiveFrom: exclusiveFrom, request: id)
         var request: URLRequest?

@@ -159,7 +159,7 @@ class ProfileViewController: UIViewController, UpdateUser
     }
     
     func setUpNavigarionBar(){
-        navigationController?.navigationBar.prefersLargeTitles = true
+        // navigationController?.navigationBar.prefersLargeTitles = true
         let uibarbutton = UIBarButtonItem(title: "More", style: .plain, target: self, action: #selector(showInformation))
         navigationItem.rightBarButtonItems = [uibarbutton]
         navigationItem.largeTitleDisplayMode = .always

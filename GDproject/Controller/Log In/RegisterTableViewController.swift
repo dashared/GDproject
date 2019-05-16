@@ -50,6 +50,7 @@ class RegisterTableViewController: UITableViewController, ChosenFactulty
     {
         super.viewDidLoad()
         
+        navigationItem.largeTitleDisplayMode = .never
         tableView.keyboardDismissMode = .interactive
         navigationItem.title = user.email
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(endRegistration))

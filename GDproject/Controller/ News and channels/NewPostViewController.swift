@@ -232,6 +232,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate, TagsReceiver
     var indexOfPost = 0
     // MARK:- new post
     @objc func newPost(){
+        self.navigationItem.title = "Sending..."
         Model.createAndPublish(body: [Model.Attachments(markdown: textView!.text)], tags: currentTags) {
             [weak self] in
             
@@ -241,9 +242,10 @@ class NewPostViewController: UIViewController, UITextViewDelegate, TagsReceiver
                 NewPostViewController.hashTagsDraft = []
                 self?.moveBackToParentVC?()
             default:
-                // self?.actionSaveDraft()
                 self?.showAlertOn(result: $0)
+                self?.navigationItem.title = "New post"
             }
+            
         }
         
         // NewPostViewController.draft = ""

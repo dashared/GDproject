@@ -61,7 +61,9 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         
         self.tableView.delegate = self
         self.tableView.dataSource = self
-
+        
+        tableView.setContentOffset(CGPoint(x: 0, y: 50), animated: false)
+        
         navigationItem.largeTitleDisplayMode = .never
         
         tableView.keyboardDismissMode = .onDrag
@@ -114,6 +116,7 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
         let button = UIButton()
         button.setTitle("Send", for: .normal)
         button.setTitleColor(.blue, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         button.addTarget(self, action: #selector(sendMessage), for: .touchUpInside)
         return button
     }()
@@ -320,7 +323,7 @@ class DialogViewController: UIViewController, UpdatableGroup, UITableViewDelegat
     var canBePaginated = false
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
     {
-        if indexPath.row == cellData.count - 1 && prevLast != indexPath.row && canBePaginated && cellData.count >= 9
+        if indexPath.row == cellData.count - 1 && prevLast != indexPath.row && canBePaginated && cellData.count >= 24
         {
             print("exclusiveFrom \(currentMessagesInChat.last?.id ?? 0)")
             if let dialog = dialog
