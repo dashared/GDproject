@@ -10,23 +10,38 @@ import UIKit
 import Cartography
 import Marklight
 import TinyConstraints
-import WSTagsField
+import TaggerKit
+// import WSTagsField
 
-class NewPostViewController: UIViewController, UITextViewDelegate {
+class NewPostViewController: UIViewController, UITextViewDelegate, TagsReceiver
+{
+    func receiveTags(tags: [String]) {
+        currentTags = tags
+    }
     
     @IBOutlet weak var view1: UIView!
     
-    @IBOutlet weak var viewForTags: UIView!
+    var currentTags: [String] = []
     
-    fileprivate let tagsField = WSTagsField()
+    // We want the whole experience, let's create two TKCollectionViews
+    let productTags = TKCollectionView()
+    
+    @IBAction func chooseTags(_ sender: UIButton) {
+        let vc = storyboard?.instantiateViewController(withIdentifier: taggsSelectionViewController) as! TaggsSelectionViewController
+        
+        NewPostViewController.draft = textView.text
+        vc.receiver = self
+        vc.currentTags = currentTags
+        
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    // fileprivate let tagsField = WSTagsField()
     // Keep strong instance of the `NSTextStorage` subclass
     let textStorage = MarklightTextStorage()
     
-    weak var parentVC: NewsController?
-    var myProtocol: NewPostDelegate?
-    
     static var draft: String = ""
-    static var hashTagsDraft: [String] = []
+    static var hashTagsDraft: [String] = [ ]
     
     var textView: UITextView!
     
@@ -57,11 +72,11 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         
         setUpMD()
         setUpTextView()
-        setUpAccessoryView()
-        setUpTagsView()
+        // setUpAccessoryView()
+        //setUpTagsView()
     }
 
-    func setUpTagsView(){
+   /* func setUpTagsView(){
         tagsField.frame = viewForTags.bounds
         viewForTags.addSubview(tagsField)
         
@@ -89,15 +104,16 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         tagsField.acceptTagOption = .space
         
         textFieldEvents()
-    }
+    }*/
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        navigationController?.navigationBar.prefersLargeTitles = false
+        //navigationController?.navigationBar.prefersLargeTitles = false
+        navigationItem.largeTitleDisplayMode = .never
         navigationItem.title = "New post"
         textView.text = NewPostViewController.draft
-        tagsField.addTags(NewPostViewController.hashTagsDraft)
+        // tagsField.addTags(NewPostViewController.hashTagsDraft)
 
     }
     
@@ -125,7 +141,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
     func setUpTextView(){
         view.addConstraint(bottomTextViewConstraint)
         view1.addSubview(textView)
-        textView.edgesToSuperview(insets: .top(8) + .left(8) + .bottom(40+8) + .right(8))
+        textView.edgesToSuperview(insets: .top(8) + .left(8) + .bottom(8) + .right(8))
         
         if #available(iOS 11.0, *) {
             textView.smartDashesType = .no
@@ -194,7 +210,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
     }
     
     func setUpMD(){
-        textStorage.marklightTextProcessor.codeColor = UIColor.orange
+        textStorage.marklightTextProcessor.codeColor = UIColor.gray
         textStorage.marklightTextProcessor.quoteColor = UIColor.darkGray
         textStorage.marklightTextProcessor.syntaxColor = UIColor.blue
         textStorage.marklightTextProcessor.codeFontName = "Courier"
@@ -216,10 +232,27 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
     var indexOfPost = 0
     // MARK:- new post
     @objc func newPost(){
-        Model.createAndPublish(body: [Model.Attachments(markdown: textView!.text)], tags: tagsField.tags.map { $0.text })
+        self.navigationItem.title = "Sending..."
+        Model.createAndPublish(body: [Model.Attachments(markdown: textView!.text)], tags: currentTags) {
+            [weak self] in
+            
+            switch $0 {
+            case .success1, .success:
+                NewPostViewController.draft = ""
+                NewPostViewController.hashTagsDraft = []
+                self?.moveBackToParentVC?()
+            default:
+                self?.showAlertOn(result: $0)
+                self?.navigationItem.title = "New post"
+            }
+            
+        }
+        
+        // NewPostViewController.draft = ""
+        // NewPostViewController.hashTagsDraft = []
         // adding row to uiTableView after adding new post
         // myProtocol?.addPost(post: p)
-        moveBackToParentVC()
+        // moveBackToParentVC?()
         // somewhere here i will be sending server notifications about new post arrival
     }
     
@@ -231,8 +264,8 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
             [weak self]
             _ in
             NewPostViewController.draft = self?.textView.text ?? ""
-            NewPostViewController.hashTagsDraft = self?.tagsField.tags.map { $0.text } ?? []
-            self?.moveBackToParentVC()
+            NewPostViewController.hashTagsDraft = self?.currentTags ?? []
+            self?.moveBackToParentVC?()
         }
         
         let deleteAction = UIAlertAction(title: "Delete draft", style: .destructive)
@@ -241,7 +274,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
             in
             NewPostViewController.draft = ""
             NewPostViewController.hashTagsDraft = []
-            self?.moveBackToParentVC()
+            self?.moveBackToParentVC?()
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
@@ -258,16 +291,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         actionSaveDraft()
     }
     
-    func moveBackToParentVC(){
-        let transition = CATransition()
-        transition.duration = 0.5
-        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        transition.type = CATransitionType.reveal
-        transition.subtype = CATransitionSubtype.fromBottom
-        navigationController?.view.layer.add(transition, forKey: nil)
-        navigationController?.popViewController(animated: false)
-        textView!.resignFirstResponder()
-    }
+    var moveBackToParentVC: (()->())?
     
     
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
@@ -281,7 +305,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         textView.scrollRectToVisible(rect, animated: animated)
     }
     
-    fileprivate func textFieldEvents() {
+    /*fileprivate func textFieldEvents() {
         tagsField.onDidAddTag = { _, _ in
             print("onDidAddTag")
         }
@@ -305,16 +329,16 @@ class NewPostViewController: UIViewController, UITextViewDelegate {
         tagsField.onDidUnselectTagView = { _, tagView in
             print("Unselect \(tagView)")
         }
-    }
+    }*/
 }
 
 
 extension NewPostViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == tagsField {
+        /*if textField == tagsField {
             textView.becomeFirstResponder()
-        }
+        }*/
         return true
     }
     

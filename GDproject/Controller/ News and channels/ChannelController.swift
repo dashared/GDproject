@@ -25,13 +25,16 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
     var channel: Model.Channels?
     var myProtocol: DataDelegate?
     
-    var fullTags: [String] = Array(Model.Channels.fullTags)
+    var fullTags: [String] = CompletionTree.getCompletion(tree: Model.hashTagTree!, word: "")
     
     var dataSourcePeople: [Model.Users] = []
     
     var dataSourceTags: [String] = []
     
     var activeDataSource: ActiveTable = .people
+    
+    // func to show preview of the current channel
+    var onShowingPreview: ((Model.Channels)->())?
     
     @IBOutlet weak var viewww: UIView!
     
@@ -61,15 +64,32 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
     
     // TODO: update channel
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        if let _ = channel?.id {        print("update")
-            Model.updateChannel(with: channel!)
-        } else {                        print("create")
-            Model.createChannel(with: channel!)
+        
+        defer {
+            super.viewWillDisappear(animated)
+        }
+        
+        guard let _ = self.navigationController?.viewControllers.lastIndex(of: self) else {
+            if let _ = channel?.id {        print("update")
+                Model.updateChannel(with: channel!)
+            } else {                        print("create")
+               //Model.createChannel(with: channel!)
+            }
+            return
+        }
+        // nou
+    }
+    
+    @objc func showPreview(){
+        if let channel = channel {
+            onShowingPreview?(channel)
         }
     }
     
     func setUpController(){
+        
+        // setting up the preview button for the editing or created channel
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Preview", style: .done, target: self, action: #selector(showPreview))
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -232,9 +252,7 @@ class ChannelController: UIViewController, UITableViewDelegate, UITableViewDataS
             }
             tableView.reloadData()
         case 1:
-            dataSourceTags = fullTags.filter({ (s) -> Bool in
-                s.lowercased().contains(text.lowercased())
-            })
+            dataSourceTags = CompletionTree.getCompletion(tree: Model.hashTagTree!, word: text)
             tableView.reloadData()
         default:
             break

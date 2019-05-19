@@ -60,3 +60,50 @@ extension UIStoryboard {
         return UIStoryboard.userEdit.instantiateViewController(withIdentifier: logInController) as! LogInViewController
     }
 }
+
+
+extension String {
+    func getDate() -> String
+    {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"//this your string date format
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        let date = dateFormatter.date(from: self)
+        
+        dateFormatter.dateFormat = "MMM d, yyyy HH:mm" ///this is what you want to convert format
+        dateFormatter.timeZone = NSTimeZone.local
+        let timeStamp = dateFormatter.string(from: date!)
+        
+        return timeStamp
+    }
+}
+
+extension UIViewController {
+    func showAlertOn(result: ResultR) {
+        
+        let message: String
+        
+        switch result {
+        case .impossibleContent:
+            message = "Impossible content"
+        case .exceededContent:
+            message = "The content exceeded"
+        case .longContent:
+            message = "The content is too long"
+        case .badAccess:
+            message = "Try reloading the page again"
+        case .alreadyRegistered:
+            message = "User is already registered"
+        case .tooMuchToAdd:
+            message = "Limit of channels exceeded"
+        case .success, .success1:
+            return
+        default:
+            message = "Something went wrong"
+        }
+        
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+}

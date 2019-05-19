@@ -16,8 +16,9 @@ class InfoCell: UITableViewCell{
         label.font = UIFont.systemFont(ofSize: 16)
         label.sizeToFit()
         label.isScrollEnabled = false
-        label.isUserInteractionEnabled = false
+        // label.isUserInteractionEnabled = false
         label.isEditable = false
+        label.dataDetectorTypes = .all
         label.textColor =  .black
         return label
     }()

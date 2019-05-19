@@ -13,20 +13,24 @@ struct ChannelData{
     var subtitle = String()
 }
 
+protocol ChannelListData: class {
+    func reloadData (with channels: [Model.Channels])
+}
+
 // TODO: make search controller availiable
-class ChannelListController: UITableViewController, DataDelegate {
+class ChannelListController: UITableViewController {
     
     // MARK: - Output -
     var onChannelSelected: ((Model.Channels) -> Void)?
+    var onEditingModeBegins: ((Model.Channels, IndexPath)->Void)?
     
     // MARK: - filter search controller
     var filteredDataSource = [Model.Channels]()
     
-    var myProtocol: DataDelegate?
     var displayingChannel: Model.Channels?
     
     var toReload: Bool = false {
-        didSet{
+        didSet {
             tableView.reloadData()
         }
     }
@@ -80,7 +84,7 @@ class ChannelListController: UITableViewController, DataDelegate {
         askForUpdates()
     }
     
-    private func askForUpdates(){
+    func askForUpdates(){
         Model.channelsList { [weak self] (channels) in
             self?.dataSource = [ChannelListController.generalChannel] + channels
             self?.toReload = true
@@ -89,17 +93,14 @@ class ChannelListController: UITableViewController, DataDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        askForUpdates()
+        //askForUpdates()
+        tabBarController?.tabBar.isHidden = false
     }
     
     @objc func addChannel()
     {
         // editing mode is on automatically
-        let vc = storyboard?.instantiateViewController(withIdentifier: channelControllerId) as! ChannelController
-        vc.index = 1
-        vc.myProtocol = self
-        vc.channel = Model.Channels(people: [], name: "Untitled", tags: [])
-        navigationController?.pushViewController(vc, animated: true)
+        onEditingModeBegins?(Model.Channels(people: [], name: "Untitled", id: 0, tags: []),IndexPath(row: 1, section: 0))
     }
     
     static let generalChannel = Model.Channels(people: [], name: "General", id: -1, tags: [])
@@ -143,27 +144,18 @@ class ChannelListController: UITableViewController, DataDelegate {
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]?
     {
-        
-        let editButton = UITableViewRowAction(style: .normal, title: "Edit") { [weak self] (action, indexPath) in
-            let vc = self?.storyboard?.instantiateViewController(withIdentifier: channelControllerId) as! ChannelController
-            vc.index = indexPath.row
-            vc.myProtocol = self!
-            vc.channel = self?.dataSource[indexPath.row]
-            self?.navigationController?.pushViewController(vc, animated: true)
+        let editButton = UITableViewRowAction(style: .normal, title: "Edit") { [unowned self] (rowAction, indexPath) in
+            self.onEditingModeBegins?(self.dataSource[indexPath.row], indexPath)
         }
-        editButton.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         
+        editButton.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         
         let deleteButton = UITableViewRowAction(style: .normal, title: "Delete") { [weak self] (action, indexPath) in
             
             Model.channelsDelete(by: self!.dataSource[indexPath.row].id!, completion: {
                 print("хз что тут делать при успехе")
             })
-            
-            if (self!.dataSource[indexPath.row].id == self!.displayingChannel?.id ?? -1)
-            {
-                self?.myProtocol?.passData(for: 0, channel: self!.dataSource[0])
-            }
+
             self?.tableView.beginUpdates()
             self?.dataSource.remove(at: indexPath.row)
             self?.tableView.deleteRows(at: [indexPath], with: .none)
@@ -175,17 +167,12 @@ class ChannelListController: UITableViewController, DataDelegate {
         return [editButton, deleteButton]
     }
     
-    // TODO: remove popping
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         if isFiltering {
-            //onChannelSelected?(filteredDataSource[indexPath.row])
-            myProtocol?.passData(for: 0, channel: filteredDataSource[indexPath.row])
-            navigationController?.popViewController(animated: true)
+            onChannelSelected?(filteredDataSource[indexPath.row])
         } else {
-            myProtocol?.passData(for: 0, channel: dataSource[indexPath.row])
-            navigationController?.popViewController(animated: true)
-            //onChannelSelected?(ChannelListController.dataSource[indexPath.row])
+            onChannelSelected?(dataSource[indexPath.row])
         }
     }
 }

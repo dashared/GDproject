@@ -25,27 +25,10 @@ class FullPostController: UITableViewController {
 
     func setUpNavigationBar(){
         navigationItem.largeTitleDisplayMode = .never
-        navigationItem.title = "\(post?.authorId ?? 0)"
-        navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(self.options))]
+        navigationItem.title = "Post"
     }
     
-    @objc func options(){
-        // drafts
-        // saved
-        
-        let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        let editAction = UIAlertAction(title: "Send via message", style: .default)
-        let shareAction = UIAlertAction(title: "Send via project", style: .default)
-        let settingsAction = UIAlertAction(title: "Copy link", style: .default)
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        
-        optionMenu.addAction(editAction)
-        optionMenu.addAction(shareAction)
-        optionMenu.addAction(settingsAction)
-        optionMenu.addAction(cancelAction)
-        
-        self.present(optionMenu, animated: true, completion: nil)
-    }
+    
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -102,6 +85,7 @@ class FullPostController: UITableViewController {
             cell.onUserDisplay = { [weak self] (id) in
                 let vc = self?.storyboard!.instantiateViewController(withIdentifier: profileViewController) as! ProfileViewController
                 vc.idProfile = id
+                
                 self?.navigationController?.pushViewController(vc, animated: true)
             }
         default:

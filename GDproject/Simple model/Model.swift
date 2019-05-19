@@ -7,40 +7,85 @@
 //
 
 import Foundation
+import UIKit
 import Alamofire
+
+enum ResultR: Int {
+    case internalServerError = 500
+    case exceededContent = 470
+    case longContent = 471
+    case incorrectContent = 472
+    case impossibleContent = 473
+    case invalidTocken = 498
+    case alreadyRegistered = 409
+    case invalidCode = 403
+    case badAccess = 400
+    case tooMuchToAdd = 406
+    case notFound = 404
+    case success1 = 204
+    case success = 200
+}
 
 class Model{
     
     static let invalidTocken = 498
     
+    static var hashTagTree: CompletionTree?
+    
     private static var isValidTocken: ((Int)->())? = { responce in
+        print(responce)
         if responce == invalidTocken {
+
             DataStorage.standard.setIsLoggedIn(value: false, with: 0)
+            (UIApplication.shared.delegate as! AppDelegate).relaunch()
+            
+            Model.logout {
+                print("Logout Is Successful")
+            }
         }
     }
     
     private static let baseUrl = "https://valera-denis.herokuapp.com"
     static let decoder = JSONDecoder()
-    
+
+    static let authMeURL = URL(string: "\(baseUrl)/authentication/me")!
+    static let deactivateURL = URL(string: "\(baseUrl)/deactivateAll")!
+    static let registerMeURL = URL(string: "\(baseUrl)/authentication/register")!
+    static let authVerifyURL = URL(string: "\(baseUrl)/authentication/verify")!
     static let authenticationURL = URL(string:"\(baseUrl)/authentication/login")!
+    static let logOutURL = URL(string:"\(baseUrl)/authentication/logout")!
     static let postsLastURL = URL(string:"\(baseUrl)/posts/last")!
     static let postsForUserURL = URL(string:"\(baseUrl)/posts/forUser")!
     static let postsPublishURL = URL(string:"\(baseUrl)/posts/publish")!
     static let usersURL = URL(string:"\(baseUrl)/users")!
     static let usersAllURL = URL(string:"\(baseUrl)/users/all")!
+    static let usersUpdateURL = URL(string:"\(baseUrl)/users/update")!
     static let channelsGetURL = URL(string: "\(baseUrl)/channels/get")!
     static let channelsUpdateURL = URL(string: "\(baseUrl)/channels/update")!
     static let channelsListURL = URL(string: "\(baseUrl)/channels")!
     static let channelsCreateURL = URL(string: "\(baseUrl)/channels/create")!
     static let channelsDeleteURL = URL(string: "\(baseUrl)/channels/delete")!
+    static let channelsGetAnonURL = URL(string: "\(baseUrl)/channels/getAnonymous")!
+    static let complexURL = URL(string: "\(baseUrl)/complex")!
+    static let hashTagTreeURL = URL(string: "\(baseUrl)/tags/completions")!
+    static let createGroupChatURL = URL(string: "\(baseUrl)/chats/createGroupChat")!
+    static let chatsGetAllURL = URL(string: "\(baseUrl)/chats/getAll")!
+    static let getGroupChatURL = URL(string: "\(baseUrl)/chats/getGroupChat")!
+    static let leaveGroupChatURL = URL(string: "\(baseUrl)/chats/leaveGroupChat")!
+    static let updateGroupChatURL = URL(string: "\(baseUrl)/chats/updateGroupChat")!
+    static let messagesGetGroupChatURL = URL(string: "\(baseUrl)/messages/get/groupChat")! //r
+    static let messagesSendURL = URL(string: "\(baseUrl)/messages/send")!
+    static let messagesGetUserChatURL = URL(string: "\(baseUrl)/messages/get/userChat")!
+    static let facultySearchURL = URL(string: "\(baseUrl)/faculty/search")!
     
     
-    struct QueryPosts: Codable{
+    struct QueryPosts<T: Codable>: Codable {
         var users: [Int: Users]
-        var posts: [Posts]
+        var response: [T]
     }
     
     struct Posts: Codable {
+        
         var body: [Attachments]
         var authorId: Int
         var id: Int
@@ -103,7 +148,12 @@ class Model{
         var lastName: String
         var firstName: String
         var id: Int
+        var faculty: Faculty
+        var email: String
         
+        func fullName() -> String {
+            return "\(firstName) \(lastName)"
+        }
     }
     
     struct Attachments: Codable {
@@ -125,7 +175,7 @@ class Model{
     
     struct Channels: Codable {
         
-        static var fullTags = Set<String>()
+        // static var fullTags = Set<String>()
         static var fullPeople = [Users]()
         static var fullPeopleDict = [Int:Users]()
         
@@ -163,24 +213,108 @@ class Model{
         }
     }
     
-    static func authenticate(with id: Int, completion: @escaping ((Bool)->())) {
+    struct AuthStatus: Codable {
+        var userStatus: String
         
-        let json: [String:Any] = ["authenticationId" : id]
-        let jsonData = try? JSONSerialization.data(withJSONObject: json)
-        
-        var request = URLRequest(url: authenticationURL)
+        init(){
+            userStatus = "invalid"
+        }
+    }
+    
+    static func logout(completion: @escaping (()->())){
+        var request = URLRequest(url: logOutURL)
         request.httpMethod = "POST"
         
-        // insert json data to the request
-        request.httpBody = jsonData
+        AF.request(request).response { (responce) in
+            isValidTocken?(responce.response?.statusCode ?? 498)
+            
+            if let code = responce.response?.statusCode, code == 498 {
+                return
+            }
+            
+            completion()
+        }
+    }
+    
+    /*
+     "email": "vchernyshev@hse.ru",
+     "middleName": "Algebrovich",
+     "lastName": "Leonidov",
+     "faculty": "cs.hse.ru/dse",
+     "firstName": "Seva"
+     */
+    
+    struct NewRegistration: Codable{
+        var email: String
+        var firstName: String?
+        var middleName: String?
+        var lastName: String?
+        var faculty: String?
+    }
+    
+    static func register(object: NewRegistration, completion: @escaping (()->())) {
+        var request = URLRequest(url: registerMeURL)
+        request.httpBody = try? JSONEncoder().encode(object)
+        
+        request.httpMethod = "POST"
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         
         AF.request(request).response { (responce) in
             
-            guard let realResponse = responce.response, realResponse.statusCode == 200 else
-            {
-                print("Not a 200 response")
+            guard let code = responce.response?.statusCode else { return }
+            isValidTocken?(code)
+            
+            if let code = responce.response?.statusCode, code == 498 {
+                return
+            }
+            
+            if code == 204 {
+                
+                let fields = responce.response?.allHeaderFields as? [String :String]
+                let cookies = HTTPCookie.cookies(withResponseHeaderFields: fields!, for: responce.response!.url!)
+                HTTPCookieStorage.shared.setCookie(cookies[0])
+                
+                completion()
+            }
+        }
+    }
+    
+    // true only if everything is good
+    static func verify(with code: Int, completion: @escaping ((Bool)->())){
+        var request = URLRequest(url: authVerifyURL)
+        request.httpMethod = "POST"
+        request.httpBody = "\(code)".data(using: .utf8)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).response { (responce) in
+            
+            guard let statusCode = responce.response?.statusCode else { completion(false); return }
+            isValidTocken?(statusCode)
+            
+            if let code = responce.response?.statusCode, code == 498 {
+                return
+            }
+            
+            if  statusCode == 204 {
+                // at this point cookies are set
+                completion(true)
+            } else {
                 completion(false)
+            }
+        }
+    }
+    
+    // yes or no
+    static func authenticateMe(completion: @escaping ((Bool)->())){
+        var  request = URLRequest(url: authMeURL)
+        request.httpMethod = "POST"
+        
+        AF.request(request).response { (responce) in
+            
+            guard let statusCode = responce.response?.statusCode else { completion(false); return }
+            isValidTocken?(statusCode)
+            
+            if let code = responce.response?.statusCode, code == 498 {
                 return
             }
             
@@ -190,26 +324,87 @@ class Model{
                 return
             }
             
-            let fields = realResponse.allHeaderFields as? [String :String]
-            
-            let cookies = HTTPCookie.cookies(withResponseHeaderFields: fields!, for: realResponse.url!)
-            
-            HTTPCookieStorage.shared.setCookie(cookies[0])
-            
             DataStorage.standard.setIsLoggedIn(value: true, with: personId)
             completion(true)
         }
     }
     
-    
-    static func getLast(completion: @escaping (((users:[Int: Users], posts:[Posts]))->())){
-        let jsonString = "30"
-        var request = URLRequest(url: postsLastURL)
+    // register, ok or invalid
+    static func authenticate(with email: String, completion: @escaping ((AuthStatus)->())) {
         
+        let json: [String:Any] = ["authenticationEmail" : email]
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        
+        var request = URLRequest(url: authenticationURL)
         request.httpMethod = "POST"
         
         // insert json data to the request
-        request.httpBody = jsonString.data(using: .utf8)
+        request.httpBody = jsonData
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).response { (response) in
+            
+            guard let realResponse = response.response, realResponse.statusCode == 200 else
+            {
+                print("Not a 200 response")
+                completion(AuthStatus())
+                return
+            }
+        
+            guard let json = response.data else { return }
+            guard let res = try? decoder.decode(AuthStatus.self, from: json) else { return }
+            
+            if  realResponse.statusCode == 200 && res.userStatus == "registered"
+            {
+                // at this point cookies are set
+                let fields = realResponse.allHeaderFields as? [String :String]
+                let cookies = HTTPCookie.cookies(withResponseHeaderFields: fields!, for: realResponse.url!)
+                HTTPCookieStorage.shared.setCookie(cookies[0])
+            }
+            
+            completion(res)
+        }
+    }
+    
+    struct GeneralRequest<T: Codable>: Codable
+    {
+        var direction: String
+        var limit: Int
+        var exclusiveFrom: Int?
+        var request: T
+        
+        init(direction: String = "backward", limit: Int, exclusiveFrom: Int?, request: T) {
+            self.direction = direction
+            self.limit = limit
+            self.exclusiveFrom = exclusiveFrom
+            self.request = request
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case limit
+            case exclusiveFrom
+            case request
+            case direction
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(limit, forKey: .limit)
+            try container.encode(exclusiveFrom, forKey: .exclusiveFrom)
+            try container.encode(request, forKey: .request)
+            try container.encode(direction, forKey: .direction)
+        }
+    }
+    
+    static func getLast(on limit: Int = 10, from pointInTime: Int? = nil, completion: @escaping (((users:[Int: Users], posts:[Posts]))->()))
+    {
+        let postRequest = GeneralRequest<[Int]>(limit: limit, exclusiveFrom: pointInTime, request: [])
+        
+        var request = URLRequest(url: postsLastURL)
+        request.httpBody = try? JSONEncoder().encode(postRequest)
+        request.httpMethod = "POST"
+        
+        // insert json data to the request
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         
         AF.request(request).responseJSON {
@@ -217,18 +412,22 @@ class Model{
             
             isValidTocken?(response.response?.statusCode ?? 498)
             
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+            
             guard let json = response.data else { return }
             
-            guard let newQueery = try? decoder.decode(QueryPosts.self, from: json) else { print("no")
+            guard let newQueery = try? decoder.decode(QueryPosts<Posts>.self, from: json) else { print("no")
                 return }
             
             idUser = newQueery.users
-            completion((newQueery.users, newQueery.posts))
+            completion((newQueery.users, newQueery.response))
         }
     }
     
     
-    static func createAndPublish(body: [Attachments], tags: [String]){
+    static func createAndPublish(body: [Attachments], tags: [String], completion: @escaping ((ResultR)->())){
         let jsonUpd = CreatedPost(body: body, tags: tags)
         var request = URLRequest(url: postsPublishURL)
         
@@ -242,17 +441,30 @@ class Model{
             (response) in
             
             isValidTocken?(response.response?.statusCode ?? 498)
+            
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+            
+            if let code = response.response?.statusCode,
+                let result =  ResultR(rawValue: code)
+            {
+                completion(result)
+            } else {
+                completion(.internalServerError)
+            }
         }
     }
     
+//    static func requestForPosts(limit: Int = 10, ){
+//
+//    }
     
-    static func getPostsForUser(with id: Int, completion: @escaping (([Posts])->())){
-        let json = [
-            "request" : id,
-            "limit": 10
-        ]
+    static func getPostsForUser(for limit: Int = 10, from pointInTime: Int? = nil, with id: Int, completion: @escaping (([Posts])->()))
+    {
+        let postsRequest = GeneralRequest<Int>(limit: limit, exclusiveFrom: pointInTime, request: id)
         
-        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        let jsonData = try? JSONEncoder().encode(postsRequest)
         
         var request = URLRequest(url: postsForUserURL)
         request.httpMethod = "POST"
@@ -266,11 +478,15 @@ class Model{
             
             isValidTocken?(response.response?.statusCode ?? 498)
             
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+            
             guard let json = response.data else { return }
             
-            guard let newPost = try? decoder.decode(QueryPosts.self, from: json) else {  return }
+            guard let newPost = try? decoder.decode(QueryPosts<Posts>.self, from: json) else {  return }
             
-            completion(newPost.posts)
+            completion(newPost.response)
         }
     }
     
@@ -278,7 +494,7 @@ class Model{
     
     static func getUsers(for ids: [Int], completion: @escaping (([Int:Users])->())){
         let json = "\(Set(ids))"
-        print(json)
+
         var request = URLRequest(url: usersURL)
         
         request.httpMethod = "POST"
@@ -292,11 +508,16 @@ class Model{
             
             isValidTocken?(response.response?.statusCode ?? 498)
             
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+            
             guard let json = response.data else { return }
             
             guard let users = try? decoder.decode([Users].self, from: json) else {  return }
             
             var dict: [Int:Users] = [:]
+            
             users.forEach({ (user) in
                 dict[user.id] = user
             })
@@ -306,13 +527,10 @@ class Model{
     }
     
     // get channel (with id): in responce -- PostQuery
-    static func getChannel(with channelId: Int, completion: @escaping (((users:[Int: Users], posts:[Posts]))->())){
-        let json = [
-            "request" : channelId,
-            "limit": 10
-        ]
-        
-        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+    static func getChannel(with channelId: Int, on limit: Int = 10, from pointInTime: Int? = nil, completion: @escaping (((users:[Int: Users], posts:[Posts]))->()))
+    {
+        let postRequest = GeneralRequest<Int>(limit: limit, exclusiveFrom: pointInTime, request: channelId)
+        let jsonData = try? JSONEncoder().encode(postRequest)
         
         var request = URLRequest(url: channelsGetURL)
         request.httpMethod = "POST"
@@ -326,18 +544,21 @@ class Model{
             
             isValidTocken?(response.response?.statusCode ?? 498)
             
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
             
             guard let json = response.data else { return }
             
-            guard let newQueery = try? decoder.decode(QueryPosts.self, from: json) else {  return }
+            guard let newQueery = try? decoder.decode(QueryPosts<Posts>.self, from: json) else {  return }
             
             idUser = newQueery.users
-            completion((newQueery.users, newQueery.posts))
+            completion((newQueery.users, newQueery.response))
         }
     }
     
     
-    static func createChannel(with channel: Channels) {
+    static func createChannel(with channel: Channels, completion: @escaping ((ResultR)->())) {
         
         var request = URLRequest(url: channelsCreateURL)
         request.httpMethod = "POST"
@@ -348,6 +569,13 @@ class Model{
             (response) in
             
             isValidTocken?(response.response?.statusCode ?? 498)
+            
+            if let code = response.response?.statusCode, let result = ResultR(rawValue: code) {
+                completion(result)
+                return
+            }
+            
+            completion(ResultR.internalServerError)
         }
         
     }
@@ -360,6 +588,9 @@ class Model{
         AF.request(request).responseJSON { (response) in
             
             isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
             
             guard let json = response.data else { return }
             
@@ -378,6 +609,9 @@ class Model{
         
         AF.request(request).response { (response) in
             isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
         }
         completion()
     }
@@ -393,6 +627,9 @@ class Model{
             (response) in
             
             isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
         }
     }
     
@@ -415,6 +652,499 @@ class Model{
             }
             
             isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+        }
+    }
+    
+    struct AnonymousChannel: Codable {
+        
+        var limit = 10
+        var request: RequestPeopleTags
+        
+        enum CodingKeys: String, CodingKey {
+            case limit
+            case request
+        }
+        
+        init(people: [Int], tags: [String]) {
+            self.request = RequestPeopleTags(people: people, tags: tags)
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(limit, forKey: .limit)
+            try container.encode(request, forKey: .request)
+        }
+        
+        struct RequestPeopleTags: Codable {
+            
+            var people: [Int]
+            var tags: [String]
+            
+            init(people: [Int], tags: [String]) {
+                self.people = people
+                self.tags = tags
+            }
+            
+            func encode(to encoder: Encoder) throws {
+                var container = encoder.container(keyedBy: CodingKeys.self)
+                try container.encode(people, forKey: .people)
+                try container.encode(tags, forKey: .tags)
+            }
+            
+            enum CodingKeys: String, CodingKey {
+                case people
+                case tags
+            }
+            
+        }
+    }
+    /*
+     {
+     "limit": 11,
+     "request": {
+         "people": [
+                2,
+                7,
+                8
+            ],
+         "tags": [
+                "thisIsHashTag",
+                "thisIsAlsoHashTag"
+            ]
+         }
+     }
+     */
+    static func getAnonymousChannel(by anonymousChannel: Model.Channels, exclusiveFrom: Int? = nil, completion: @escaping (((users:[Int: Users], posts:[Posts]))->())){
+       
+        let req = GeneralRequest<Model.Channels>(limit: 10, exclusiveFrom: exclusiveFrom, request: anonymousChannel)
+        
+        var request = URLRequest(url: channelsGetAnonURL)
+        request.httpMethod = "POST"
+        request.httpBody = try? JSONEncoder().encode(req)
+        
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        AF.request(request).response {
+            (response) in
+            
+            isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+            
+            guard let json = response.data else { return }
+            
+            guard let newQueery = try? decoder.decode(QueryPosts<Posts>.self, from: json) else {  return }
+            completion((newQueery.users, newQueery.response))
+        }
+    }
+    
+    static func getCompl(completion: @escaping ((CompletionTree)->())) {
+        
+        AF.request(URLRequest(url: hashTagTreeURL)).responseJSON {
+            (response) in
+            isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+            guard let json = response.data else { return }
+            guard let tree = try? decoder.decode(CompletionTree.self, from: json) else {  return }
+            completion(tree)
+        }
+    }
+    
+    static func getChatAll(limit: Int = 10, exclusiveFrom: Int? = nil, request: [Int] = [], completion: @escaping ((([Dialog],[Int:Model.Users]))->()))
+    {
+        let req = GeneralRequest<[Int]>(limit: limit, exclusiveFrom: exclusiveFrom, request: request)
+        var request = URLRequest(url: chatsGetAllURL)
+        request.httpMethod = "POST"
+        request.httpBody = try? JSONEncoder().encode(req)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).responseJSON { response in
+            isValidTocken?(response.response?.statusCode ?? 498)
+            
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+            
+            guard let json = response.data else { return }
+            let dialogs = try! decoder.decode(QueryPosts<Dialog>.self, from: json)
+            
+            completion((dialogs.response,dialogs.users))
+        }
+    }
+    
+    enum Dialog: Codable
+    {
+        case groupChat(GroupChat)
+        case userChat(UserChat)
+        
+        private enum DialogKeys: CodingKey{
+            case groupChat
+            case userChat
+        }
+        
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: DialogKeys.self)
+            if container.contains(.groupChat){
+                self = .groupChat(try GroupChat(from: container.superDecoder(forKey: .groupChat)))
+            } else if container.contains(.userChat){
+                self = .userChat(try UserChat(from: container.superDecoder(forKey: .userChat)))
+            } else {
+                throw DecodingError.keyNotFound(DialogKeys.groupChat, DecodingError.Context(codingPath: container.codingPath, debugDescription: "hz"))
+            }
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: DialogKeys.self)
+            switch self{
+            case .groupChat(let chat):
+                try chat.encode(to: container.superEncoder(forKey: .groupChat))
+            case .userChat(let chat):
+                try chat.encode(to: container.superEncoder(forKey: .userChat))
+            }
+        }
+    }
+    
+    struct GroupChat: Codable {
+        var group: Group
+        var lastMessage: LastMessage?
+        
+        
+        init(group: Group, lastMessage: LastMessage? = nil) {
+            self.group = group
+            self.lastMessage = lastMessage
+        }
+    }
+    
+    struct UserChat: Codable {
+        var user: Int
+        var lastMessage: LastMessage?
+        
+        init(user: Int, lastMessage: LastMessage? = nil) {
+            self.user = user
+            self.lastMessage = lastMessage
+        }
+    }
+    
+    struct Group: Codable {
+        var users: [Int: UserPermission]
+        var name: String
+        var id: Int
+        
+        init(users: [Int: UserPermission] = [:], name: String = "", id: Int) {
+            self.id = id
+            self.users = users
+            self.name = name
+        }
+    }
+    
+    struct UserPermission: Codable {
+        var isAdmin: Bool
+    }
+    
+    struct LastMessage: Codable {
+        var body: Attachments
+        var destination: MessageDestination
+        var time: String
+        var author: Int
+        var id: Int
+        
+        enum MessageCodingKeys: CodingKey{
+            case user
+            case group
+            case body
+            case time
+            case author
+            case id
+        }
+        
+        init(from decoder: Decoder) throws
+        {
+            let container = try decoder.container(keyedBy: MessageCodingKeys.self)
+            time = try container.decode(String.self, forKey: .time)
+            body = try container.decode(Attachments.self, forKey: .body)
+            author = try container.decode(Int.self, forKey: .author)
+            id = try container.decode(Int.self, forKey: .id)
+            
+            if container.contains(.user){
+                destination = MessageDestination.userChatDestination(try Int(from: container.superDecoder(forKey: .user)))
+            } else if container.contains(.group){
+                destination = MessageDestination.groupChatDestination(try Int(from: container.superDecoder(forKey: .group)))
+            } else {
+                throw DecodingError.keyNotFound(MessageCodingKeys.group, DecodingError.Context(codingPath: container.codingPath, debugDescription: "hz gr"))
+            }
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: MessageCodingKeys.self)
+            
+            try container.encode(time, forKey: .time)
+            try container.encode(id, forKey: .id)
+            try container.encode(author, forKey: .author)
+            try container.encode(body, forKey: .body)
+            
+            switch destination {
+            case .userChatDestination(let uId):
+                try uId.encode(to: container.superEncoder(forKey: .user))
+            case .groupChatDestination(let gId):
+                try gId.encode(to: container.superEncoder(forKey: .group))
+            }
+        }
+    }
+    
+    enum MessageDestination: Codable
+    {
+        func encode(to encoder: Encoder) throws
+        {
+            var container = encoder.container(keyedBy: MessCodingKeys.self)
+            switch self {
+            case .userChatDestination(let uId):
+                try uId.encode(to: container.superEncoder(forKey: .user))
+            case .groupChatDestination(let gId):
+                try gId.encode(to: container.superEncoder(forKey: .group))
+            }
+        }
+        
+        init(from decoder: Decoder) throws
+        {
+            let container = try decoder.container(keyedBy: MessCodingKeys.self)
+            if container.contains(.user){
+                self = .userChatDestination(try Int(from: container.superDecoder(forKey: .user)))
+            } else if container.contains(.group){
+                self = .groupChatDestination(try Int(from: container.superDecoder(forKey: .group)))
+            } else {
+                throw DecodingError.keyNotFound(MessCodingKeys.group, DecodingError.Context(codingPath: container.codingPath, debugDescription: "hz gr"))
+            }
+        }
+        
+        enum MessCodingKeys: CodingKey{
+            case user
+            case group
+        }
+        
+        case userChatDestination(Int)
+        case groupChatDestination(Int)
+        
+    }
+    
+    static func createGroupChat(from group: Group, completion: @escaping ((Int)->())) {
+        let req = group
+        var request = URLRequest(url: createGroupChatURL)
+        request.httpMethod = "POST"
+        request.httpBody = try? JSONEncoder().encode(req)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).response { (response) in
+            
+            isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+            
+            guard let json = response.data else { return }
+            let stringInt = String.init(data: json, encoding: String.Encoding.utf8)
+            let intId = Int.init(stringInt!)
+            
+            completion(intId!)
+        }
+    }
+    
+    static func getMessagesFor(typeOfChat: Model.Dialog, chat id: Int, exclusiveFrom: Int? = nil, limit l: Int = 25, direction: String = "backward", completion: @escaping (([LastMessage])->()))
+    {
+        let req = GeneralRequest<Int>(direction: direction, limit: l, exclusiveFrom: exclusiveFrom, request: id)
+        var request: URLRequest?
+        
+        switch typeOfChat {
+        case .groupChat:
+            request = URLRequest(url: messagesGetGroupChatURL)
+        case .userChat:
+            request = URLRequest(url: messagesGetUserChatURL)
+        }
+        
+        request!.httpMethod = "POST"
+        request!.httpBody = try? JSONEncoder().encode(req)
+        request!.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request!).response { (response) in
+            
+            isValidTocken?(response.response?.statusCode ?? 498)
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+            
+            guard let json = response.data else { return }
+            guard let messages = try? decoder.decode([LastMessage].self, from: json) else {  return }
+            
+            completion(messages)
+        }
+    }
+    
+    static func leaveGroupChat(id: Int, completion: @escaping (()->()))
+    {
+        var request = URLRequest(url: leaveGroupChatURL)
+        request.httpMethod = "POST"
+        request.httpBody = "\(id)".data(using: .utf8)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).response { (response) in
+            isValidTocken?(response.response?.statusCode ?? 498)
+            
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+        }
+        
+        completion()
+    }
+    
+    static func updateGroupChat(with group: Model.Group)
+    {
+        var request = URLRequest(url: updateGroupChatURL)
+        request.httpMethod = "POST"
+        request.httpBody = try? JSONEncoder().encode(group)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).response { (response) in
+            isValidTocken?(response.response?.statusCode ?? 498)
+            
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+        }
+        
+        // completion()
+    }
+    
+    struct SendMessage: Codable {
+        var body: Attachments
+        var destination: MessageDestination
+        
+        init(from decoder: Decoder) throws
+        {
+            let container = try decoder.container(keyedBy: LastMessage.MessageCodingKeys.self)
+            body = try container.decode(Attachments.self, forKey: .body)
+            
+            if container.contains(.user){
+                destination = MessageDestination.userChatDestination(try Int(from: container.superDecoder(forKey: .user)))
+            } else if container.contains(.group){
+                destination = MessageDestination.groupChatDestination(try Int(from: container.superDecoder(forKey: .group)))
+            } else {
+                throw DecodingError.keyNotFound(LastMessage.MessageCodingKeys.group, DecodingError.Context(codingPath: container.codingPath, debugDescription: "hz gr1"))
+            }
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: LastMessage.MessageCodingKeys.self)
+            try container.encode(body, forKey: .body)
+            
+            switch destination {
+            case .userChatDestination(let uId):
+                try uId.encode(to: container.superEncoder(forKey: .user))
+            case .groupChatDestination(let gId):
+                try gId.encode(to: container.superEncoder(forKey: .group))
+            }
+        }
+        
+        init(body: Attachments, destination: MessageDestination)
+        {
+            self.body = body
+            self.destination = destination
+        }
+    }
+    
+    static func sendMessage(message: SendMessage, completion: @escaping ((ResultR)->())){
+
+        var request = URLRequest(url: messagesSendURL)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        request.httpBody = try? JSONEncoder().encode(message)
+        
+        AF.request(request).response { (response) in
+            isValidTocken?(response.response?.statusCode ?? 498)
+            
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+            
+            if let result = ResultR(rawValue: response.response!.statusCode){
+                completion(result)
+            } else {
+                completion(.internalServerError)
+            }
+        }
+    }
+    
+    struct Faculty: Codable
+    {
+        
+        var path: String
+        var url: String
+        var campusName: String
+        var campusCode: String
+        var name: String
+        var tags: [String]
+        var address: String
+        
+    }
+    
+    static func searchFaculty(string: String, completion: @escaping (([Model.Faculty])->()))
+    {
+        var request = URLRequest(url: facultySearchURL)
+        request.httpMethod = "POST"
+        request.httpBody = string.data(using: .utf8)
+        request.setValue("text/plain;charset=utf-8", forHTTPHeaderField: "Content-Type")
+        
+        AF.request(request).response { (response) in
+            isValidTocken?(response.response?.statusCode ?? 498)
+            
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+            
+            guard let json = response.data else { return }
+            guard let faculties = try? decoder.decode([Faculty].self, from: json) else {  return }
+    
+            completion(faculties)
+        }
+    }
+    
+    static func userUpdate(with newUser: NewRegistration, completion: @escaping ((Bool)->())) {
+        var request = URLRequest(url: usersUpdateURL)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        request.httpBody = try? JSONEncoder().encode(newUser)
+        
+        AF.request(request).response { (response) in
+            isValidTocken?(response.response?.statusCode ?? 498)
+            
+            if let code = response.response?.statusCode, code == 498 {
+                return
+            }
+            
+            if let code = response.response?.statusCode, code != 204{
+                completion (false)
+            } else {
+                completion(true)
+            }
+        }
+    }
+    
+    static func deactivateAll(completion: @escaping (()->())){
+        var request = URLRequest(url: deactivateURL)
+        request.httpMethod = "DELETE"
+        
+        AF.request(request).response { (responce) in
+            isValidTocken?(responce.response?.statusCode ?? 498)
+            
+            if let code = responce.response?.statusCode, code == 498 {
+                return
+            }
+            
+            completion()
         }
     }
 }

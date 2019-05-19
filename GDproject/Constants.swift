@@ -6,6 +6,7 @@
 //  Copyright © 2019 drHSE. All rights reserved.
 //
 
+import UIKit
 /// constant for cell in posts NewsController.swift
 let postCellId = "PostCell"
 
@@ -42,7 +43,29 @@ let newsController = "NewsController"
 /// constant for switching to view controller for log in app
 let logInController = "LogInController"
 
+/// constant for getting to messages
+let messagesViewControllerId = "MessagesViewController"
+
+/// constant for displaying list of people to send message to
+let peopleToWriteVC = "PeopleToWriteViewController"
+
+let dialogVC = "DialogViewController"
 
 let profileViewController = "ProfileViewController"
 
 let simplifiedChannelsList = "SimplifiedChannelsList"
+
+let channelViewControllerId = "ChannelViewController"
+
+let addToChannelVCId = "AddToChannelVC"
+
+let taggsSelectionViewController = "TaggsSelectionViewController"
+
+let dialogViewController = "DialogViewController"
+
+let tagsSuggestionController = "TagsSuggestionController"
+
+let chatInfoViewController = "ChatInfoViewController"
+
+let blueSystemColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 0.5)
+

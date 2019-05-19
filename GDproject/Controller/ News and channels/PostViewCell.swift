@@ -8,12 +8,14 @@
 
 import UIKit
 import Cartography
-import MarkdownKit
 import TinyConstraints
 
 class PostViewCell: UITableViewCell
 {
+    
     var onUserDisplay: ((Int)->())?
+    
+    var onAnonymousChannelDisplay: ((String)->())?
     
     let nameLabel: UIButton = {
         let button = UIButton()
@@ -40,6 +42,7 @@ class PostViewCell: UITableViewCell
     
     let shareButton: UIButton = {
         let button = UIButton(type: UIButton.ButtonType.detailDisclosure)
+        button.isHidden = true
         return button
     }()
     
@@ -84,7 +87,7 @@ class PostViewCell: UITableViewCell
         nameLabel.setTitle("\(post.user?.firstName ?? "") \(post.user?.lastName ?? "")", for: .normal)
         nameLabel.addTarget(self, action: #selector(displayProfile), for: .touchUpInside)
         if let user = post.user{
-            fullNameLabel.text = "\(user.firstName) \(user.middleName) \(user.lastName)"
+            fullNameLabel.text = "\(user.faculty.name)"
         }
         else {
             fullNameLabel.text = "\(post.authorId)"
@@ -120,8 +123,8 @@ class PostViewCell: UITableViewCell
         for hash in hashtags {
             let button = UIButton()
             button.setTitle("#" + hash, for: .normal)
-            //button.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-            //button.layer.cornerRadius = 10
+            button.addTarget(self, action: #selector(setAnonymousChannel(on:)), for: .touchUpInside)
+            // button.addGestureRecognizer(longPressRecognizer)
             button.titleLabel?.font = UIFont.monospacedDigitSystemFont(ofSize: 15, weight: .semibold)
             button.setTitleColor(#colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1), for: .normal)
             buttons.append(button)
@@ -179,7 +182,13 @@ class PostViewCell: UITableViewCell
     }
     
     @objc func displayProfile(){
-        print("buttonTapped")
-        onUserDisplay?(post!.authorId)
+        if let id = post?.authorId {
+            onUserDisplay?(id)
+        }
+    }
+    
+    @objc func setAnonymousChannel(on button: UIButton){
+        print("\(button.titleLabel?.text ?? "nothing")")
+        onAnonymousChannelDisplay?(String(button.titleLabel!.text!.dropFirst()))
     }
 }

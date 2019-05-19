@@ -19,20 +19,40 @@ struct PostCellData{
         
         let markdownParser = MarkdownParser(font: UIFont.systemFont(ofSize: 16))
         markdownParser.enabledElements = .disabledAutomaticLink
-        markdownParser.code.textBackgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        markdownParser.code.font = UIFont(name: "Menlo", size: 16)
+        markdownParser.code.textBackgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        markdownParser.code.color = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         
         return markdownParser.parse(markdown)
     }
 }
 
-class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
+class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    
+    
+    var onChannelDidChange: ((([Int: Model.Users],[Model.Posts]))->())?
+    
+    var onFullPost: ((HeaderType, Model.Posts)->())?
+    
+    var dictionary: [Int: Model.Users] = [:] {
+        didSet {
+            
+            dataSourse = dataSourse.map {
+                var copy = $0
+                copy.user = dictionary[$0.authorId]
+                return copy
+            }
+            
+            (viewController as? NewsController)?.tableView.reloadData()
+            (viewController as? ProfileViewController)?.tableView.reloadData()
+        }
+    }
+    
+    var currChannel : Model.Channels?
     
     var dataSourse: [Model.Posts] = [] {
         didSet {
-            cellDataSourse = []
-            dataSourse.forEach { (item) in
-                cellDataSourse.append(PostCellData(attributedData: PostCellData.create(with: item.body)))
-            }
+            cellDataSourse = dataSourse.map { PostCellData(attributedData: PostCellData.create(with: $0.body)) }
         }
     }
     
@@ -48,11 +68,7 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let vc = viewController!.storyboard!.instantiateViewController(withIdentifier: fullPostControllerId) as! FullPostController
-        vc.type = type
-        vc.post = dataSourse[indexPath.row]
-        viewController!.navigationController!.pushViewController(vc, animated: true)
+        onFullPost?(type, dataSourse[indexPath.row])
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -72,9 +88,14 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
                 vc.idProfile = id
                 self?.viewController!.navigationController!.pushViewController(vc, animated: true)
             }
-        case .NONE:
+            
+            cell.onAnonymousChannelDisplay = {
+                [weak self] in
+                (self?.viewController as? UpdateableWithChannel)?.updateChannel(on: Model.Channels(people: [], name: $0, id: 0, tags: [$0]))
+            }
+        default:
             cell.onUserDisplay = { (id) in
-                print("tapped when profile is open already \(id)")
+                print("tapped when profile is opened already \(id)")
             }
         }
         
@@ -89,10 +110,37 @@ class NewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100.0
     }
-}
+    
+    var prevLast = -1
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
+    {
+        // pagination
+        if indexPath.row == cellDataSourse.count - 1 && prevLast != indexPath.row
+        {
+            if let ch = currChannel, let id = ch.id, id != -1 {
+                // check this!
+                Model.getAnonymousChannel(by: ch, exclusiveFrom: dataSourse.last?.id) { [weak self] in
+                    self?.dataSourse.append(contentsOf: $0.posts)
+                    $0.users.forEach { self?.dictionary[$0.key] = $0.value }
+                }
+                
+            } else {
+                // check this!
+                Model.getLast(on: 10, from: dataSourse.last?.id )
+                { [weak self] in
+                    self?.dataSourse.append(contentsOf: $0.posts)
+                    $0.users.forEach { self?.dictionary[$0.key] = $0.value }
+                }
+            }
 
+            prevLast = indexPath.row
+        }
+    }
+}
 
 enum HeaderType {
     case NONE
     case NEWS
+    case ANONYMOUS
 }

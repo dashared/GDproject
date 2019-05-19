@@ -37,18 +37,17 @@ class DataStorage{
         return UserDefaults.standard.integer(forKey: UserDefaultsKeys.id.rawValue)
     }
     
+    func setEmail(email: String) {
+        UserDefaults.standard.set(email, forKey: UserDefaultsKeys.email.rawValue)
+    }
+    
+    func getEmail() -> String? {
+        return UserDefaults.standard.string(forKey: UserDefaultsKeys.email.rawValue)
+    }
     /**
      Function to determine is user logged in already or not
     */
-    var isLoggedIn: Bool = UserDefaults.standard.bool(forKey: UserDefaultsKeys.loggedIn.rawValue) {
-        didSet{
-            if isLoggedIn  && getUserId() != 0 {
-                (UIApplication.shared.delegate as? AppDelegate)?.tabCoordinator.start()
-            } else {
-                (UIApplication.shared.delegate as? AppDelegate)?.logInAgain()
-            }
-        }
-    }
+    var isLoggedIn: Bool = UserDefaults.standard.bool(forKey: UserDefaultsKeys.loggedIn.rawValue)
 }
 
 /**
@@ -57,4 +56,5 @@ class DataStorage{
 enum UserDefaultsKeys: String{
     case loggedIn
     case id
+    case email
 }
